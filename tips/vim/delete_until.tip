@@ -1,0 +1,11 @@
+#this tip is to delete the words from the current position to the first matched occurency.
+
+press d/pattern and  Enter
+
+
+#for example
+# line: I have a <red>good</red> mother who is a teather
+# the cursor is at "a"
+# the expected result is 
+# I have a mother who is a teather
+# d/d> 
