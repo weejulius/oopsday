@@ -9,6 +9,7 @@ import com.fishstory.oopsday.domain.tip.InvalidTipException
 import com.fishstory.oopsday.domain.tip.Tip
 import com.fishstory.oopsday.domain.tip.Tip
 import org.joda.time.DateTime
+import com.fishstory.oopsday.shared.The
 
 class TU_Tip() {
 
@@ -16,27 +17,36 @@ class TU_Tip() {
   def it_should_be_able_to_create_tip_by_content() = {
 
     var expectedContent = "This is a tip"
-    var tip = new Tip(expectedContent, "jyu")
-    assertEquals(expectedContent, tip.content)
+    var tip = Tip.create(expectedContent, "jyu")
+
+    The.string(tip.content).should_equal_to(expectedContent)
 
     expectedContent = "This is another tip"
-    tip = new Tip(expectedContent, "jyu")
-    assertEquals(expectedContent, tip.content)
+    tip = Tip.create(expectedContent, "jyu")
+    
+    The.string(tip.content).should_equal_to(expectedContent)
   }
 
   @Test
-  def it_should_be_able_to_modify_content = {
+  def it_should_be_able_to_update_content = {
 
-    var tip = new Tip("This is a tip", "jyu")
+    var tip = Tip.create("This is a tip", "jyu")
+    
+    The.date(tip.modified_date).should_be_null_date
 
-    tip.set_content("This is a modified tip")
+    tip.update_content("This is a modified tip")
 
-    assertEquals("This is a modified tip", tip.content)
+    The.string(tip.content).should_equal_to("This is a modified tip")
+    
+    The.date(tip.created_date).should_be_now_approximately
+    The.date(tip.modified_date).should_be_now_approximately
+    
   }
 
   @Test(expected = classOf[InvalidTipException])
   def the_content_should_less_than_maxNumberOfChar = {
-    var tip = new Tip("The tip is more than the max number of char,is it???????????????????????????", "jyu");
+
+    var tip = Tip.create("The tip is more than the max number of char,is it???????????????????????????", "jyu");
 
     fail("the tip should not more than the max number of char")
   }
@@ -46,27 +56,29 @@ class TU_Tip() {
 
     Tip.set_maxNumberOfChar(80)
 
-    var tip = new Tip("The tip is more than the max number of char,is it???????????????????????????", "jyu");
+    var tip = Tip.create("The tip is more than the max number of char,is it???????????????????????????", "jyu");
 
   }
 
   @Test
   def it_should_know_the_creation_date = {
-    var tip = new Tip("This is a tip", "jyu")
 
-    assertTrue("the creation date is now approximately", DateTime.now().getMillis() <= (tip.created_date.getTime() + 500))
-    assertEquals("the creation date should not be different calling it", tip.created_date, tip.created_date);
+    var tip = Tip.create("This is a tip", "jyu")
+
+    The.date(tip.created_date).should_be_now_approximately
+    The.date(tip.created_date).should_equal_to(tip.created_date)
   }
 
   @Test
-  def it_should_has_author = {
-    var tip = new Tip("this is a tip", "jyu")
+  def it_should_have_author = {
+    
+    var tip = Tip.create("this is a tip", "jyu")
 
-    assertEquals("jyu", tip.author)
+    The.string(tip.author).should_equal_to("jyu")
 
-    tip = new Tip("this is a tip", "sue")
+    tip = Tip.create("this is a tip", "sue")
 
-    assertEquals("sue", tip.author)
+    The.string(tip.author).should_equal_to("sue")
   }
 
 }
