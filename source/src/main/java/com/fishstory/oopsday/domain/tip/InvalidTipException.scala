@@ -1,5 +1,5 @@
 package com.fishstory.oopsday.domain.tip
 
-class InvalidTipException extends RuntimeException{
+case class InvalidTipException extends RuntimeException{
 
 }

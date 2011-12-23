@@ -17,30 +17,29 @@ class TU_Tip() {
   def it_should_be_able_to_create_tip_by_content() = {
 
     var expectedContent = "This is a tip"
-    var tip = Tip.create(expectedContent, "jyu")
+    var tip = Tip.create("This is a tip", "jyu")
 
-    The.string(tip.content).should_equal_to(expectedContent)
+    The string (tip.content) should_equal_to (expectedContent);
 
     expectedContent = "This is another tip"
-    tip = Tip.create(expectedContent, "jyu")
-    
-    The.string(tip.content).should_equal_to(expectedContent)
+    tip = Tip.create("This is another tip", "jyu")
+
+    The string (tip.content) should_equal_to (expectedContent);
   }
 
   @Test
   def it_should_be_able_to_update_content = {
 
     var tip = Tip.create("This is a tip", "jyu")
-    
+
     The.date(tip.modified_date).should_be_null_date
 
     tip.update_content("This is a modified tip")
 
-    The.string(tip.content).should_equal_to("This is a modified tip")
-    
-    The.date(tip.created_date).should_be_now_approximately
-    The.date(tip.modified_date).should_be_now_approximately
-    
+    The string(tip.content) should_equal_to "This is a modified tip"
+
+    The date (tip.created_date) should_be_now_approximately;
+    The date (tip.modified_date) should_be_now_approximately;
   }
 
   @Test(expected = classOf[InvalidTipException])
@@ -65,20 +64,20 @@ class TU_Tip() {
 
     var tip = Tip.create("This is a tip", "jyu")
 
-    The.date(tip.created_date).should_be_now_approximately
-    The.date(tip.created_date).should_equal_to(tip.created_date)
+    The date (tip.created_date) should_be_now_approximately;
+    The date (tip.created_date) should_equal_to (tip.created_date);
   }
 
   @Test
   def it_should_have_author = {
-    
+
     var tip = Tip.create("this is a tip", "jyu")
 
-    The.string(tip.author).should_equal_to("jyu")
+    The string(tip.author) should_equal_to "jyu"
 
     tip = Tip.create("this is a tip", "sue")
 
-    The.string(tip.author).should_equal_to("sue")
+    The string (tip.author) should_equal_to "sue"
   }
 
 }

@@ -11,28 +11,28 @@ class The {
     var date1 = new DateTime(The._the._date)
 
     if (!(date1.getMillis() > DateTime.now().getMillis() - 500)) {
-      throw new AssertException("the date " + date1 + " is not around the current time")
+      throw new AssertException("\n\n ===> {" + date1 + "} is not around the current time\n")
     }
   }
 
   def should_equal_to(a_date: Date) = {
 
     if (!The._the._date.equals(a_date)) {
-      throw new AssertException("the date " + _date + " does not equal to the expected date " + a_date)
+      throw new AssertException("\n\n Actual       |  {" + _date + "} \n Expected   |  {" + a_date + "}\n")
     }
 
   }
 
   def should_equal_to(a_string: String) = {
     if (!The._the._string.equals(a_string)) {
-      throw new AssertException("the string " + _string + " does not equal to the expected string " + a_string)
+      throw new AssertException("\n\n Actual       |  {" + _string + "} \n Expected   |  {" + a_string + "}\n")
     }
   }
 
   def should_be_null_date = {
-     if(!(_date == null)){
-       throw new AssertException("the date " + _date + " is not null ")
-     }
+    if (!(_date == null)) {
+      throw new AssertException("\n\n ===> {" + _date + "} is not null\n")
+    }
   }
 }
 
