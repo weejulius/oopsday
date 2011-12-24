@@ -5,14 +5,14 @@ import org.junit.Before
 
 class TU_TipController {
   
-  private var tipController:TipController = null
+  private var tipController:TipFace = null
   
   @Before
-  def setUp = tipController = TipController.create
+  def setUp = tipController = TipFace.create
   
   @Test
   def index={
-    tipController index 1
+    
   }
 
 }

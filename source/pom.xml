@@ -67,7 +67,16 @@
 			<version>2.9.0</version>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>net.databinder</groupId>
+			<artifactId>unfiltered-filter_2.9.1</artifactId>
+			<version>0.5.3</version>
+		</dependency>
+		<dependency>
+			<groupId>net.databinder</groupId>
+			<artifactId>unfiltered-jetty_2.9.1</artifactId>
+			<version>0.5.3</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>opps_day</finalName>
@@ -127,6 +136,10 @@
 		</plugins>
 	</build>
 	<repositories>
+		<repository>
+			<id>scala-tools</id>
+			<url>http://scala-tools.org/repo-releases</url>
+		</repository>
 		<repository>
 			<id>codehaus</id>
 			<url>http://repository.codehaus.org</url>
