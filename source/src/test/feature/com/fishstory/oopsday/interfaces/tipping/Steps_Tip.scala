@@ -1,42 +1,56 @@
 package com.fishstory.oopsday.interfaces.tipping
+
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import com.fishstory.oopsday.shared.The
-import cucumber.annotation.en.Given
-import cucumber.annotation.en.Then
-import cucumber.annotation.en.When
 import cucumber.annotation.Before
-import unfiltered.jetty.Http
 import cucumber.annotation.After
+import cucumber.annotation.en.{When, Given, Then}
+import unfiltered.jetty.{Server, Http}
 
 class Steps_Tip {
-  private var _webDriver: WebDriver = new HtmlUnitDriver();
-  private var _tipId: String = null;
+  private var _webDriver: WebDriver = null
+  private var _tip: String = null
+  private var _server: Server = null
 
   @Before
   def startServer = {
-    Http(8080).plan(new TipFace).run
+    _server = Http(8080).plan(new TipFace)
+    _server.start
+    _webDriver = new HtmlUnitDriver()
   }
 
-  @Given("^the tip (\\d+) is exiting$")
-  def the_tip_is_existing(a_tipId: String) {
-    _tipId = a_tipId
+  @Given("^the tip \"([^\"]*)\" is existing$")
+  def the_tip_is_existing(a_tip: String) {
+    _tip = a_tip
   }
 
-  @When("^the user open the link \"([^\"]*)\"$")
-  def the_user_open_the_link(a_link: String) {
-    _webDriver.get("http://localhost:8080/" + a_link)
+  @Given("^I am on the page \"([^\"]*)\"$")
+  def I_am_on_the_page(page: String) {
+    _webDriver.get("http://localhost:8080/" + page)
   }
 
-  @Then("^the user see \"([^\"]*)\"$")
-  def the_user_should_see(a_content: String) {
-    The string (_webDriver.findElement(By.id("tip_content")).getAttribute("value")) should_equal_to a_content
+  @Given("^I input the content \"([^\"]*)\"$")
+  def i_input_the_content(a_content: String) {
+    _webDriver.findElement(By.id("tip_content")).clear()
+    _webDriver.findElement(By.id("tip_content")).sendKeys(a_content)
+  }
+
+  @When("^I click the button$")
+  def i_click_the_button() {
+    _webDriver.findElement(By.id("tip_submit")).submit()
+  }
+
+  @Then("^I should see the content \"([^\"]*)\"$")
+  def i_should_see_the_content(a_content: String) {
+    The string (_webDriver.findElement(By.id("tip_content")).getText) should_equal_to a_content
   }
 
   @After
-  def topServer = {
-    Http(8080).plan(new TipFace).stop()
+  def stopServer = {
+    _server.stop()
+    _webDriver.quit()
   }
 
 }

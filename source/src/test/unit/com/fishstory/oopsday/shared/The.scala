@@ -1,4 +1,5 @@
 package com.fishstory.oopsday.shared
+
 import java.util.Date
 import org.joda.time.DateTime
 
@@ -18,14 +19,14 @@ class The {
   def should_equal_to(a_date: Date) = {
 
     if (!The._the._date.equals(a_date)) {
-      throw new AssertException("\n\n Actual       |  {" + _date + "} \n Expected   |  {" + a_date + "}\n")
+      throw new AssertException("\n\n Actual      |  {" + _date + "} \n Expected    |  {" + a_date + "}\n")
     }
 
   }
 
   def should_equal_to(a_string: String) = {
     if (!The._the._string.equals(a_string)) {
-      throw new AssertException("\n\n Actual       |  {" + _string + "} \n Expected   |  {" + a_string + "}\n")
+      throw new AssertException("\n\n Actual      |  {" + _string + "} \n Expected    |  {" + a_string + "}\n")
     }
   }
 
