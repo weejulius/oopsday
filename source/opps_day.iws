@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ff0c6ae8-47bb-46d8-ae83-eb01d0efbf39" name="Default" comment="add the edit/update functionality for the tip">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/opps_day.iml" afterPath="$PROJECT_DIR$/opps_day.iml" />
+    <list default="true" id="ff0c6ae8-47bb-46d8-ae83-eb01d0efbf39" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/opps_day.ipr" afterPath="$PROJECT_DIR$/opps_day.ipr" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/opps_day.iws" afterPath="$PROJECT_DIR$/opps_day.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/fishstory/oopsday/interfaces/tipping/TipFace.scala" afterPath="$PROJECT_DIR$/src/main/java/com/fishstory/oopsday/interfaces/tipping/TipFace.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/feature/com/fishstory/oopsday/interfaces/tipping/Steps_Tip.scala" afterPath="$PROJECT_DIR$/src/test/feature/com/fishstory/oopsday/interfaces/tipping/Steps_Tip.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/resources/post_a_tip.feature" afterPath="$PROJECT_DIR$/src/test/resources/post_a_tip.feature" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/unit/com/fishstory/oopsday/shared/The.scala" afterPath="$PROJECT_DIR$/src/test/unit/com/fishstory/oopsday/shared/The.scala" />
     </list>
     <ignored path="opps_day.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -71,7 +68,7 @@
       <file leaf-file-name="post_a_tip_Test.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/feature/com/fishstory/oopsday/interfaces/tipping/post_a_tip_Test.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="16" selection-start="142" selection-end="142" vertical-scroll-proportion="0.0">
+            <state line="7" column="11" selection-start="221" selection-end="221" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -80,7 +77,7 @@
       <file leaf-file-name="Steps_Tip.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/feature/com/fishstory/oopsday/interfaces/tipping/Steps_Tip.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="58" selection-start="1095" selection-end="1095" vertical-scroll-proportion="0.0">
+            <state line="37" column="22" selection-start="1113" selection-end="1113" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -89,25 +86,25 @@
       <file leaf-file-name="post_a_tip.feature" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/resources/post_a_tip.feature">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="44" selection-start="323" selection-end="323" vertical-scroll-proportion="0.0">
+            <state line="13" column="57" selection-start="463" selection-end="463" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TipFace.scala" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="TipFace.scala" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/fishstory/oopsday/interfaces/tipping/TipFace.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="56" column="44" selection-start="1326" selection-end="1326" vertical-scroll-proportion="0.0">
+            <state line="94" column="76" selection-start="2584" selection-end="2584" vertical-scroll-proportion="2.379531">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="The.scala" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/test/unit/com/fishstory/oopsday/shared/The.scala">
+      <file leaf-file-name="Option.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.9.1/scala-library-2.9.1-sources.jar!/scala/Option.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="6" selection-start="180" selection-end="180" vertical-scroll-proportion="0.28969958">
+            <state line="118" column="20" selection-start="4026" selection-end="4026" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -127,7 +124,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/fishstory/oppsday/interfaces/tipping.java" />
         <option value="$PROJECT_DIR$/src/test/java/com/fishstory/oppsday/interfaces/user_post_a_tip_story.java" />
         <option value="$PROJECT_DIR$/src/test/java/com/fishstory/oppsday/interfaces/user_post_a_tip_steps.java" />
         <option value="$PROJECT_DIR$/src/test/java/com/fishstory/oppsday/AbstractJunitStory.java" />
@@ -140,9 +136,10 @@
         <option value="$PROJECT_DIR$/opps_day.iws" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/test/unit/com/fishstory/oopsday/shared/The.scala" />
-        <option value="$PROJECT_DIR$/src/test/feature/com/fishstory/oopsday/interfaces/tipping/Steps_Tip.scala" />
+        <option value="$PROJECT_DIR$/src/test/unit/com/fishstory/oopsday/interfaces/tipping/Demo_Map.scala" />
         <option value="$PROJECT_DIR$/src/test/resources/post_a_tip.feature" />
         <option value="$PROJECT_DIR$/src/main/java/com/fishstory/oopsday/interfaces/tipping/TipFace.scala" />
+        <option value="$PROJECT_DIR$/src/test/feature/com/fishstory/oopsday/interfaces/tipping/Steps_Tip.scala" />
       </list>
     </option>
   </component>
@@ -229,6 +226,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="Favorites" />
       <pane id="PackagesPane">
         <subPane>
@@ -280,11 +278,15 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Maven: info.cukes:cucumber-java:1.0.0-SNAPSHOT" />
+              <option name="myItemId" value="Maven: net.databinder:unfiltered_2.9.1:0.5.3" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="cucumber-java-1.0.0-SNAPSHOT.jar" />
+              <option name="myItemId" value="unfiltered_2.9.1-0.5.3.jar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="unfiltered" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -298,15 +300,19 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Maven: info.cukes:cucumber-java:1.0.0-SNAPSHOT" />
+              <option name="myItemId" value="Maven: net.databinder:unfiltered_2.9.1:0.5.3" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="cucumber-java-1.0.0-SNAPSHOT.jar" />
+              <option name="myItemId" value="unfiltered_2.9.1-0.5.3.jar" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="cucumber" />
+              <option name="myItemId" value="unfiltered" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="response" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -320,85 +326,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Maven: info.cukes:cucumber-java:1.0.0-SNAPSHOT" />
+              <option name="myItemId" value="Maven: net.databinder:unfiltered_2.9.1:0.5.3" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="cucumber-java-1.0.0-SNAPSHOT.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cucumber" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="annotation" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="opps_day" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Maven: info.cukes:cucumber-core:1.0.0-SNAPSHOT" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cucumber-core-1.0.0-SNAPSHOT.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="opps_day" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Maven: info.cukes:cucumber-core:1.0.0-SNAPSHOT" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cucumber-core-1.0.0-SNAPSHOT.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cucumber" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="opps_day" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Maven: info.cukes:cucumber-core:1.0.0-SNAPSHOT" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cucumber-core-1.0.0-SNAPSHOT.jar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cucumber" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="runtime" />
+              <option name="myItemId" value="unfiltered_2.9.1-0.5.3.jar" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -409,6 +341,120 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="opps_day" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="unit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fishstory" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="oopsday" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="opps_day" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="unit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fishstory" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="oopsday" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="shared" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="opps_day" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="unit" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fishstory" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="oopsday" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="interfaces" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tipping" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -493,6 +539,48 @@
               <option name="myItemId" value="fishstory" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="oopsday" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="opps_day" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="com" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fishstory" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mvc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="exception" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -526,6 +614,14 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="oopsday" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="shared" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ShareWebDriver.scala" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -666,7 +762,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -675,7 +770,7 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="MemberChooser.sorted" value="false" />
-    <property name="options.lastSelected" value="org.jetbrains.plugins.scala.compiler.ScalacConfigurable" />
+    <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors.Font" />
     <property name="recentsLimit" value="5" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="MemberChooser.copyJavadoc" value="false" />
@@ -752,6 +847,34 @@
       </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Demo_Map.getItem" type="JUnit" factoryName="JUnit" temporary="true">
+      <extension name="coverage" enabled="false" merge="false">
+        <pattern>
+          <option name="PATTERN" value="com.fishstory.oopsday.interfaces.tipping.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="opps_day" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="com.fishstory.oopsday.interfaces.tipping" />
+      <option name="MAIN_CLASS_NAME" value="com.fishstory.oopsday.interfaces.tipping.Demo_Map" />
+      <option name="METHOD_NAME" value="getItem" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <envs />
+      <patterns />
+      <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
@@ -930,9 +1053,10 @@
         <option name="PhingTarget" enabled="false" />
       </method>
     </configuration>
-    <list size="2">
+    <list size="3">
       <item index="0" class="java.lang.String" itemvalue="JUnit.UserPostATip" />
       <item index="1" class="java.lang.String" itemvalue="JUnit.post_a_tip_Test" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.Demo_Map.getItem" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -970,7 +1094,7 @@
     <frame x="-1" y="0" width="1282" height="801" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32880434" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32880434" sideWeight="0.0" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Phing Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -980,9 +1104,9 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3296875" sideWeight="0.6005435" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28125" sideWeight="0.6711956" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3296875" sideWeight="0.6929348" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30706522" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="0" y="287" width="1280" height="226" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30706522" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="0" y="287" width="1280" height="226" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1039,51 +1163,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$MAVEN_REPOSITORY$/net/databinder/unfiltered-util_2.9.1/0.5.3/unfiltered-util_2.9.1-0.5.3.jar!/unfiltered/util/PlanServer.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="33" selection-start="277" selection-end="287" vertical-scroll-proportion="0.12958963" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/resources/posting.feature">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="55" selection-start="382" selection-end="382" vertical-scroll-proportion="0.31120333" />
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/net/databinder/unfiltered-util_2.9.1/0.5.3/unfiltered-util_2.9.1-0.5.3-sources.jar!/unfiltered/util/servers.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="34" selection-start="404" selection-end="417" vertical-scroll-proportion="0.031120332" />
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/net/databinder/unfiltered_2.9.1/0.5.3/unfiltered_2.9.1-0.5.3.jar!/unfiltered/response/Html.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="11" selection-start="39" selection-end="39" vertical-scroll-proportion="0.031120332" />
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.9.1/scala-library-2.9.1.jar!/scala/Predef.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="7" selection-start="280" selection-end="280" vertical-scroll-proportion="0.2027027" />
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.9.1/scala-library-2.9.1.jar!/scala/collection/Seq.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="7" selection-start="587" selection-end="587" vertical-scroll-proportion="0.19189766" />
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.9.1/scala-library-2.9.1-sources.jar!/scala/collection/GenSeq.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="6" selection-start="759" selection-end="759" vertical-scroll-proportion="0.34647304" />
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.9.1/scala-library-2.9.1-sources.jar!/scala/collection/Iterable.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="6" selection-start="701" selection-end="701" vertical-scroll-proportion="-0.52489626" />
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.9.1/scala-library-2.9.1-sources.jar!/scala/collection/Seq.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="30" selection-start="721" selection-end="721" vertical-scroll-proportion="0.17634855" />
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/net/databinder/unfiltered_2.9.1/0.5.3/unfiltered_2.9.1-0.5.3-sources.jar!/unfiltered/unfiltered/request/params.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state line="13" column="6" selection-start="586" selection-end="586" vertical-scroll-proportion="-4.8864737" />
@@ -1094,37 +1173,80 @@
         <state line="9" column="18" selection-start="274" selection-end="274" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/unit/com/fishstory/oopsday/shared/The.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="41" selection-start="765" selection-end="765" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/unit/com/fishstory/oopsday/interfaces/tipping/Demo_Map.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="20" selection-start="262" selection-end="262" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/unit/com/fishstory/oopsday/interfaces/tipping/PostingSteps.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="13" selection-start="264" selection-end="264" vertical-scroll-proportion="0.25917926" />
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/net/databinder/unfiltered_2.9.1/0.5.3/unfiltered_2.9.1-0.5.3-sources.jar!/unfiltered/unfiltered/response/pass.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="7" selection-start="111" selection-end="111" vertical-scroll-proportion="-2.0410366" />
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/net/databinder/unfiltered_2.9.1/0.5.3/unfiltered_2.9.1-0.5.3-sources.jar!/unfiltered/unfiltered/response/HttpResponse.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/net/databinder/unfiltered_2.9.1/0.5.3/unfiltered_2.9.1-0.5.3-sources.jar!/unfiltered/unfiltered/response/statuses.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="11" selection-start="41" selection-end="41" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/unit/com/fishstory/oopsday/interfaces/tipping/posting_Test.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="13" selection-start="266" selection-end="266" vertical-scroll-proportion="0.31120333" />
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.9.1/scala-library-2.9.1-sources.jar!/scala/collection/mutable/HashMap.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="61" column="6" selection-start="2343" selection-end="2343" vertical-scroll-proportion="0.33195022" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/resources/post_a_tip.feature">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="57" selection-start="463" selection-end="463" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.9.1/scala-library-2.9.1-sources.jar!/scala/Option.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="118" column="20" selection-start="4026" selection-end="4026" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/fishstory/oopsday/domain/tip/Tip.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="18" selection-start="127" selection-end="127" vertical-scroll-proportion="-0.26086956">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/feature/com/fishstory/oopsday/interfaces/tipping/post_a_tip_Test.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="16" selection-start="142" selection-end="142" vertical-scroll-proportion="0.0">
+        <state line="7" column="11" selection-start="221" selection-end="221" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/feature/com/fishstory/oopsday/interfaces/tipping/Steps_Tip.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="58" selection-start="1095" selection-end="1095" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/resources/post_a_tip.feature">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="44" selection-start="323" selection-end="323" vertical-scroll-proportion="0.0">
+        <state line="37" column="22" selection-start="1113" selection-end="1113" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/fishstory/oopsday/interfaces/tipping/TipFace.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="44" selection-start="1326" selection-end="1326" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/unit/com/fishstory/oopsday/shared/The.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="6" selection-start="180" selection-end="180" vertical-scroll-proportion="0.28969958">
+        <state line="94" column="76" selection-start="2584" selection-end="2584" vertical-scroll-proportion="2.379531">
           <folding />
         </state>
       </provider>

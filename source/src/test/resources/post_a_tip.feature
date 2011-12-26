@@ -6,8 +6,12 @@ Feature: post a tip
    		When I am on the page "tips/0"
    		Then I should see the title "Tip 0"
    		Then I should see the content "This is the tip 0"
+
    		When I am on the page "tips/1"
    		Then I should see the NOT Found page
+
+   		When I am on the page "tips/Tip 0"
+   		Then I should see the content "This is the tip 0"
 
    Scenario: update a tip
         Given I am on the page "tips/0/edit"
