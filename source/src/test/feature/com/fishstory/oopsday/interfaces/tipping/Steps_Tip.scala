@@ -6,8 +6,8 @@ import org.openqa.selenium.WebDriver
 import com.fishstory.oopsday.shared.The
 import cucumber.annotation.Before
 import cucumber.annotation.After
-import cucumber.annotation.en.{When, Given, Then}
-import unfiltered.jetty.{Server, Http}
+import cucumber.annotation.en.{ When, Given, Then }
+import unfiltered.jetty.{ Server, Http }
 
 class Steps_Tip {
   private var _webDriver: WebDriver = null
@@ -44,7 +44,17 @@ class Steps_Tip {
 
   @Then("^I should see the content \"([^\"]*)\"$")
   def i_should_see_the_content(a_content: String) {
-    The string (_webDriver.findElement(By.id("tip_content")).getText) should_equal_to a_content
+    The string (_webDriver.findElements(By.className("tip_content")).get(0).getText) should_equal_to a_content
+  }
+
+  @Then("^I should see the title \"([^\"]*)\"$")
+  def i_should_see_the_title(a_title: String) {
+    The string (_webDriver.findElements(By.className("tip_title")).get(0).getText) should_equal_to a_title
+  }
+
+  @Then("^I should see the NOT Found page$")
+  def I_should_see_the_NOT_Found_page() {
+    The string _webDriver.getPageSource() should_contain "not found"
   }
 
   @After

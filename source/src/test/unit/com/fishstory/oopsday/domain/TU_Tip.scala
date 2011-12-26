@@ -17,12 +17,12 @@ class TU_Tip() {
   def it_should_be_able_to_create_tip_by_content() = {
 
     var expectedContent = "This is a tip"
-    var tip = Tip.create("This is a tip", "jyu")
+    var tip = Tip.create(1L,"Tip 0","This is a tip", "jyu")
 
     The string (tip.content) should_equal_to (expectedContent);
 
     expectedContent = "This is another tip"
-    tip = Tip.create("This is another tip", "jyu")
+    tip = Tip.create(1L,"Tip 0","This is another tip", "jyu")
 
     The string (tip.content) should_equal_to (expectedContent);
   }
@@ -30,7 +30,7 @@ class TU_Tip() {
   @Test
   def it_should_be_able_to_update_content = {
 
-    var tip = Tip.create("This is a tip", "jyu")
+    var tip = Tip.create(1L,"Tip 0","This is a tip", "jyu")
 
     The.date(tip.modified_date).should_be_null_date
 
@@ -45,7 +45,9 @@ class TU_Tip() {
   @Test(expected = classOf[InvalidTipException])
   def the_content_should_less_than_maxNumberOfChar = {
 
-    var tip = Tip.create("The tip is more than the max number of char,is it???????????????????????????", "jyu");
+    Tip.set_maxNumberOfChar(20)
+    
+    var tip = Tip.create(1L,"Tip 0","The tip is more than the max number of char,is it???????????????????????????", "jyu");
 
     fail("the tip should not more than the max number of char")
   }
@@ -55,14 +57,14 @@ class TU_Tip() {
 
     Tip.set_maxNumberOfChar(80)
 
-    var tip = Tip.create("The tip is more than the max number of char,is it???????????????????????????", "jyu");
+    var tip = Tip.create(1L,"Tip 0","The tip is more than the max number of char,is it???????????????????????????", "jyu");
 
   }
 
   @Test
   def it_should_know_the_creation_date = {
 
-    var tip = Tip.create("This is a tip", "jyu")
+    var tip = Tip.create(1L,"Tip 0","This is a tip", "jyu")
 
     The date (tip.created_date) should_be_now_approximately;
     The date (tip.created_date) should_equal_to (tip.created_date);
@@ -71,13 +73,25 @@ class TU_Tip() {
   @Test
   def it_should_have_author = {
 
-    var tip = Tip.create("this is a tip", "jyu")
+    var tip = Tip.create(1L,"Tip 0","this is a tip", "jyu")
 
     The string(tip.author) should_equal_to "jyu"
 
-    tip = Tip.create("this is a tip", "sue")
+    tip = Tip.create(1L,"Tip 0","this is a tip", "sue")
 
     The string (tip.author) should_equal_to "sue"
+  }
+  
+  @Test
+  def it_should_have_title ={
+    var tip = Tip.create(1L,"Tip 0", "this is a tip", "jyu")
+    The string(tip.title) should_equal_to "Tip 0"
+  }
+  
+  @Test
+  def it_should_have_id ={
+     var tip = Tip.create(1L,"Tip 0", "this is a tip", "jyu")
+    The string(tip.id.toString()) should_equal_to "1"
   }
 
 }

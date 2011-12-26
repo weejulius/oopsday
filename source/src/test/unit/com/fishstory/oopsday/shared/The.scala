@@ -35,6 +35,12 @@ class The {
       throw new AssertException("\n\n ===> {" + _date + "} is not null\n")
     }
   }
+
+  def should_contain(a_string: String) = {
+    if (!_string.contains(a_string)) {
+      throw new AssertException("\n\n Actual      |  {" + _string + "} \n Expected    |  {" + a_string + "}\n")
+    }
+  }
 }
 
 object The {
