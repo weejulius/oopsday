@@ -8,6 +8,7 @@ import cucumber.annotation.Before
 import cucumber.annotation.After
 import cucumber.annotation.en.{When, Given, Then}
 import unfiltered.jetty.{Server, Http}
+import com.fishstory.oopsday.domain.tip.Tip
 
 class Steps_Tip {
   private var _webDriver: WebDriver = null
@@ -52,14 +53,20 @@ class Steps_Tip {
     The string (_webDriver.findElements(By.className("tip_title")).get(0).getText) should_equal_to a_title
   }
 
-  @Then("^I should see the NOT Found page$")
+  @Then("^I should see the Not Found page$")
   def I_should_see_the_NOT_Found_page() {
     The string _webDriver.getPageSource() should_contain "Not Found"
+  }
+  
+  @Then("^the URL should be \"([^\"]*)\"$")
+  def the_URL_should_be(a_url:String) {
+    The string _webDriver.getCurrentUrl() should_end_with a_url
   }
 
   @After
   def stopServer = {
     _server.stop()
+    Tip.reset_tip_generator
     _webDriver.quit()
   }
 

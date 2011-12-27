@@ -6,6 +6,7 @@ import org.joda.time.DateTime
 class The {
   private var _date: Date = null
   private var _string: String = null
+  private var _number:Option[Long] = None
 
   def should_be_now_approximately = {
 
@@ -41,6 +42,18 @@ class The {
       throw new AssertException("\n\n Actual      |  {" + _string + "} \n Expected    |  {" + a_string + "}\n")
     }
   }
+  
+  def should_be_greater_than_number(a_num:Long) = {
+    if (!(_number.isDefined && _number.get > a_num)) {
+      throw new AssertException("\n\n Actual      |  {" + _number + "} \n Expected    |  {" + a_num + "}\n")
+    }
+  }
+  
+  def should_end_with(a_string:String) = {
+    if (!_string.endsWith(a_string)) {
+      throw new AssertException("\n\n Actual      |  {" + _string + "} \n Expected    |  {" + a_string + "}\n")
+    }
+  }
 }
 
 object The {
@@ -50,6 +63,12 @@ object The {
   def date(a_date: Date): The = {
     _the = new The()
     _the._date = a_date
+    return _the
+  }
+  
+  def number(a_number:Long):The ={
+    _the = new The()
+    _the._number = Some(a_number)
     return _the
   }
 
