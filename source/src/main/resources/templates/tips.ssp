@@ -1,17 +1,16 @@
 <html>
 <head>
-  <title>tips</title>
+    <title>tips</title>
 </head>
 <body>
 <% import com.fishstory.oopsday.domain.tip.Tip%>
-<%@ var tips:List[Tip] %>   
-  #for(tip <- tips)
-   <ul>	
-    <li>${tip.id}</li>
-    <li>${tip.title}</li>
-    <li>${tip.content}</li>
-    <li>${tip.author}</li>
-   </ul> 
-  #end  
-</body>  
+<%@ var tips:List[Tip] %>
+    #for(tip <- tips)
+<ul class="tip">
+    <li class="tip_title">${tip.title}</li>
+    <li class="tip_content">${tip.content}</li>
+    <li class="tip_author">${tip.author}</li>
+</ul>
+#end
+</body>
 </html>
