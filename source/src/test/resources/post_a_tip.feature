@@ -28,10 +28,41 @@ Feature: post a tip
 
    Scenario: input a tip
         Given I am on the page "tips/new"
+        And I input the title "a new tip"
         And I input the content "I am the content of tip"
         When I click the button
+        Then I should see the tile "a new tip"
         Then I should see the content "I am the content of tip"
         And the URL should be "tips/2"
+   
+   Scenario: input a invalid tip
+        Given I am on the page "tips/new"
+        And I input the content "I am the content of tip"
+        When I click the button
+        Then I should see the message "Title is a must"
         
-   Scenario: list tips     
+        When I input the title "this is a title a title a title a title a title a title a title a title a title a title a title a title a title a title a title a title"
+        And I submit
+        Then I should see the message "Title should be less than 50"
+        
+        When I input the title " a new title"
+        And I input the content "this is a title a title a title a title a title a title a title a title a title a title a title a title a title a title a title a t
+        this is a title a title a title a title a title a title a title a title a title a title a title a title a title a title a title a t
+        this is a title a title a title a title a title a title a title a title a title a title a title a title a title a title a title a t
+        this is a title a title a title a title a title a title a title a title a title a title a title a title a title a title a title a t
+        this is a title a title a title a title a title a title a title a title a title a title a title a title a title a title a title a t
+        this is a title a title a title a title a title a title a title a title a title a title a title a title a title a title a title a t"
+        Then I should see the message "Content should be less than 88
+        
+   Scenario: list tips
+        Given I am on the page "tips"
+        Then I should see the tip 1
+        
+        Given I am on the page "tips/new"
+        And I input the title "a new tip"
+        And I input the content "This is a new tip"
+        And I submit
+        When I am on the page "tips"
+        Then I should see the tip "tip 1"
+        And I should see the tip "a new tip"     
 
