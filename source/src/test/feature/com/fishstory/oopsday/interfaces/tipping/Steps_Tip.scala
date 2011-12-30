@@ -76,13 +76,14 @@ class Steps_Tip {
     _webDriver.quit()
   }
 
-  private def getTextsFromElementsByClass(a_class_name: String): List[String] = {
-    var _titles: List[String] = null;
-
-    for (_titleElement <- _webDriver.findElements(By.className(a_class_name))) {
-      _titles += (_titleElement.getText)
+  private def getTextsFromElementsByClass(a_class_name: String):List[String] = {
+    var _titles = List[String]();
+    
+    var iterator = _webDriver.findElements(By.className(a_class_name)).iterator
+    while (iterator.hasNext) {
+      _titles = iterator.next.getText::_titles
     }
-    _titles
+    return _titles
   }
 
 }

@@ -4,9 +4,11 @@ import unfiltered.filter.Plan
 import unfiltered.request._
 import collection.mutable.HashMap
 import com.fishstory.oopsday.domain.tip.Tip
-import unfiltered.response.{NotFound, Found, Html}
+import unfiltered.response.{ NotFound, Found, Html }
 import unfiltered.response.Redirect
 import com.fishstory.oopsday.interfaces.shared.URL
+import unfiltered.request.GET
+import unfiltered.request.Seg
 
 class TipFace extends Plan {
   private val _tips = new HashMap[Int, Tip]()
@@ -15,9 +17,9 @@ class TipFace extends Plan {
 
   def intent = {
 
-    case req@GET(Path("/tips")) => Scalate(req, "tips.ssp", ("tips", _tips.values.toList))
+    case req @ GET(Path("/tips")) => Scalate(req, "tip/tips.ssp", ("tips", _tips.values.toList))
 
-    case GET(Path("/tips/new")) => editable_page(None)
+    case req @ GET(Path("/tips/new")) => editable_page(req, None)
 
     case GET(Path(Seg("tips" :: key :: Nil))) =>
 
@@ -36,10 +38,10 @@ class TipFace extends Plan {
         NotFound ~> not_found_page
       }
 
-    case GET(Path(Seg("tips" :: id :: "edit" :: Nil))) =>
+    case req @ GET(Path(Seg("tips" :: id :: "edit" :: Nil))) =>
 
       if (_tips.get(id.toInt).isDefined) {
-        editable_page(Some(_tips(id.toInt)))
+        editable_page(req,Some(_tips(id.toInt)))
       } else {
         not_found_page
       }
@@ -75,8 +77,8 @@ class TipFace extends Plan {
 
   private def not_found_page = {
     Html(<html>
-      <body>Not Found</body>
-    </html>)
+           <body>Not Found</body>
+         </html>)
   }
 
   private def index_page(_tip: Tip) = {
@@ -85,49 +87,28 @@ class TipFace extends Plan {
         <title>Tips</title>
         <body>
           <ul class="tip">
-            <li class="tip_id">
-              {_tip.id}
-            </li>
             <li class="tip_title">
-              {_tip.title}
+              { _tip.title }
             </li>
             <li class="tip_content">
-              {_tip.content}
+              { _tip.content }
             </li>
             <li class="tip_author">
-              {_tip.author}
+              { _tip.author }
             </li>
           </ul>
         </body>
       </html>)
   }
 
-  private def editable_page(_tip: Option[Tip]) = {
+  private def editable_page(req: HttpRequest[Any], _tip: Option[Tip]) = {
     var _tip_properties: List[String] = List("", "", "", "")
     if (_tip.isDefined) {
       _tip_properties = List(_tip.get.id.toString, _tip.get.title, _tip.get.content, _tip.get.author)
     }
-
-    Html(
-      <html>
-        <head>
-          <title>tip</title>
-        </head>
-        <body>
-          <div id="container">
-            <form method="POST" action="/tips">
-                <input type="hidden" name="tip_id" value={_tip_properties(0)}/>
-                <input name="tip_title" id="tip_title" value={_tip_properties(1)}/>
-                <input name="tip_content" id="tip_content" value={_tip_properties(2)}/>
-                <input name="tip_author" id="tip_author" value={_tip_properties(3)}/>
-                <input type="submit" id="tip_submit" value="share"/>
-            </form>
-          </div>
-        </body>
-      </html>)
+    Scalate(req, "tip/edit_tip.ssp", ("_tip_properties", _tip_properties))
   }
 }
-
 
 object TipFace {
   def create: TipFace = new TipFace()

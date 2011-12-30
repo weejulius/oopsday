@@ -1,0 +1,19 @@
+
+ <html>
+        <head>
+          <title>the tip</title>
+        </head>
+        <body>
+          <div id="container">
+           <% import com.fishstory.oopsday.domain.tip.Tip%>
+           <%@ var _tip_properties:List[String] %>
+            <form method="POST" action="/tips">
+                <input type="hidden" name="tip_id" value="${_tip_properties(0)}"/>
+                <input name="tip_title" id="tip_title" value="${_tip_properties(1)}"/>
+                <input name="tip_content" id="tip_content" value="${_tip_properties(2)}"/>
+                <input name="tip_author" id="tip_author" value="${_tip_properties(3)}"/>
+                <input type="submit" id="tip_submit" value="share"/>
+            </form>
+          </div>
+        </body>
+      </html>
