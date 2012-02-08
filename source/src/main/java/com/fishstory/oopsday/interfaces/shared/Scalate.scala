@@ -1,4 +1,4 @@
-package com.fishstory.oopsday.interfaces.tipping
+package com.fishstory.oopsday.interfaces.shared
 
 import org.fusesource.scalate.{
   TemplateEngine,

@@ -1,0 +1,18 @@
+ <html>
+        <title>Tips</title>
+        <body>
+        <% import com.fishstory.oopsday.domain.tip.Tip%>
+        <%@ var _tip:Tip %>
+          <ul class="tip">
+            <li class="tip_title">
+              ${ _tip.title }
+            </li>
+            <li class="tip_content">
+              ${ _tip.content }
+            </li>
+            <li class="tip_author">
+              ${ _tip.author }
+            </li>
+          </ul>
+        </body>
+      </html>

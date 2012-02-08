@@ -45,7 +45,7 @@ class TU_Tip() {
   @Test(expected = classOf[InvalidTipException])
   def the_content_should_less_than_maxNumberOfChar = {
 
-    Tip.set_maxNumberOfChar(20)
+    Tip.set_maxNumberOfCharForContent(20)
     
     var tip = Tip.create("Tip 1","The tip is more than the max number of char,is it???????????????????????????", "jyu");
 
@@ -55,7 +55,7 @@ class TU_Tip() {
   @Test
   def maxNumberOfChar_should_be_able_to_be_modified = {
 
-    Tip.set_maxNumberOfChar(80)
+    Tip.set_maxNumberOfCharForContent(80)
 
     var tip = Tip.create("Tip 1","The tip is more than the max number of char,is it???????????????????????????", "jyu");
 
