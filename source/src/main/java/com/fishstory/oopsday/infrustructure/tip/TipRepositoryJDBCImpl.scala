@@ -7,10 +7,10 @@ import scala.collection.JavaConversions._
 import javax.persistence.EntityManager
 import com.fishstory.oopsday.interfaces.tipping.TipFace
 
-class TipRepositoryJDBCImpl extends TipRepository {
+class TipRepositoryJDBCImpl extends TipRepository with Transactions {
 
   private def entityManager: EntityManager = {
-    TipFace._transactions.get()
+    get()
   }
 
   def find_by_id_is(id: Long): Option[Tip] = {
@@ -33,7 +33,7 @@ class TipRepositoryJDBCImpl extends TipRepository {
     var result = entityManager.createQuery("""
               SELECT tip
                 FROM com.fishstory.oopsday.domain.tip.Tip tip
-               WHERE tip._title=?1
+               WHERE tip.title=?1
       """, classOf[Tip]).setParameter(1, title).getResultList();
     if (result.isEmpty()) {
       None
@@ -46,12 +46,19 @@ class TipRepositoryJDBCImpl extends TipRepository {
 
   def save_new_or_update(a_tip: Tip): Tip = {
 
-    var tip = find_by_id_is(a_tip.id)
+    var tip: Option[Tip] = null
+
+    if (a_tip.id > 0) {
+      tip = find_by_id_is(a_tip.id)
+    } else if (a_tip.title != null) {
+      tip = find_by_title_is(a_tip.title)
+    }
 
     if (tip.isEmpty) {
       entityManager.persist(a_tip)
       tip = Some(a_tip)
     } else {
+      a_tip.id = tip.get.id
       entityManager.merge(a_tip)
     }
     tip.get

@@ -91,7 +91,7 @@ class TU_Tip() {
   @Test
   def it_should_have_id ={
      var tip = Tip.create("Tip 1", "this is a tip", "jyu")
-    The number (tip.id) should_be_greater_than_number 0
+    The number (tip.id) should_be_greater_than_number -1
   }
 
 }

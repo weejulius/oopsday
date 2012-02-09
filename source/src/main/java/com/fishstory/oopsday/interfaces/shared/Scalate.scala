@@ -9,6 +9,7 @@ import org.fusesource.scalate.{
 import unfiltered.request.{ Path, HttpRequest }
 import unfiltered.response.{ ResponseWriter }
 import java.io.{ File, Writer, PrintWriter }
+import java.text.SimpleDateFormat
 
 object Scalate {
   /**
@@ -28,6 +29,7 @@ object Scalate {
       try {
         val scalateTemplate = engine.load(template, bindings)
         val context = contextBuilder(Path(request), printWriter, engine)
+        context.dateFormat=new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
         (additionalAttributes ++ attributes) foreach {
           case (k, v) => context.attributes(k) = v
         }

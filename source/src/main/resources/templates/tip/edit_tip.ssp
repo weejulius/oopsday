@@ -1,19 +1,30 @@
-
- <html>
-        <head>
-          <title>the tip</title>
-        </head>
-        <body>
-          <div id="container">
-           <% import com.fishstory.oopsday.domain.tip.Tip%>
-           <%@ var _tip_properties:List[String] %>
-            <form method="POST" action="/tips">
-                <input type="hidden" name="tip_id" value="${_tip_properties(0)}"/>
-                <input name="tip_title" id="tip_title" value="${_tip_properties(1)}"/>
-                <input name="tip_content" id="tip_content" value="${_tip_properties(2)}"/>
-                <input name="tip_author" id="tip_author" value="${_tip_properties(3)}"/>
-                <input type="submit" id="tip_submit" value="share"/>
-            </form>
-          </div>
-        </body>
-      </html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+	"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>the tip</title>
+</head>
+<style type="text/css">
+.readonly{
+	border: 0 none;
+	background:white;
+	color:black;
+	cursor: default;
+}
+</style>
+<body>
+	<div id="container">
+		<% import com.fishstory.oopsday.domain.tip.Tip%>
+		<% import com.fishstory.oopsday.interfaces.shared.template.Strings._ %>
+		<%@ var _tip_properties:List[String] %>
+		<%@ var _title:String=_tip_properties(1) %>
+		<form method="POST" action="/tips">
+			<input type="hidden" name="tip_id" value="${_tip_properties(0)}"/>
+			<input name="tip_title" id="tip_title" value="${_title}" ${not_empty_then_return(_title,"disabled='true' class='readonly'")}/>
+			<input name="tip_content" id="tip_content" value="${_tip_properties(2)}"/>
+			<input name="tip_author" id="tip_author" value="${_tip_properties(3)}"/>
+			<input type="submit" id="tip_submit" value="${not_empty_then_return_orelse(_title,"modify tip","share tip")}"/>
+		</form>
+	</div>
+</body>
+</html>

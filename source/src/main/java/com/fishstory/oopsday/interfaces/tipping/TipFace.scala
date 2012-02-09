@@ -15,37 +15,34 @@ import javax.persistence.Persistence
 import javax.persistence.EntityManager
 import scala.collection.JavaConverters._
 import com.fishstory.oopsday.interfaces.shared.Scalate
+import com.fishstory.oopsday.infrustructure.tip.Transactions
+import com.fishstory.oopsday.interfaces.shared.AbstractPlan
 
-class TipFace extends Plan {
+class TipFace extends AbstractPlan {
 
   private val _tipRepository: TipRepository = new TipRepositoryJDBCImpl();
 
-  TipFace.startTransaction
+  start_transaction
   _tipRepository.save_new_or_update(Tip.create("Tip 1", "This is the tip 1", "jyu"))
-  TipFace.closeTransaction
+  commit_and_close_transaction
 
-  def intent = {
+  override def delegate = {
 
     case req @ GET(Path("/tips")) =>
-      TipFace.startTransaction
+
+      start_transaction
       val tips = _tipRepository.find_all
-      TipFace.closeTransaction
+      commit_and_close_transaction
+
       Scalate(req, "tip/tips.ssp", ("tips", tips.asScala.toList))
 
     case req @ GET(Path("/tips/new")) => editable_page(req, None)
 
     case req @ GET(Path(Seg("tips" :: key :: Nil))) =>
-      TipFace.startTransaction
-      var _tip: Option[Tip] = None
 
-      if (is_a_id(key)) {
-        _tip = _tipRepository.find_by_id_is(key.toLong)
-      } else {
-        val parsedTitle: String = URL.decodeSpecialCharacters(key)
-        _tip = _tipRepository.find_by_title_is(parsedTitle)
-      }
-
-      TipFace.closeTransaction
+      start_transaction
+      var _tip: Option[Tip] = find_tip_by_id_or_title(key)
+      commit_and_close_transaction
 
       if (_tip.isDefined) {
         Found ~> index_page(req, _tip.get)
@@ -53,19 +50,16 @@ class TipFace extends Plan {
         NotFound ~> not_found_page(req)
       }
 
-    case req @ GET(Path(Seg("tips" :: id :: "edit" :: Nil))) =>
-      TipFace.startTransaction
-      var tip = _tipRepository.find_by_id_is(id.toLong);
-      TipFace.closeTransaction
+    case req @ GET(Path(Seg("tips" :: key :: "edit" :: Nil))) =>
 
-      if (tip.isDefined) {
+      start_transaction
+      var _tip: Option[Tip] = find_tip_by_id_or_title(key)
+      commit_and_close_transaction
 
-        editable_page(req, tip)
-
+      if (_tip.isDefined) {
+        editable_page(req, _tip)
       } else {
-
         not_found_page(req)
-
       }
 
     case POST(Path("/tips")) & Params(params) =>
@@ -74,8 +68,7 @@ class TipFace extends Plan {
 
       var _tip: Tip = null
 
-      TipFace.startTransaction
-
+      start_transaction
       if (_tip_id.isEmpty) {
         _tip = Tip.create(params("tip_title")(0), params("tip_content")(0), params("tip_author")(0))
         _tip_id = _tip.id.toString
@@ -86,10 +79,9 @@ class TipFace extends Plan {
       }
 
       _tipRepository.save_new_or_update(_tip)
-      TipFace.closeTransaction
+      commit_and_close_transaction
 
-      Redirect("/tips/" + _tip_id)
-
+      Redirect("/tips/" + _tip.title)
   }
 
   private def is_a_id(input: String): Boolean = input.forall(_.isDigit)
@@ -109,27 +101,21 @@ class TipFace extends Plan {
     }
     Scalate(req, "tip/edit_tip.ssp", ("_tip_properties", _tip_properties))
   }
+
+  private def find_tip_by_id_or_title(key: String): Option[Tip] = {
+    var _tip: Option[Tip] = None
+    if (is_a_id(key)) {
+      _tip = _tipRepository.find_by_id_is(key.toLong)
+    } else {
+      val parsedTitle: String = URL.decodeSpecialCharacters(key)
+      _tip = _tipRepository.find_by_title_is(parsedTitle)
+    }
+    return _tip
+  }
 }
 
 object TipFace {
-  val _emf = Persistence.createEntityManagerFactory("tip");
-  val _transactions: ThreadLocal[EntityManager] = new ThreadLocal[EntityManager];
 
   def create: TipFace = new TipFace()
 
-  def startTransaction = {
-    _transactions.set(_emf.createEntityManager());
-    _transactions.get().getTransaction().begin()
-  }
-
-  def closeTransaction = {
-    try {
-      _transactions.get().getTransaction().commit();
-    } catch {
-      case e: Exception => _transactions.get().getTransaction().rollback();
-    } finally {
-      _transactions.get().close();
-    }
-
-  }
 }

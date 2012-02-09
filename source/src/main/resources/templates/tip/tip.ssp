@@ -1,18 +1,47 @@
- <html>
-        <title>Tips</title>
-        <body>
-        <% import com.fishstory.oopsday.domain.tip.Tip%>
-        <%@ var _tip:Tip %>
-          <ul class="tip">
-            <li class="tip_title">
-              ${ _tip.title }
-            </li>
-            <li class="tip_content">
-              ${ _tip.content }
-            </li>
-            <li class="tip_author">
-              ${ _tip.author }
-            </li>
-          </ul>
-        </body>
-      </html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+	"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<% import com.fishstory.oopsday.domain.tip.Tip%>
+<%@ var _tip:Tip %>
+<title>tip: ${_tip.title}</title>
+<style type="text/css">
+ul.tip{
+	width:60%;
+	margin-left: auto ;
+	margin-right: auto ;		
+    list-style-type:none;
+}
+
+ul.tip li{
+	border-bottom: 1px solid #999;
+	margin:2px 3px 2px;
+}
+ul.tip li.tip_title{
+	font-weight: bold;
+	
+}
+</style>
+<body>
+	<div class="main_header"/>
+	<div class="main_center">	
+		<ul class="tip">
+			<li class="tip_title">
+				${_tip.title}
+			</li>
+			<li class="tip_content">
+				${_tip.content}
+			</li>
+			<li class="tip_author">
+				${_tip.author}
+			</li>
+			<li>
+        ${_tip.created_date}
+      </li>
+      <li>
+        ${_tip.modified_date}
+      </li>
+		</ul>
+	</div>
+	<div class="main_footer"/>	
+</body>
+</html>

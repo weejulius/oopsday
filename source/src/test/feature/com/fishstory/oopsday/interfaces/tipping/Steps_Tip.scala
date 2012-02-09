@@ -4,20 +4,24 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import com.fishstory.oopsday.shared.The
 import cucumber.annotation.Before
 import cucumber.annotation.After
-import cucumber.annotation.en.{When, Given, Then}
-import unfiltered.jetty.{Server, Http}
+import cucumber.annotation.en.{ When, Given, Then }
+import unfiltered.jetty.{ Server, Http }
 import com.fishstory.oopsday.domain.tip.Tip
-import org.openqa.selenium.{By, WebDriver}
+import org.openqa.selenium.{ By, WebDriver }
+import org.openqa.selenium.WebElement
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class Steps_Tip {
   private var _webDriver: WebDriver = null
   private var _tip: String = null
   private var _server: Server = null
+  private val _log:Logger=LoggerFactory.getLogger(classOf[Steps_Tip])
 
   @Before
   def startServer = {
     _server = Http(8080).plan(new TipFace)
-    _server.start
+    _server.run
     _webDriver = new HtmlUnitDriver()
   }
 
@@ -69,19 +73,34 @@ class Steps_Tip {
     The string _webDriver.getCurrentUrl should_end_with a_url
   }
 
+  @Then("^I should not be able to modify the title \"([^\"]*)\"$")
+  def i_should_not_be_able_to_modify_the_title(a_title: String) = {
+    The string _webDriver.findElement(By.id("tip_title")).getAttribute("disabled") should_equal_to "true"
+  }
+
   @After
   def stopServer = {
     _server.stop()
-    Tip.reset_tip_generator
     _webDriver.quit()
   }
 
-  private def getTextsFromElementsByClass(a_class_name: String):List[String] = {
-    var _titles = List[String]();
-    
+  private def getElementByClassAndValue(a_class_name: String, a_value: String): Option[WebElement] = {
     var iterator = _webDriver.findElements(By.className(a_class_name)).iterator
     while (iterator.hasNext) {
-      _titles = iterator.next.getText::_titles
+      var el = iterator.next()
+      if (a_value != null && a_value.equals(el.getText())) {        
+        return Some(el)
+      }
+    }
+    None
+  }
+
+  private def getTextsFromElementsByClass(a_class_name: String): List[String] = {
+    var _titles = List[String]();
+
+    var iterator = _webDriver.findElements(By.className(a_class_name)).iterator
+    while (iterator.hasNext) {
+      _titles = iterator.next.getText :: _titles
     }
     return _titles
   }
