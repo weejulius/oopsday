@@ -11,23 +11,27 @@ import org.openqa.selenium.{ By, WebDriver }
 import org.openqa.selenium.WebElement
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import com.fishstory.oopsday.infrustructure.tip.Transactions
+import com.fishstory.oopsday.domain.tip.TipRepository
+import com.fishstory.oopsday.infrustructure.tip.TipRepositoryJDBCImpl
 
-class Steps_Tip {
-  private var _webDriver: WebDriver = null
-  private var _tip: String = null
-  private var _server: Server = null
-  private val _log:Logger=LoggerFactory.getLogger(classOf[Steps_Tip])
+class Steps_Tip extends Transactions {
+  private var _webDriver: WebDriver = new HtmlUnitDriver()
+  private var _server: Server = Http(8080).plan(new TipFace)
+  private val _log: Logger = LoggerFactory.getLogger(classOf[Steps_Tip])
+  private val _tipRepository: TipRepository = new TipRepositoryJDBCImpl();
 
   @Before
   def startServer = {
-    _server = Http(8080).plan(new TipFace)
     _server.run
-    _webDriver = new HtmlUnitDriver()
   }
 
   @Given("^the tip \"([^\"]*)\" is existing$")
-  def the_tip_is_existing(a_tip: String) {
-    _tip = a_tip
+  def the_tip_is_existing(a_tip_id: String) {
+    val tip = Tip.create("Tip 1", "This is the tip 1", "jyu")
+    start_transaction
+    _tipRepository.save_new_or_update(tip)
+    commit_and_close_transaction
   }
 
   @Given("^I am on the page \"([^\"]*)\"$")
@@ -73,22 +77,21 @@ class Steps_Tip {
     The string _webDriver.getCurrentUrl should_end_with a_url
   }
 
-  @Then("^I should not be able to modify the title \"([^\"]*)\"$")
-  def i_should_not_be_able_to_modify_the_title(a_title: String) = {
-    The string _webDriver.findElement(By.id("tip_title")).getAttribute("disabled") should_equal_to "true"
+  @Then("^I should not be able to modify the author$")
+  def i_should_not_be_able_to_modify_the_author() = {
+    The string _webDriver.findElement(By.id("tip_author")).getAttribute("disabled") should_equal_to "true"
   }
 
   @After
   def stopServer = {
     _server.stop()
-    _webDriver.quit()
   }
 
   private def getElementByClassAndValue(a_class_name: String, a_value: String): Option[WebElement] = {
     var iterator = _webDriver.findElements(By.className(a_class_name)).iterator
     while (iterator.hasNext) {
       var el = iterator.next()
-      if (a_value != null && a_value.equals(el.getText())) {        
+      if (a_value != null && a_value.equals(el.getText())) {
         return Some(el)
       }
     }

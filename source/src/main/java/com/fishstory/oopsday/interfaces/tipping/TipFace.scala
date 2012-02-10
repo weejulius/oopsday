@@ -17,14 +17,11 @@ import scala.collection.JavaConverters._
 import com.fishstory.oopsday.interfaces.shared.Scalate
 import com.fishstory.oopsday.infrustructure.tip.Transactions
 import com.fishstory.oopsday.interfaces.shared.AbstractPlan
+import com.fishstory.oopsday.interfaces.shared.InvalidArgumentException
 
 class TipFace extends AbstractPlan {
 
   private val _tipRepository: TipRepository = new TipRepositoryJDBCImpl();
-
-  start_transaction
-  _tipRepository.save_new_or_update(Tip.create("Tip 1", "This is the tip 1", "jyu"))
-  commit_and_close_transaction
 
   override def delegate = {
 
@@ -38,10 +35,12 @@ class TipFace extends AbstractPlan {
 
     case req @ GET(Path("/tips/new")) => editable_page(req, None)
 
-    case req @ GET(Path(Seg("tips" :: key :: Nil))) =>
+    case req @ GET(Path(Seg("tips" :: id :: Nil))) =>
+
+      validate_id(id)
 
       start_transaction
-      var _tip: Option[Tip] = find_tip_by_id_or_title(key)
+      var _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
       commit_and_close_transaction
 
       if (_tip.isDefined) {
@@ -50,10 +49,12 @@ class TipFace extends AbstractPlan {
         NotFound ~> not_found_page(req)
       }
 
-    case req @ GET(Path(Seg("tips" :: key :: "edit" :: Nil))) =>
+    case req @ GET(Path(Seg("tips" :: id :: "edit" :: Nil))) =>
+
+      validate_id(id)
 
       start_transaction
-      var _tip: Option[Tip] = find_tip_by_id_or_title(key)
+      val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
       commit_and_close_transaction
 
       if (_tip.isDefined) {
@@ -81,7 +82,13 @@ class TipFace extends AbstractPlan {
       _tipRepository.save_new_or_update(_tip)
       commit_and_close_transaction
 
-      Redirect("/tips/" + _tip.title)
+      Redirect("/tips/" + _tip.id)
+  }
+
+  private def validate_id(a_id: String) = {
+    if (!is_a_id(a_id)) {
+      throw new InvalidArgumentException("access tip " + a_id, "failed", a_id + " is not a valid id")
+    }
   }
 
   private def is_a_id(input: String): Boolean = input.forall(_.isDigit)
@@ -102,16 +109,6 @@ class TipFace extends AbstractPlan {
     Scalate(req, "tip/edit_tip.ssp", ("_tip_properties", _tip_properties))
   }
 
-  private def find_tip_by_id_or_title(key: String): Option[Tip] = {
-    var _tip: Option[Tip] = None
-    if (is_a_id(key)) {
-      _tip = _tipRepository.find_by_id_is(key.toLong)
-    } else {
-      val parsedTitle: String = URL.decodeSpecialCharacters(key)
-      _tip = _tipRepository.find_by_title_is(parsedTitle)
-    }
-    return _tip
-  }
 }
 
 object TipFace {

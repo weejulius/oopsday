@@ -3,61 +3,83 @@
 <html>
 <% import com.fishstory.oopsday.domain.tip.Tip%>
 <%@ var _tip:Tip %>
-<title>tip: ${_tip.title}</title>
+<title>Tip : ${_tip.title}</title>
 <style type="text/css">
-    html {
-        font-size: 12px;
-        font-weight: 400;
+   * { font-size: 100.01%; }
+   body { 
+	font: 62.5% sans-serif; 
+	width: 786px;
+	margin:0 auto;
+	background:gray;
+	}
+
+   dl.tip dt.hidden{
+	display: none;
     }
 
-    ul.tip {
-        width: 400px;
+   dl.tip dt{
+	float: left;
+    }
+
+    dl.tip {
+        width: 670px;
         margin-left: auto;
         margin-right: auto;
         margin-top: 50px;
         padding: 20px 20px 20px 20px;
-        list-style-type: none;
-        border: 1px solid gray;
+        background:white;
     }
 
-    ul.tip li {
-        margin: 2px 3px 2px;
+    dl.tip dd {
+        margin: 2px 3px 2px 0px;
     }
 
-    ul.tip li.tip_title {
+    dl.tip dt {
+        margin-right: 5px;
+    }
+
+    dl.tip dd.tip_title {
+	    font-size:large;
         font-weight: bold;
-        font-size: 16px;
-        text-align: center;
+		text-transform: capitalize;
     }
 
-    ul.tip li.tip_content {
-        font-size: 14px;
+    dl.tip dd.tip_content {
+	    font-size:medium;
         margin-top: 10px;
         margin-bottom: 20px;
         word-wrap: break-word;
+        padding:5px 5px 5px 0px;
     }
 
 </style>
 <body>
 <div class="main_header"/>
 <div class="main_center">
-    <ul class="tip">
-        <li class="tip_title">
+    <dl class="tip">
+	    <dt class="hidden">title</dt>
+        <dd class="tip_title">
             ${_tip.title}
-        </li>
-        <li class="tip_content">
+        </dd>
+		<dt class="hidden">content</dt>
+        <dd class="tip_content">
             ${_tip.content}
-        </li>
-        <li class="tip_author">
-            author: ${_tip.author}
-        </li>
-        <li>
-            created: ${_tip.created_date}
-        </li>
-        <li>
-            modified: ${_tip.modified_date}
-        </li>
-    </ul>
+		</dd>
+		<dt>created by</dt>
+        <dd class="tip_author">
+            ${_tip.author}
+        </dd>
+        <dt>created at</dt>
+        <dd>
+            ${_tip.created_date}
+		</dd>
+		#if(_tip.modified_date!=null)
+		<dt>modified at</dt>
+        <dd>
+			${_tip.modified_date}
+        </dd>
+        #end
+	</dl>
 </div>
 <div class="main_footer"/>
 </body>

@@ -20,6 +20,7 @@ trait Transactions {
       case e: Exception => Transactions._transactions.get().getTransaction().rollback();
     } finally {
       Transactions._transactions.get().close();
+      Transactions._transactions.set(null)
     }
   }
 }

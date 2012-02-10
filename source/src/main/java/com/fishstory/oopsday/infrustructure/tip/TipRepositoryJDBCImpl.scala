@@ -14,7 +14,7 @@ class TipRepositoryJDBCImpl extends TipRepository with Transactions {
   }
 
   def find_by_id_is(id: Long): Option[Tip] = {
-    var tip = entityManager.find(classOf[Tip], id);
+    val tip = entityManager.find(classOf[Tip], id);
     if (tip == null) {
       None
     } else {
@@ -46,20 +46,17 @@ class TipRepositoryJDBCImpl extends TipRepository with Transactions {
 
   def save_new_or_update(a_tip: Tip): Tip = {
 
-    var tip: Option[Tip] = null
+    var tip: Option[Tip] = None
 
     if (a_tip.id > 0) {
       tip = find_by_id_is(a_tip.id)
-    } else if (a_tip.title != null) {
-      tip = find_by_title_is(a_tip.title)
     }
 
     if (tip.isEmpty) {
       entityManager.persist(a_tip)
       tip = Some(a_tip)
     } else {
-      a_tip.id = tip.get.id
-      entityManager.merge(a_tip)
+      tip=Some(entityManager.merge(a_tip))
     }
     tip.get
   }
