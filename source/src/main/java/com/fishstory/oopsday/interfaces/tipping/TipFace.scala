@@ -1,21 +1,15 @@
 package com.fishstory.oopsday.interfaces.tipping
 
-import unfiltered.filter.Plan
 import unfiltered.request._
-import collection.mutable.HashMap
 import com.fishstory.oopsday.domain.tip.Tip
-import unfiltered.response.{ NotFound, Found, Html }
+import unfiltered.response.{NotFound, Found}
 import unfiltered.response.Redirect
-import com.fishstory.oopsday.interfaces.shared.URL
 import unfiltered.request.GET
 import unfiltered.request.Seg
 import com.fishstory.oopsday.infrustructure.tip.TipRepositoryJDBCImpl
 import com.fishstory.oopsday.domain.tip.TipRepository
-import javax.persistence.Persistence
-import javax.persistence.EntityManager
 import scala.collection.JavaConverters._
 import com.fishstory.oopsday.interfaces.shared.Scalate
-import com.fishstory.oopsday.infrustructure.tip.Transactions
 import com.fishstory.oopsday.interfaces.shared.AbstractPlan
 import com.fishstory.oopsday.interfaces.shared.InvalidArgumentException
 
@@ -25,7 +19,7 @@ class TipFace extends AbstractPlan {
 
   override def delegate = {
 
-    case req @ GET(Path("/tips")) =>
+    case req@GET(Path("/tips")) =>
 
       start_transaction
       val tips = _tipRepository.find_all
@@ -33,9 +27,9 @@ class TipFace extends AbstractPlan {
 
       Scalate(req, "tip/tips.ssp", ("tips", tips.asScala.toList))
 
-    case req @ GET(Path("/tips/new")) => editable_page(req, None)
+    case req@GET(Path("/tips/new")) => editable_page(req, None)
 
-    case req @ GET(Path(Seg("tips" :: id :: Nil))) =>
+    case req@GET(Path(Seg("tips" :: id :: Nil))) =>
 
       validate_id(id)
 
@@ -49,7 +43,7 @@ class TipFace extends AbstractPlan {
         NotFound ~> not_found_page(req)
       }
 
-    case req @ GET(Path(Seg("tips" :: id :: "edit" :: Nil))) =>
+    case req@GET(Path(Seg("tips" :: id :: "edit" :: Nil))) =>
 
       validate_id(id)
 
@@ -71,7 +65,7 @@ class TipFace extends AbstractPlan {
 
       start_transaction
       if (_tip_id.isEmpty) {
-        _tip = Tip.create(params("tip_title")(0), params("tip_content")(0), params("tip_author")(0))
+        _tip = Tip.create(params("tip_title")(0), params("tip_content")(0), "")
         _tip_id = _tip.id.toString
 
       } else {
