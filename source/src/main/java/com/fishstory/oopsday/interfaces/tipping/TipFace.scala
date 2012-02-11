@@ -6,7 +6,7 @@ import unfiltered.response.{NotFound, Found}
 import unfiltered.response.Redirect
 import unfiltered.request.GET
 import unfiltered.request.Seg
-import com.fishstory.oopsday.infrustructure.tip.TipRepositoryJDBCImpl
+import com.fishstory.oopsday.infrustructure.tip.TipRepositoryJPAImpl
 import com.fishstory.oopsday.domain.tip.TipRepository
 import scala.collection.JavaConverters._
 import com.fishstory.oopsday.interfaces.shared.Scalate
@@ -15,7 +15,7 @@ import com.fishstory.oopsday.interfaces.shared.InvalidArgumentException
 
 class TipFace extends AbstractPlan {
 
-  private val _tipRepository: TipRepository = new TipRepositoryJDBCImpl();
+  private val _tipRepository: TipRepository = new TipRepositoryJPAImpl();
 
   override def delegate = {
 

@@ -1,13 +1,10 @@
 package com.fishstory.oopsday.infrustructure.tip
+
 import com.fishstory.oopsday.domain.tip.TipRepository
 import com.fishstory.oopsday.domain.tip.Tip
-import scala.collection.mutable.HashMap
-import javax.persistence.Persistence
-import scala.collection.JavaConversions._
 import javax.persistence.EntityManager
-import com.fishstory.oopsday.interfaces.tipping.TipFace
 
-class TipRepositoryJDBCImpl extends TipRepository with Transactions {
+class TipRepositoryJPAImpl extends TipRepository with Transactions {
 
   private def entityManager: EntityManager = {
     get()
@@ -30,7 +27,7 @@ class TipRepositoryJDBCImpl extends TipRepository with Transactions {
   }
 
   def find_by_title_is(title: String): Option[Tip] = {
-    var result = entityManager.createQuery("""
+    val result = entityManager.createQuery("""
               SELECT tip
                 FROM com.fishstory.oopsday.domain.tip.Tip tip
                WHERE tip.title=?1
@@ -56,7 +53,7 @@ class TipRepositoryJDBCImpl extends TipRepository with Transactions {
       entityManager.persist(a_tip)
       tip = Some(a_tip)
     } else {
-      tip=Some(entityManager.merge(a_tip))
+      tip = Some(entityManager.merge(a_tip))
     }
     tip.get
   }

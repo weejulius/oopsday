@@ -13,13 +13,13 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import com.fishstory.oopsday.infrustructure.tip.Transactions
 import com.fishstory.oopsday.domain.tip.TipRepository
-import com.fishstory.oopsday.infrustructure.tip.TipRepositoryJDBCImpl
+import com.fishstory.oopsday.infrustructure.tip.TipRepositoryJPAImpl
 
 class Steps_Tip extends Transactions {
   private var _webDriver: WebDriver = new HtmlUnitDriver()
   private var _server: Server = Http(8080).plan(new TipFace)
   private val _log: Logger = LoggerFactory.getLogger(classOf[Steps_Tip])
-  private val _tipRepository: TipRepository = new TipRepositoryJDBCImpl();
+  private val _tipRepository: TipRepository = new TipRepositoryJPAImpl();
 
   @Before
   def startServer = {
