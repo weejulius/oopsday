@@ -4,10 +4,10 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import com.fishstory.oopsday.shared.The
 import cucumber.annotation.Before
 import cucumber.annotation.After
-import cucumber.annotation.en.{ When, Given, Then }
-import unfiltered.jetty.{ Server, Http }
+import cucumber.annotation.en.{When, Given, Then}
+import unfiltered.jetty.{Server, Http}
 import com.fishstory.oopsday.domain.tip.Tip
-import org.openqa.selenium.{ By, WebDriver }
+import org.openqa.selenium.{By, WebDriver}
 import org.openqa.selenium.WebElement
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -23,7 +23,7 @@ class Steps_Tip extends Transactions {
 
   @Before
   def startServer = {
-    _server.run
+    _server.start
   }
 
   @Given("^the tip \"([^\"]*)\" is existing$")
