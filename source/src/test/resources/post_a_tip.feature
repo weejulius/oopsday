@@ -28,7 +28,8 @@ Feature: post a tip
         Given I am on the page "tips/new"
         When I click the submit button
         Then I should see the error message "the title is must"
-        Then I should see the error message "the content is must"
+        And I should see the error message "the content is must"
+        And the URL should be "tips/new"
 
         Given I am on the page "tips/new"
         And I input the title "Tip 2"

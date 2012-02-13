@@ -2,7 +2,7 @@ package com.fishstory.oopsday.interfaces.tipping
 
 import unfiltered.request._
 import com.fishstory.oopsday.domain.tip.Tip
-import unfiltered.response.{NotFound, Found}
+import unfiltered.response.{ NotFound, Found }
 import unfiltered.response.Redirect
 import unfiltered.request.GET
 import unfiltered.request.Seg
@@ -12,14 +12,15 @@ import scala.collection.JavaConverters._
 import com.fishstory.oopsday.interfaces.shared.Scalate
 import com.fishstory.oopsday.interfaces.shared.AbstractPlan
 import com.fishstory.oopsday.interfaces.shared.InvalidArgumentException
+import unfiltered.request.Params.ParamMapper
 
 class TipFace extends AbstractPlan {
 
   private val _tipRepository: TipRepository = new TipRepositoryJPAImpl();
 
-  override def delegate = {
+  override def delegates = {
 
-    case req@GET(Path("/tips")) =>
+    case req @ GET(Path("/tips")) =>
 
       start_transaction
       val tips = _tipRepository.find_all
@@ -27,9 +28,13 @@ class TipFace extends AbstractPlan {
 
       Scalate(req, "tip/tips.ssp", ("tips", tips.asScala.toList))
 
-    case req@GET(Path("/tips/new")) => editable_page(req, None)
+    case req @ Path("/tips/new") => req match {
 
-    case req@GET(Path(Seg("tips" :: id :: Nil))) =>
+      case GET(_) => editable_page(req, None, Map.empty)
+      case POST(_) & Params(params) => create_or_update_tip(req, params)
+    }
+
+    case req @ GET(Path(Seg("tips" :: id :: Nil))) =>
 
       validate_id(id)
 
@@ -43,29 +48,50 @@ class TipFace extends AbstractPlan {
         NotFound ~> not_found_page(req)
       }
 
-    case req@GET(Path(Seg("tips" :: id :: "edit" :: Nil))) =>
+    case req @ Path(Seg("tips" :: id :: "edit" :: Nil)) => req match {
 
-      validate_id(id)
+      case GET(_) => {
+        validate_id(id)
 
-      start_transaction
-      val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
-      commit_and_close_transaction
+        start_transaction
+        val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
+        commit_and_close_transaction
 
-      if (_tip.isDefined) {
-        editable_page(req, _tip)
-      } else {
-        not_found_page(req)
+        if (_tip.isDefined) {
+          editable_page(req, _tip, Map.empty)
+        } else {
+          not_found_page(req)
+        }
       }
+      case POST(_) & Params(params) => create_or_update_tip(req, params)
+    }
+  }
 
-    case POST(Path("/tips")) & Params(params) =>
+  private def create_or_update_tip(req: HttpRequest[Any], params: Map[String, Seq[String]]) = {
 
-      var _tip_id: String = params("tip_id")(0)
+    var validation_tip_message = Map.empty[String, String]
+
+    var _tip_id: String = params("tip_id")(0)
+    val _tip_title: String = params("tip_title")(0)
+    val _tip_content: String = params("tip_content")(0)
+
+    if (_tip_title.isEmpty()) {
+      validation_tip_message += ("fail_tip_title" -> "the title is must")
+    }
+
+    if (_tip_content.isEmpty()) {
+      validation_tip_message += ("fail_tip_content" -> "the content is must")
+    }
+
+    if (!validation_tip_message.isEmpty) {
+       editable_page(req, None, validation_tip_message)
+    } else {
 
       var _tip: Tip = null
 
       start_transaction
-      if (_tip_id.isEmpty) {
-        _tip = Tip.create(params("tip_title")(0), params("tip_content")(0), "")
+      if (_tip_id.isEmpty() || _tip_id.toLong <= 0) {
+        _tip = Tip.create(_tip_title, _tip_content, "")
         _tip_id = _tip.id.toString
 
       } else {
@@ -77,6 +103,7 @@ class TipFace extends AbstractPlan {
       commit_and_close_transaction
 
       Redirect("/tips/" + _tip.id)
+    }
   }
 
   private def validate_id(a_id: String) = {
@@ -95,12 +122,12 @@ class TipFace extends AbstractPlan {
     Scalate(req, "tip/tip.ssp", ("_tip", _tip))
   }
 
-  private def editable_page(req: HttpRequest[Any], _tip: Option[Tip]) = {
-    var _tip_properties: List[String] = List("", "", "", "")
+  private def editable_page(req: HttpRequest[Any], _tip: Option[Tip], _validation_tip_message: Map[String, String]) = {
+    var tip: Tip = Tip.NullObject
     if (_tip.isDefined) {
-      _tip_properties = List(_tip.get.id.toString, _tip.get.title, _tip.get.content, _tip.get.author)
+      tip = _tip.get
     }
-    Scalate(req, "tip/edit_tip.ssp", ("_tip_properties", _tip_properties))
+    Scalate(req, "tip/edit_tip.ssp", ("tip", tip), ("validation_tip_message", _validation_tip_message))
   }
 
 }

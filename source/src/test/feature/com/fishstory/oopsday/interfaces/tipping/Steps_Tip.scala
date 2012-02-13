@@ -4,10 +4,10 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import com.fishstory.oopsday.shared.The
 import cucumber.annotation.Before
 import cucumber.annotation.After
-import cucumber.annotation.en.{When, Given, Then}
-import unfiltered.jetty.{Server, Http}
+import cucumber.annotation.en.{ When, Given, Then }
+import unfiltered.jetty.{ Server, Http }
 import com.fishstory.oopsday.domain.tip.Tip
-import org.openqa.selenium.{By, WebDriver}
+import org.openqa.selenium.{ By, WebDriver }
 import org.openqa.selenium.WebElement
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -80,6 +80,11 @@ class Steps_Tip extends Transactions {
   @Then("^I should not be able to modify the author$")
   def i_should_not_be_able_to_modify_the_author() = {
     The string _webDriver.findElement(By.id("tip_author")).getAttribute("disabled") should_equal_to "true"
+  }
+
+  @Then("^I should see the error message \"([^\"]*)\"$")
+  def i_should_see_the_error_message(message: String) {
+    The string _webDriver.getPageSource() should_contain message
   }
 
   @After

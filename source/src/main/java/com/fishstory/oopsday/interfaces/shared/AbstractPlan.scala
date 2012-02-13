@@ -8,9 +8,9 @@ abstract class AbstractPlan extends Plan with Transactions {
 
   def intent = {
    
-    val result = delegate
+    val result = delegates
     result
   }
 
-  def delegate: unfiltered.filter.Plan.Intent
+  def delegates: unfiltered.filter.Plan.Intent
 }

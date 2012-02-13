@@ -87,21 +87,34 @@
 <div id="container">
     <% import com.fishstory.oopsday.domain.tip.Tip%>
     <% import com.fishstory.oopsday.interfaces.shared.template.Strings._ %>
-    <%@ var _tip_properties:List[String] %>
-    <%@ var _title:String=_tip_properties(1) %>
-    <form method="POST" action="/tips">
+    <%@ val tip:Tip %>
+    <%@ val _title:String=tip.title %>
+    <%@ val isNewTip:Boolean=(tip.id<=0)%>
+    <%@ val validation_tip_message:Map[String,String]%>
+    
+    #if(isNewTip)
+    <form method="POST" action="/tips/new">
+    #else
+    <form method="POST" action="/tips/${tip.id}/edit">
+    #end
         <fieldset class="textbox">
-            <input type="hidden" name="tip_id" value="${_tip_properties(0)}"/>
+            <input type="hidden" name="tip_id" value="${tip.id}"/>
 
             <div>
-                <label for="tip_title">Title:</label><input name="tip_title" id="tip_title" value="${_title}"/>
+                <label for="tip_title">Title:</label>
+                <input name="tip_title" id="tip_title" value="${tip.title}"/>
+                #if(validation_tip_message.get("fail_tip_title").isDefined)
+                   <span>${validation_tip_message("fail_tip_title")}
+                #end   
             </div>
 
-            <textarea name="tip_content" id="tip_content">${_tip_properties(2)}</textarea>
-
+            <textarea name="tip_content" id="tip_content">${tip.content}</textarea>
+            #if(validation_tip_message.get("fail_tip_content").isDefined)
+              <span>${validation_tip_message("fail_tip_content")}
+            #end   
             <div>
-                <input type="submit" id="tip_submit" value="${not_empty_then_return_orelse(_title," modify tip","share
-                tip")}"/>
+                <input type="submit" id="tip_submit" 
+                value="${not_empty_then_return_orelse(_title," modify tip","share tip")}"/>
             </div>
         </fieldset>
     </form>

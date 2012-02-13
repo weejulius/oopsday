@@ -46,7 +46,7 @@ class Tip() {
 
 object Tip {
 
-  private var _maxNumberOfChar = 88;
+  private var _maxNumberOfChar = 400;
   def set_maxNumberOfCharForContent(a_maxNumberOfChar: Int) = { _maxNumberOfChar = a_maxNumberOfChar }
 
   def maxNumberOfChar = _maxNumberOfChar
@@ -64,5 +64,13 @@ object Tip {
     tip.title = a_title
 
     return tip;
+  }
+  
+  def NullObject:Tip={
+    new Tip
+  }
+  
+  def isNullObject(tip:Tip):Boolean={
+     tip==null||tip.id<=0
   }
 }
