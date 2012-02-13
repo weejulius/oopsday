@@ -13,6 +13,8 @@ import com.fishstory.oopsday.interfaces.shared.Scalate
 import com.fishstory.oopsday.interfaces.shared.AbstractPlan
 import com.fishstory.oopsday.interfaces.shared.InvalidArgumentException
 import unfiltered.request.Params.ParamMapper
+import unfiltered.response.ResponseWriter
+import unfiltered.response.ResponseFunction
 
 class TipFace extends AbstractPlan {
 
@@ -20,13 +22,14 @@ class TipFace extends AbstractPlan {
 
   override def delegates = {
 
-    case req @ GET(Path("/tips")) =>
+    case req @ GET(Path("/tips")) => {
 
       start_transaction
       val tips = _tipRepository.find_all
       commit_and_close_transaction
 
       Scalate(req, "tip/tips.ssp", ("tips", tips.asScala.toList))
+    }
 
     case req @ Path("/tips/new") => req match {
 
@@ -34,7 +37,7 @@ class TipFace extends AbstractPlan {
       case POST(_) & Params(params) => create_or_update_tip(req, params)
     }
 
-    case req @ GET(Path(Seg("tips" :: id :: Nil))) =>
+    case req @ GET(Path(Seg("tips" :: id :: Nil))) => {
 
       validate_id(id)
 
@@ -47,8 +50,11 @@ class TipFace extends AbstractPlan {
       } else {
         NotFound ~> not_found_page(req)
       }
+    }
 
     case req @ Path(Seg("tips" :: id :: "edit" :: Nil)) => req match {
+
+      case POST(_) & Params(params) => create_or_update_tip(req, params)
 
       case GET(_) => {
         validate_id(id)
@@ -63,47 +69,92 @@ class TipFace extends AbstractPlan {
           not_found_page(req)
         }
       }
-      case POST(_) & Params(params) => create_or_update_tip(req, params)
+
     }
   }
 
-  private def create_or_update_tip(req: HttpRequest[Any], params: Map[String, Seq[String]]) = {
+  object Param {
+    var validation_message = Map.empty[String, String]
+    var is_voilated: Boolean = false
+    var name: String = ""
+    var params: Map[String, Seq[String]] = Map.empty
 
-    var validation_tip_message = Map.empty[String, String]
-
-    var _tip_id: String = params("tip_id")(0)
-    val _tip_title: String = params("tip_title")(0)
-    val _tip_content: String = params("tip_content")(0)
-
-    if (_tip_title.isEmpty()) {
-      validation_tip_message += ("fail_tip_title" -> "the title is must")
+    def ~(a_params: Map[String, Seq[String]]) = {
+      params = a_params
+      this
+    }
+    def ->(a_name: String) = {
+      name = a_name
+      is_voilated = false
+      this
     }
 
-    if (_tip_content.isEmpty()) {
-      validation_tip_message += ("fail_tip_content" -> "the content is must")
+    def is_defined = {
+      is_voilated = !params.get(name).isDefined
+      this
+    }
+    def is_not_empty = {
+      is_defined
+      is_voilated = !is_voilated && (params(name).isEmpty)
+      this
     }
 
-    if (!validation_tip_message.isEmpty) {
-       editable_page(req, None, validation_tip_message)
+    def is_not_blank = {
+      is_not_empty
+      is_voilated = !is_voilated && (params(name)(0).isEmpty())
+      this
+    }
+    def is_digit = {
+      is_not_blank
+      is_voilated = !is_voilated && params(name)(0).forall(_.isDigit)
+      this
+    }
+
+    def otherwise = this
+
+    def mark(a_key: String, a_message: String): Unit = {
+      validation_message += (a_key -> a_message)
+    }
+
+    def <=(a_name: String): String = {
+      params(a_name)(0)
+    }
+  }
+
+  private def create_or_update_tip(req: HttpRequest[Any], params: Map[String, Seq[String]]): ResponseFunction[Any] = {
+
+    Param.~(params).->("tip_title").is_not_blank.otherwise.mark("fail_tip_title", "the title is must")
+    Param.->("tip_content").is_not_blank.otherwise.mark("fail_tip_content", "the content is must")
+
+    if (Param.is_voilated) {
+      return editable_page(req, None, Param.validation_message)
+    }
+
+    var _tip_id: String = Param <= "tip_id"
+    val _tip_title: String = Param <= "tip_title"
+    val _tip_content: String = Param <= "tip_content"
+
+    var _tip: Option[Tip] = None
+
+    start_transaction
+    if (_tip_id.isEmpty() || _tip_id.toLong <= 0) {
+      _tip = Some(Tip.create(_tip_title, _tip_content, ""))
+      _tip_id = _tip.get.id.toString
+
     } else {
-
-      var _tip: Tip = null
-
-      start_transaction
-      if (_tip_id.isEmpty() || _tip_id.toLong <= 0) {
-        _tip = Tip.create(_tip_title, _tip_content, "")
-        _tip_id = _tip.id.toString
-
-      } else {
-        _tip = _tipRepository.find_by_id_is(_tip_id.toLong).get;
-        _tip.update_content(params("tip_content")(0))
+      _tip = _tipRepository.find_by_id_is(_tip_id.toLong);
+      if (_tip.isDefined) {
+        _tip.get.update_content(_tip_content)
       }
-
-      _tipRepository.save_new_or_update(_tip)
-      commit_and_close_transaction
-
-      Redirect("/tips/" + _tip.id)
     }
+
+    if (_tip.isDefined) {
+      _tipRepository.save_new_or_update(_tip.get)
+    }
+    commit_and_close_transaction
+
+    Redirect("/tips/" + _tip.get.id)
+
   }
 
   private def validate_id(a_id: String) = {

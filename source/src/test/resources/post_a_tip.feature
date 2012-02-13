@@ -5,10 +5,10 @@ Feature: post a tip
    		Given the tip "1" is existing
    		When I am on the page "tips/1"
    		Then I should see the title "Tip 1"
-   		Then I should see the content "This is the tip 1"
+   		And I should see the content "This is the tip 1"
    		
    		When I am on the page "tips/100"
-        Then I should see the Not Found page
+      Then I should see the Not Found page
    		
    		When I am on the page "tips/1/100"
    		Then I should see the Not Found page
@@ -16,7 +16,7 @@ Feature: post a tip
    Scenario: update a tip
         Given I am on the page "tips/1/edit"
         When I input the content "This is a modified tip 1"
-        When I click the submit button
+        And I click the submit button
         Then I should see the content "This is a modified tip 1"
         And the URL should be "tips/1"
         
@@ -36,8 +36,16 @@ Feature: post a tip
         And I input the content "I am the content of tip 2"
         When I click the submit button
         Then I should see the title "Tip 2"
-        Then I should see the content "I am the content of tip 2"
+        And I should see the content "I am the content of tip 2"
         And the URL should be "tips/2"
+        
+        Given I am on the page "tips/new"
+        And I input the title "Tip 2"
+        And I input the content "I am the content of tip 2"
+        When I click the submit button
+        Then I should see the title "Tip 2"
+        And I should see the content "I am the content of tip 2"
+        And the URL should be "tips/3"
    
    Scenario: list tips
         Given I am on the page "tips"
