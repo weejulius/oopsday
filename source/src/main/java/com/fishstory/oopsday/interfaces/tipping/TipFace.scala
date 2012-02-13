@@ -15,6 +15,7 @@ import com.fishstory.oopsday.interfaces.shared.InvalidArgumentException
 import unfiltered.request.Params.ParamMapper
 import unfiltered.response.ResponseWriter
 import unfiltered.response.ResponseFunction
+import com.fishstory.oopsday.interfaces.shared.Param
 
 class TipFace extends AbstractPlan {
 
@@ -73,66 +74,25 @@ class TipFace extends AbstractPlan {
     }
   }
 
-  object Param {
-    var validation_message = Map.empty[String, String]
-    var is_voilated: Boolean = false
-    var name: String = ""
-    var params: Map[String, Seq[String]] = Map.empty
-
-    def ~(a_params: Map[String, Seq[String]]) = {
-      params = a_params
-      this
-    }
-    def ->(a_name: String) = {
-      name = a_name
-      is_voilated = false
-      this
-    }
-
-    def is_defined = {
-      is_voilated = !params.get(name).isDefined
-      this
-    }
-    def is_not_empty = {
-      is_defined
-      is_voilated = !is_voilated && (params(name).isEmpty)
-      this
-    }
-
-    def is_not_blank = {
-      is_not_empty
-      is_voilated = !is_voilated && (params(name)(0).isEmpty())
-      this
-    }
-    def is_digit = {
-      is_not_blank
-      is_voilated = !is_voilated && params(name)(0).forall(_.isDigit)
-      this
-    }
-
-    def otherwise = this
-
-    def mark(a_key: String, a_message: String): Unit = {
-      validation_message += (a_key -> a_message)
-    }
-
-    def <=(a_name: String): String = {
-      params(a_name)(0)
-    }
-  }
-
   private def create_or_update_tip(req: HttpRequest[Any], params: Map[String, Seq[String]]): ResponseFunction[Any] = {
 
-    Param.~(params).->("tip_title").is_not_blank.otherwise.mark("fail_tip_title", "the title is must")
-    Param.->("tip_content").is_not_blank.otherwise.mark("fail_tip_content", "the content is must")
+    var param = new Param().from(params).->("tip_id").is_empty_or_digit
 
-    if (Param.is_voilated) {
-      return editable_page(req, None, Param.validation_message)
+    if (param.is_voilated) {
+      return Scalate(req, "bad_user_request.ssp")
     }
 
-    var _tip_id: String = Param <= "tip_id"
-    val _tip_title: String = Param <= "tip_title"
-    val _tip_content: String = Param <= "tip_content"
+    param = new Param().from(params)
+      .->("tip_title").is_not_blank.otherwise.mark("fail_tip_title", "the title is must")
+      .->("tip_content").is_not_blank.otherwise.mark("fail_tip_content", "the content is must")
+
+    if (param.is_voilated) {
+      return editable_page(req, None, param.validation_message)
+    }
+
+    var _tip_id: String = param <= "tip_id"
+    val _tip_title: String = param <= "tip_title"
+    val _tip_content: String = param <= "tip_content"
 
     var _tip: Option[Tip] = None
 

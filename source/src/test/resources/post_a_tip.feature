@@ -46,6 +46,11 @@ Feature: post a tip
         Then I should see the title "Tip 2"
         And I should see the content "I am the content of tip 2"
         And the URL should be "tips/3"
+        
+        Given I am on the page "tips/new"
+        And I input the id "WWW"
+        When I click the submit button
+        Then I should see "Bad User Request"
    
    Scenario: list tips
         Given I am on the page "tips"
