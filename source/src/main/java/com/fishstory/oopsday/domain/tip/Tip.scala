@@ -21,7 +21,7 @@ class Tip() {
   private var _content: String = null
   @Column(name = "author")
   private var _author: String = null
-  @Column(name = "title", unique = true, nullable = false)
+  @Column(name = "title", nullable = false)
   var title: String = null
   @Column(name = "modified_date")
   private var _modified_date: Date = null
