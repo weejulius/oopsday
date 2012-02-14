@@ -57,18 +57,20 @@ class TipFace extends AbstractPlan {
       case POST(_) & Params(params) => create_or_update_tip(req, Some(id), params)
 
       case GET(_) => {
-        
-        start_transaction
-        val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
-        commit_and_close_transaction
-
-        if (_tip.isDefined) {
-          editable_page(req, _tip, Map.empty)
+        if (!Strings.is_numeric(id)) {
+          Scalate(req, "bad_user_request.ssp")
         } else {
-          not_found_page(req)
+          start_transaction
+          val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
+          commit_and_close_transaction
+
+          if (_tip.isDefined) {
+            editable_page(req, _tip, Map.empty)
+          } else {
+            not_found_page(req)
+          }
         }
       }
-
     }
   }
 
@@ -100,7 +102,7 @@ class TipFace extends AbstractPlan {
     if (is_to_create_tip(_tip_id)) {
       _tip = Some(Tip.create(_tip_title, _tip_content, ""))
 
-    } else {      
+    } else {
       _tip = _tipRepository.find_by_id_is(_tip_id.toLong);
       if (_tip.isDefined) {
         _tip.get.update_content(_tip_content)
