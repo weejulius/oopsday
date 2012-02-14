@@ -20,6 +20,8 @@ object Strings {
 
   def not_empty(a_string: String): Boolean = (a_string != null && !a_string.isEmpty)
 
+  def is_numeric(a_string: String): Boolean = a_string.forall(_.isDigit)
+
   def to_html(a_string: String): String = {
     a_string.replace("\n", "<br/>")
   }

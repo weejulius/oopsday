@@ -16,6 +16,7 @@ import unfiltered.request.Params.ParamMapper
 import unfiltered.response.ResponseWriter
 import unfiltered.response.ResponseFunction
 import com.fishstory.oopsday.interfaces.shared.Param
+import com.fishstory.oopsday.interfaces.shared.template.Strings
 
 class TipFace extends AbstractPlan {
 
@@ -35,12 +36,10 @@ class TipFace extends AbstractPlan {
     case req @ Path("/tips/new") => req match {
 
       case GET(_) => editable_page(req, None, Map.empty)
-      case POST(_) & Params(params) => create_or_update_tip(req, params)
+      case POST(_) & Params(params) => create_or_update_tip(req, None, params)
     }
 
     case req @ GET(Path(Seg("tips" :: id :: Nil))) => {
-
-      validate_id(id)
 
       start_transaction
       var _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
@@ -55,11 +54,10 @@ class TipFace extends AbstractPlan {
 
     case req @ Path(Seg("tips" :: id :: "edit" :: Nil)) => req match {
 
-      case POST(_) & Params(params) => create_or_update_tip(req, params)
+      case POST(_) & Params(params) => create_or_update_tip(req, Some(id), params)
 
       case GET(_) => {
-        validate_id(id)
-
+        
         start_transaction
         val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
         commit_and_close_transaction
@@ -74,15 +72,18 @@ class TipFace extends AbstractPlan {
     }
   }
 
-  private def create_or_update_tip(req: HttpRequest[Any], params: Map[String, Seq[String]]): ResponseFunction[Any] = {
+  private def create_or_update_tip(req: HttpRequest[Any], tip_id: Option[String], params: Map[String, Seq[String]]): ResponseFunction[Any] = {
 
-    var param = new Param().from(params).->("tip_id").is_empty_or_digit
+    var _tip_id: Long = 0
 
-    if (param.is_voilated) {
-      return Scalate(req, "bad_user_request.ssp")
+    if (tip_id.isDefined && !tip_id.get.isEmpty()) {
+      if (!Strings.is_numeric(tip_id.get)) {
+        return Scalate(req, "bad_user_request.ssp")
+      }
+      _tip_id = tip_id.get.toLong
     }
 
-    param = new Param().from(params)
+    var param = new Param().from(params)
       .->("tip_title").is_not_blank.otherwise.mark("fail_tip_title", "the title is must")
       .->("tip_content").is_not_blank.otherwise.mark("fail_tip_content", "the content is must")
 
@@ -90,21 +91,21 @@ class TipFace extends AbstractPlan {
       return editable_page(req, None, param.validation_message)
     }
 
-    var _tip_id: String = param <= "tip_id"
     val _tip_title: String = param <= "tip_title"
     val _tip_content: String = param <= "tip_content"
 
     var _tip: Option[Tip] = None
 
     start_transaction
-    if (_tip_id.isEmpty() || _tip_id.toLong <= 0) {
+    if (is_to_create_tip(_tip_id)) {
       _tip = Some(Tip.create(_tip_title, _tip_content, ""))
-      _tip_id = _tip.get.id.toString
 
-    } else {
+    } else {      
       _tip = _tipRepository.find_by_id_is(_tip_id.toLong);
       if (_tip.isDefined) {
         _tip.get.update_content(_tip_content)
+      } else {
+        return Scalate(req, "bad_user_request.ssp")
       }
     }
 
@@ -117,11 +118,7 @@ class TipFace extends AbstractPlan {
 
   }
 
-  private def validate_id(a_id: String) = {
-    if (!is_a_id(a_id)) {
-      throw new InvalidArgumentException("access tip " + a_id, "failed", a_id + " is not a valid id")
-    }
-  }
+  private def is_to_create_tip(tip_id: Long) = tip_id.toLong <= 0
 
   private def is_a_id(input: String): Boolean = input.forall(_.isDigit)
 

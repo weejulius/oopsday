@@ -28,11 +28,24 @@ body {
 }
 
 ul{
-	list-style-type:none;	
+	list-style-type:none;
+	margin:20px auto 20px 0;	
+	width:80%;
+	background:#E0E0E0;
+	padding:10px 10px 10px 10px;
 }
 
 li{
-	margin:5px auto 5px auto;
+	margin:6px auto 6px auto;
+}
+
+li.date{
+	font-size:small;
+}
+
+.tip_title{
+	font-size:large;
+	margin-bottom:20px;
 }
 
 </style>
@@ -44,9 +57,9 @@ li{
 	<ul class="tip">
 		<li class="tip_title"><strong>${tip.title}</strong></li>
 		<li class="tip_content">${tip.content}</li>
-		<li>${tip.created_date}</li>
+		<li class="date">created at ${tip.created_date}</li>
 		#if(tip.modified_date!=null)
-		<li>${tip.modified_date}</li>
+		<li class="date">modified at ${tip.modified_date}</li>
 		#end
 	</ul>
 	#end
