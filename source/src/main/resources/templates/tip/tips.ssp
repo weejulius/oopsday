@@ -1,16 +1,55 @@
 <html>
 <head>
-    <title>tips</title>
+	<title>Tips</title>
 </head>
+<style type="text/css">
+* {
+	font-size: 100.01%;
+}
+
+body {
+	font: 62.5% sans-serif;
+	width: 786px;
+	margin: 0 auto;
+	background: gray;
+	block: none;
+}
+#container {
+	width: 670px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 50px;
+	padding: 20px 20px 20px 20px;
+	background: white;
+}
+
+.tip{
+	font-size:medium;
+}
+
+ul{
+	list-style-type:none;	
+}
+
+li{
+	margin:5px auto 5px auto;
+}
+
+</style>
 <body>
 <% import com.fishstory.oopsday.domain.tip.Tip%>
 <%@ var tips:List[Tip] %>
-    #for(tip <- tips)
-<ul class="tip">
-    <li class="tip_title">${tip.title}</li>
-    <li class="tip_content">${tip.content}</li>
-    <li class="tip_author">${tip.author}</li>
-</ul>
-#end
+<div id="container">
+	#for(tip <- tips)
+	<ul class="tip">
+		<li class="tip_title"><strong>${tip.title}</strong></li>
+		<li class="tip_content">${tip.content}</li>
+		<li>${tip.created_date}</li>
+		#if(tip.modified_date!=null)
+		<li>${tip.modified_date}</li>
+		#end
+	</ul>
+	#end
+</div>
 </body>
 </html>
