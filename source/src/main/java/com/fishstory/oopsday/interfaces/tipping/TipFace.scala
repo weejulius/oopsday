@@ -57,9 +57,7 @@ class TipFace extends AbstractPlan {
       case POST(_) & Params(params) => create_or_update_tip(req, Some(id), params)
 
       case GET(_) => {
-        if (!Strings.is_numeric(id)) {
-          Scalate(req, "bad_user_request.ssp")
-        } else {
+        if (Strings.is_numeric(id)) {
           start_transaction
           val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
           commit_and_close_transaction
@@ -69,6 +67,8 @@ class TipFace extends AbstractPlan {
           } else {
             not_found_page(req)
           }
+        } else {
+          Scalate(req, "bad_user_request.ssp")
         }
       }
     }
