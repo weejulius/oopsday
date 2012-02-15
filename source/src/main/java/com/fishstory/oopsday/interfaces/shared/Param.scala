@@ -36,20 +36,33 @@ class Param {
     is_voilated = !is_voilated && params(name)(0).forall(_.isDigit)
     this
   }
-  
-  def is_empty_or_digit={
-    
-    if(!(params.get(name).isEmpty || params(name).isEmpty)){
-       is_voilated = !params(name)(0).forall(_.isDigit)
+
+  def is_empty_or_digit = {
+
+    if (!(params.get(name).isEmpty || params(name).isEmpty)) {
+      is_voilated = !params(name)(0).forall(_.isDigit)
     }
     this
   }
 
-  def otherwise = this
+  def or_mark(a_key: String, a_message: String) = {
+    if (is_voilated) {
+      validation_message += (a_key -> a_message)
+    }
 
-  def mark(a_key: String, a_message: String) = {
-    validation_message += (a_key -> a_message)
+    this
+  }
+  
+  def has_voilation:Boolean= !validation_message.isEmpty
 
+  def and = this
+
+  def length_is_less_than(a_length: Int) = {
+    if (!is_voilated) {
+      is_voilated = params(name)(0).length >= a_length
+    }else{
+      is_voilated=false
+    }
     this
   }
 

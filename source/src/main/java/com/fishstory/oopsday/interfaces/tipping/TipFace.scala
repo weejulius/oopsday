@@ -17,6 +17,8 @@ import unfiltered.response.ResponseWriter
 import unfiltered.response.ResponseFunction
 import com.fishstory.oopsday.interfaces.shared.Param
 import com.fishstory.oopsday.interfaces.shared.template.Strings
+import com.fishstory.oopsday.interfaces.shared.validation.Validations
+import com.fishstory.oopsday.interfaces.shared.validation.Validations.Validate
 
 class TipFace extends AbstractPlan {
 
@@ -58,6 +60,7 @@ class TipFace extends AbstractPlan {
 
       case GET(_) => {
         if (Strings.is_numeric(id)) {
+
           start_transaction
           val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
           commit_and_close_transaction
@@ -67,8 +70,11 @@ class TipFace extends AbstractPlan {
           } else {
             not_found_page(req)
           }
+
         } else {
+
           Scalate(req, "bad_user_request.ssp")
+
         }
       }
     }
@@ -85,11 +91,21 @@ class TipFace extends AbstractPlan {
       _tip_id = tip_id.get.toLong
     }
 
-    var param = new Param().from(params)
-      .->("tip_title").is_not_blank.otherwise.mark("fail_tip_title", "the title is must")
-      .->("tip_content").is_not_blank.otherwise.mark("fail_tip_content", "the content is must")
+    //    var param = new Param().from(params)
+    //      .->("tip_title").is_not_blank.or_mark("fail_tip_title", "the title is must")
+    //      .and.length_is_less_than(121).or_mark("fail_tip_title", "the title is more than 120")
+    //      .->("tip_content").is_not_blank.or_mark("fail_tip_content", "the content is must")
+    //      .and.length_is_less_than(481).or_mark("fail_tip_content", "the content is more than 480")
+    //    if (param.has_voilation) {
+    //      return editable_page(req, None, param.validation_message)
+    //    }
 
-    if (param.is_voilated) {
+    var validations =
+      Validations(params,
+        new Validate("tip_title", Validations.IsNotBlank, Validations.MaxLength(121)),
+        new Validate("tip_content", IsNotBlank, MaxLength(121)))
+
+    if (validations.has_voilation) {
       return editable_page(req, None, param.validation_message)
     }
 
@@ -104,16 +120,15 @@ class TipFace extends AbstractPlan {
 
     } else {
       _tip = _tipRepository.find_by_id_is(_tip_id.toLong);
-      if (_tip.isDefined) {
-        _tip.get.update_content(_tip_content)
-      } else {
+      if (_tip.isEmpty) {
         return Scalate(req, "bad_user_request.ssp")
+      } else {
+        _tip.get.update_content(_tip_content)
       }
     }
 
-    if (_tip.isDefined) {
-      _tipRepository.save_new_or_update(_tip.get)
-    }
+    _tipRepository.save_new_or_update(_tip.get)
+
     commit_and_close_transaction
 
     Redirect("/tips/" + _tip.get.id)

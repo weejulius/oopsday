@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory
 import com.fishstory.oopsday.infrustructure.tip.Transactions
 import com.fishstory.oopsday.domain.tip.TipRepository
 import com.fishstory.oopsday.infrustructure.tip.TipRepositoryJPAImpl
+import scala.util.Random
 
 class Steps_Tip extends Transactions {
   private var _webDriver: WebDriver = new HtmlUnitDriver()
@@ -50,14 +51,22 @@ class Steps_Tip extends Transactions {
     _webDriver.findElement(By.id("tip_title")).clear()
     _webDriver.findElement(By.id("tip_title")).sendKeys(a_title)
   }
-  
-   
+
   @Given("^I input the id \"([^\"]*)\"$")
-  def i_input_the_id(a_id:String)={
+  def i_input_the_id(a_id: String) = {
     _webDriver.findElement(By.id("tip_id")).clear()
     _webDriver.findElement(By.id("tip_id")).sendKeys(a_id)
   }
-    
+
+  @Given("^I input the title more than \"([^\"]*)\" characters$")
+  def i_input_the_title_more_than(a_length: String) = {
+    var chars = ""
+    for (i <- 0 until a_length.toInt) {
+      chars += (Random.nextPrintableChar())
+    }
+    _webDriver.findElement(By.id("tip_title")).clear()
+    _webDriver.findElement(By.id("tip_title")).sendKeys(chars)
+  }
 
   @When("^I click the submit button$")
   def i_click_the_submit_button() {
@@ -94,12 +103,11 @@ class Steps_Tip extends Transactions {
   def i_should_see_the_error_message(message: String) {
     The string _webDriver.getPageSource() should_contain message
   }
-  
+
   @Then("^I should see \"([^\"]*)\"$")
   def i_should_see(message: String) {
     The string _webDriver.getPageSource() should_contain message
   }
- 
 
   @After
   def stopServer = {

@@ -49,6 +49,12 @@ Feature: post a tip
         Then I should see the title "Tip 2"
         And I should see the content "I am the content of tip 2"
         And the URL should be "tips/3"
+        
+        Given I am on the page "tips/new"
+        And I input the title more than "150" characters
+        And I input the content "I am the content of tip 2"
+        When I click the submit button
+        Then I should see the error message "the title is more than 120"
    
    Scenario: list tips
         Given I am on the page "tips"
