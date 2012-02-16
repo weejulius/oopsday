@@ -23,6 +23,8 @@ import com.fishstory.oopsday.interfaces.shared.validation.IsNotBlank
 import com.fishstory.oopsday.interfaces.shared.validation.MaxLength
 import com.fishstory.oopsday.interfaces.shared.validation.FAILURE
 import com.fishstory.oopsday.interfaces.shared.validation.And
+import com.fishstory.oopsday.interfaces.shared.validation.StringValidations
+import com.fishstory.oopsday.interfaces.shared.validation.IsNumeric
 
 class TipFace extends AbstractPlan {
 
@@ -63,22 +65,20 @@ class TipFace extends AbstractPlan {
       case POST(_) & Params(params) => create_or_update_tip(req, Some(id), params)
 
       case GET(_) => {
-        if (Strings.is_numeric(id)) {
 
-          start_transaction
-          val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
-          commit_and_close_transaction
+        StringValidations((id, "tip id", IsNumeric() :: Nil)).result match {
 
-          if (_tip.isDefined) {
-            editable_page(req, _tip, Map.empty)
-          } else {
-            not_found_page(req)
-          }
+          case FAILURE(messages) => Scalate(req, "bad_user_request.ssp")
+          case _ =>
+            start_transaction
+            val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
+            commit_and_close_transaction
 
-        } else {
-
-          Scalate(req, "bad_user_request.ssp")
-
+            if (_tip.isDefined) {
+              editable_page(req, _tip, Map.empty)
+            } else {
+              not_found_page(req)
+            }
         }
       }
     }
@@ -96,8 +96,8 @@ class TipFace extends AbstractPlan {
     }
 
     Validations(params,
-      Validate("tip_title", "title", IsNotBlank(), And(), MaxLength(120)),
-      Validate("tip_content", "content", IsNotBlank(), And(), MaxLength(480))).result match {
+      ("tip_title", "title", IsNotBlank() :: And() :: MaxLength(120) :: Nil),
+      ("tip_content", "content", IsNotBlank() :: And() :: MaxLength(480) :: Nil)).result match {
         case FAILURE(messages) => return editable_page(req, None, messages)
         case _ =>
       }
@@ -127,7 +127,6 @@ class TipFace extends AbstractPlan {
     Redirect("/tips/" + _tip.get.id)
 
   }
-
 
   private def is_to_create_tip(tip_id: Long) = tip_id.toLong <= 0
 

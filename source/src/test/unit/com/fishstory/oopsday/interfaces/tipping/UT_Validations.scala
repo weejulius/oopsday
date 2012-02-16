@@ -13,10 +13,10 @@ class UT_Validations {
   def test_is_not_blank = {
 
     var params: Map[String, Seq[String]] = Map.empty
-    params += ("tip_title"->List("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
+    params += ("tip_title" -> List("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
 
     Validations(params,
-      Validate("tip_title", "title", IsNotBlank(), And(), MaxLength(20))).result match {
+      ("tip_title", "title", IsNotBlank() :: And() :: MaxLength(20) :: Nil)).result match {
         case FAILURE(messages) => println(messages)
         case _ =>
       }
