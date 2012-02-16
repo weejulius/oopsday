@@ -18,7 +18,11 @@ import unfiltered.response.ResponseFunction
 import com.fishstory.oopsday.interfaces.shared.Param
 import com.fishstory.oopsday.interfaces.shared.template.Strings
 import com.fishstory.oopsday.interfaces.shared.validation.Validations
-import com.fishstory.oopsday.interfaces.shared.validation.Validations.Validate
+import com.fishstory.oopsday.interfaces.shared.validation.Validate
+import com.fishstory.oopsday.interfaces.shared.validation.IsNotBlank
+import com.fishstory.oopsday.interfaces.shared.validation.MaxLength
+import com.fishstory.oopsday.interfaces.shared.validation.FAILURE
+import com.fishstory.oopsday.interfaces.shared.validation.And
 
 class TipFace extends AbstractPlan {
 
@@ -91,26 +95,15 @@ class TipFace extends AbstractPlan {
       _tip_id = tip_id.get.toLong
     }
 
-    //    var param = new Param().from(params)
-    //      .->("tip_title").is_not_blank.or_mark("fail_tip_title", "the title is must")
-    //      .and.length_is_less_than(121).or_mark("fail_tip_title", "the title is more than 120")
-    //      .->("tip_content").is_not_blank.or_mark("fail_tip_content", "the content is must")
-    //      .and.length_is_less_than(481).or_mark("fail_tip_content", "the content is more than 480")
-    //    if (param.has_voilation) {
-    //      return editable_page(req, None, param.validation_message)
-    //    }
+    Validations(params,
+      Validate("tip_title", "title", IsNotBlank(), And(), MaxLength(120)),
+      Validate("tip_content", "content", IsNotBlank(), And(), MaxLength(480))).result match {
+        case FAILURE(messages) => return editable_page(req, None, messages)
+        case _ =>
+      }
 
-    var validations =
-      Validations(params,
-        new Validate("tip_title", Validations.IsNotBlank, Validations.MaxLength(121)),
-        new Validate("tip_content", IsNotBlank, MaxLength(121)))
-
-    if (validations.has_voilation) {
-      return editable_page(req, None, param.validation_message)
-    }
-
-    val _tip_title: String = param <= "tip_title"
-    val _tip_content: String = param <= "tip_content"
+    val _tip_title: String = params("tip_title").head
+    val _tip_content: String = params("tip_content").head
 
     var _tip: Option[Tip] = None
 
@@ -134,6 +127,7 @@ class TipFace extends AbstractPlan {
     Redirect("/tips/" + _tip.get.id)
 
   }
+
 
   private def is_to_create_tip(tip_id: Long) = tip_id.toLong <= 0
 

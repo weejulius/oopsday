@@ -101,14 +101,14 @@
             <div>
                 <label for="tip_title">Title:</label>
                 <input name="tip_title" id="tip_title" value="${tip.title}"/>
-                #if(validation_tip_message.get("fail_tip_title").isDefined)
-                   <span>${validation_tip_message("fail_tip_title")}
+                #if(validation_tip_message.get("tip_title").isDefined)
+                   <span>${validation_tip_message("tip_title")}
                 #end   
             </div>
 
             <textarea name="tip_content" id="tip_content">${tip.content}</textarea>
-            #if(validation_tip_message.get("fail_tip_content").isDefined)
-              <span>${validation_tip_message("fail_tip_content")}
+            #if(validation_tip_message.get("tip_content").isDefined)
+              <span>${validation_tip_message("tip_content")}
             #end   
             <div>
                 <input type="submit" id="tip_submit" 
