@@ -76,7 +76,11 @@ case class Validate(parameter_name: String, alias: String, expressions: List[Eva
           }
           if (!is_ever_failed) {
             return is_ever_failed
+          } else {
+            is_ever_failed = false
+            messages.drop(1)
           }
+
           last_expression_is_And_or_Or = true
         }
         case evaluation: Evaluation => {
@@ -122,6 +126,24 @@ abstract class Evaluation {
 abstract class ParamEvaluation extends Evaluation {
   var params: Map[String, Seq[String]] = Map.empty
   def setParams(a_params: Map[String, Seq[String]]) = params = a_params
+}
+
+case class IsEmpty extends ParamEvaluation {
+  def evaluate(name: String) = {
+    params.get(name).isEmpty || params(name).isEmpty || params(name).head.isEmpty
+  }
+
+  def message(name: String): String = "the " + name + " is not empty"
+}
+
+case class ParamIsNumeric extends ParamEvaluation {
+  def evaluate(name: String) = {
+    params(name).head.forall(_.isDigit)
+  }
+
+  def message(name: String) = {
+    "the " + name + " is not numeric"
+  }
 }
 
 case class IsNumeric extends Evaluation {

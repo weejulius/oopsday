@@ -68,6 +68,21 @@ class Steps_Tip extends Transactions {
     _webDriver.findElement(By.id("tip_title")).sendKeys(chars)
   }
 
+  @Given("^I have input \"([^\"]*)\" tips$")
+  def i_have_input_tips(num_of_tips: String) = {
+    for (i <- 0 until num_of_tips.toInt) {
+      I_am_on_the_page("tips/new")
+      i_input_the_title("I am a good title")
+      i_input_the_content("I am a good content")
+      i_click_the_submit_button()
+    }
+  }
+
+  @Given("^the page size is \"([^\"]*)\"")
+  def the_page_size_is(page_size: String) = {
+    TipFace.set_page_size(page_size.toInt)
+  }
+
   @When("^I click the submit button$")
   def i_click_the_submit_button() {
     _webDriver.findElement(By.id("tip_submit")).submit()
@@ -107,6 +122,11 @@ class Steps_Tip extends Transactions {
   @Then("^I should see \"([^\"]*)\"$")
   def i_should_see(message: String) {
     The string _webDriver.getPageSource() should_contain message
+  }
+
+  @Then("^I should see \"([^\"]*)\" tips")
+  def i_should_see_tips(num_of_tips: String) = {
+    The number _webDriver.findElements(By.className("tip")).size().toLong should_equal_to num_of_tips.toInt
   }
 
   @After

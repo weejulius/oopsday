@@ -19,11 +19,11 @@ class TipRepositoryJPAImpl extends TipRepository with Transactions {
     }
   }
 
-  def find_all: java.util.List[Tip] = {
+  def find_all(start: Int, size: Int): java.util.List[Tip] = {
     return entityManager.createQuery("""
               SELECT tip
                 FROM com.fishstory.oopsday.domain.tip.Tip tip           
-      """, classOf[Tip]).getResultList();
+      """, classOf[Tip]).setFirstResult(start).setMaxResults(size).getResultList();
   }
 
   def find_by_title_is(title: String): Option[Tip] = {

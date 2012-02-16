@@ -25,6 +25,10 @@ import com.fishstory.oopsday.interfaces.shared.validation.FAILURE
 import com.fishstory.oopsday.interfaces.shared.validation.And
 import com.fishstory.oopsday.interfaces.shared.validation.StringValidations
 import com.fishstory.oopsday.interfaces.shared.validation.IsNumeric
+import com.fishstory.oopsday.interfaces.shared.validation.SUCCESS
+import com.fishstory.oopsday.interfaces.shared.validation.IsEmpty
+import com.fishstory.oopsday.interfaces.shared.validation.Or
+import com.fishstory.oopsday.interfaces.shared.validation.ParamIsNumeric
 
 class TipFace extends AbstractPlan {
 
@@ -32,13 +36,25 @@ class TipFace extends AbstractPlan {
 
   override def delegates = {
 
-    case req @ GET(Path("/tips")) => {
+    case req @ GET(Path("/tips")) & Params(params) => {
 
-      start_transaction
-      val tips = _tipRepository.find_all
-      commit_and_close_transaction
+      Validations(params,
+        ("page", "page size", IsEmpty() :: Or() :: ParamIsNumeric() :: Nil)).result match {
+          case FAILURE(message) => Scalate(req, "bad_user_request.ssp")
+          case SUCCESS(messages) =>
+            var page: Int = 1
 
-      Scalate(req, "tip/tips.ssp", ("tips", tips.asScala.toList))
+            if (!params("page").isEmpty && Strings.is_numeric(params("page").head)) {
+              page = params("page").head.toInt
+            }
+
+            start_transaction
+            val tips = _tipRepository.find_all((page - 1) * TipFace.pageSize, TipFace.pageSize)
+            commit_and_close_transaction
+
+            Scalate(req, "tip/tips.ssp", ("tips", tips.asScala.toList))
+        }
+
     }
 
     case req @ Path("/tips/new") => req match {
@@ -151,7 +167,8 @@ class TipFace extends AbstractPlan {
 }
 
 object TipFace {
+  var pageSize: Int = 15
 
   def create: TipFace = new TipFace()
-
+  def set_page_size(page_size: Int) = pageSize = page_size
 }

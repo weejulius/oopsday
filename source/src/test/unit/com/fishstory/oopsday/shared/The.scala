@@ -26,6 +26,14 @@ class The {
 
   }
 
+  def should_equal_to(a_num: Long) {
+
+    if (The._the._number.get != a_num) {
+      throw new AssertException("\n\n Actual      |  {" + _number + "} \n Expected    |  {" + a_num + "}\n")
+    }
+
+  }
+
   def should_equal_to(a_string: String) {
     if (!The._the._string.equals(a_string)) {
       throw new AssertException("\n\n Actual      |  {" + _string + "} \n Expected    |  {" + a_string + "}\n")

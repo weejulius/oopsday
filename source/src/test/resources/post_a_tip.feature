@@ -67,4 +67,12 @@ Feature: post a tip
         When I am on the page "tips"
         Then I should see the title "Tip 1"
         And I should see the title "Tip 3"
+        
+        Given I have input "5" tips
+        And the page size is "2"
+        When I am on the page "tips"
+        Then I should see "2" tips
+        When I am on the page "tips?page=3"
+        Then I should see "2" tips
+        
 
