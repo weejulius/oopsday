@@ -3,8 +3,10 @@ package com.fishstory.oopsday.infrustructure.tip
 import com.fishstory.oopsday.domain.tip.TipRepository
 import com.fishstory.oopsday.domain.tip.Tip
 import javax.persistence.EntityManager
+import org.slf4j.LoggerFactory
 
 class TipRepositoryJPAImpl extends TipRepository with Transactions {
+  private val LOG = LoggerFactory.getLogger(classOf[TipRepositoryJPAImpl])
 
   private def entityManager: EntityManager = {
     get()

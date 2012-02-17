@@ -1,3 +1,12 @@
 1. we search the tip by id when updating, so it could cause issue that the user can weak the id and modify the other's tip 
 
 Solution: check the author of tip when updating
+
+2.Not valid UTF8
+
+if the input is Õ, it will cause the jetty throws exception
+
+
+3. Transaction issue with HSQL
+
+as the transaction is not rolled back due to some exceptions, and then the next transaction will be hanging if it will manipulate the same table as the broken exception

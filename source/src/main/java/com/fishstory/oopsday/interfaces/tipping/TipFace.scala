@@ -136,12 +136,12 @@ class TipFace extends AbstractPlan {
       }
     }
 
-    _tipRepository.save_new_or_update(_tip.get)
-
-    commit_and_close_transaction
-
-    Redirect("/tips/" + _tip.get.id)
-
+    try {
+      _tipRepository.save_new_or_update(_tip.get)
+      Redirect("/tips/" + _tip.get.id)
+    } finally {
+      commit_and_close_transaction
+    }
   }
 
   private def is_to_create_tip(tip_id: Long) = tip_id.toLong <= 0

@@ -24,7 +24,7 @@ class Steps_Tip extends Transactions {
 
   @Before
   def startServer = {
-    _server.start
+    _server.run
   }
 
   @Given("^the tip \"([^\"]*)\" is existing$")
