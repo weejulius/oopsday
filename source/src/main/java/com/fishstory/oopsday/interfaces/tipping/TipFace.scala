@@ -9,16 +9,9 @@ import unfiltered.request.Seg
 import com.fishstory.oopsday.infrustructure.tip.TipRepositoryJPAImpl
 import com.fishstory.oopsday.domain.tip.TipRepository
 import scala.collection.JavaConverters._
-import com.fishstory.oopsday.interfaces.shared.Scalate
-import com.fishstory.oopsday.interfaces.shared.AbstractPlan
-import com.fishstory.oopsday.interfaces.shared.InvalidArgumentException
-import unfiltered.request.Params.ParamMapper
-import unfiltered.response.ResponseWriter
 import unfiltered.response.ResponseFunction
-import com.fishstory.oopsday.interfaces.shared.Param
 import com.fishstory.oopsday.interfaces.shared.template.Strings
 import com.fishstory.oopsday.interfaces.shared.validation.Validations
-import com.fishstory.oopsday.interfaces.shared.validation.Validate
 import com.fishstory.oopsday.interfaces.shared.validation.IsNotBlank
 import com.fishstory.oopsday.interfaces.shared.validation.MaxLength
 import com.fishstory.oopsday.interfaces.shared.validation.FAILURE
@@ -29,6 +22,7 @@ import com.fishstory.oopsday.interfaces.shared.validation.SUCCESS
 import com.fishstory.oopsday.interfaces.shared.validation.IsEmpty
 import com.fishstory.oopsday.interfaces.shared.validation.Or
 import com.fishstory.oopsday.interfaces.shared.validation.ParamIsNumeric
+import com.fishstory.oopsday.interfaces.shared._
 
 class TipFace extends AbstractPlan {
 
@@ -43,19 +37,19 @@ class TipFace extends AbstractPlan {
           case FAILURE(message) => Scalate(req, "bad_user_request.ssp")
           case SUCCESS(messages) =>
             var page: Int = 1
+            val pageSize=TipFace.pageSize
 
             if (!params("page").isEmpty && Strings.is_numeric(params("page").head)) {
               page = params("page").head.toInt
             }
 
             start_transaction
-            val tips = _tipRepository.find_all((page - 1) * TipFace.pageSize, TipFace.pageSize)
+            val tips = _tipRepository.find_all((page - 1) * pageSize, pageSize)
             val count_of_tips = _tipRepository.count
             commit_and_close_transaction
-            
-            println(count_of_tips)
 
-            Scalate(req, "tip/tips.ssp", ("tips", tips.asScala.toList), ("num_of_pages", (1 + ((count_of_tips - 1) / TipFace.pageSize))))
+            Scalate(req, "tip/tips.ssp",
+              ("tips", tips.asScala.toList), ("page_nav",PageNavigation(page,count_of_tips,pageSize)))
         }
     }
 
@@ -148,8 +142,6 @@ class TipFace extends AbstractPlan {
 
   private def is_to_create_tip(tip_id: Long) = tip_id.toLong <= 0
 
-  private def is_a_id(input: String): Boolean = input.forall(_.isDigit)
-
   private def not_found_page(req: HttpRequest[Any]) = {
     Scalate(req, "not_found.ssp")
   }
@@ -165,7 +157,6 @@ class TipFace extends AbstractPlan {
     }
     Scalate(req, "tip/edit_tip.ssp", ("tip", tip), ("validation_tip_message", _validation_tip_message))
   }
-
 }
 
 object TipFace {

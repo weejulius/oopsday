@@ -1,78 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>Tips</title>
+<title>Tips</title>
 </head>
 <style type="text/css">
-* {
-	font-size: 100.01%;
-}
+    * {
+        font-size: 100.01%;
+    }
 
-body {
-	font: 62.5% sans-serif;
-	width: 786px;
-	margin: 0 auto;
-	background: gray;
-	block: none;
-}
-#container {
-	width: 670px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 50px;
-	padding: 20px 20px 20px 20px;
-	background: white;
-}
+    body {
+        font: 62.5% sans-serif;
+        width: 786px;
+        margin: 0 auto;
+        background: gray;
+        block: none;
+    }
 
-.tip{
-	font-size:medium;
-}
+    #container {
+        width: 670px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 50px;
+        padding: 20px 20px 20px 20px;
+        background: white;
+    }
 
-ul{
-	list-style-type:none;
-	margin:20px auto 20px 0;	
-	width:80%;
-	background:#E0E0E0;
-	padding:10px 10px 10px 10px;
-}
+    .tip {
+        font-size: medium;
+    }
 
-li{
-	margin:6px auto 6px auto;
-}
+    ul {
+        list-style-type: none;
+        margin: 20px auto 20px 0;
+        width: 80%;
+        background: #E0E0E0;
+        padding: 10px 10px 10px 10px;
+    }
 
-li.date{
-	font-size:small;
-}
+    li {
+        margin: 6px auto 6px auto;
+    }
 
-.tip_title{
-	font-size:large;
-	margin-bottom:20px;
-}
+    li.date {
+        font-size: small;
+    }
+
+    .tip_title {
+        font-size: large;
+        margin-bottom: 20px;
+    }
+
+    .pager li {
+        float: left;
+        margin-right:8px;
+        margin-top:3px;
+        display: block;
+        font-weight: bold;
+        height:15px;
+    }
+
+    a:link {text-decoration:none;}
+    a:visited {text-decoration:none;color: purple;}
+    a:hover {text-decoration:underline;}
+    a:active {text-decoration:underline;}
+
+    ul.pager{
+      height:20px;
+      padding-top:2px;
+      padding-bottom: 2px;
+      padding-left:8px;
+    }
+
+    .cur_page{
+        font-weight: bolder;
+        font-size:medium;
+    }
 
 </style>
 <body>
 <% import com.fishstory.oopsday.domain.tip.Tip%>
 <% import scala.math._%>
+<% import com.fishstory.oopsday.interfaces.shared.PageNavigation%>
+<%escapeMarkup = false%>
 <%@ var tips:List[Tip] %>
-<%@ val num_of_pages:Long%>
+<%@ val page_nav:PageNavigation%>
 <div id="container">
-	#for(tip <- tips)
-	<ul class="tip">
-		<li class="tip_title"><strong>${tip.title}</strong></li>
-		<li class="tip_content">${tip.content}</li>
-		<li class="date">created at ${tip.created_date}</li>
-		#if(tip.modified_date!=null)
-		<li class="date">modified at ${tip.modified_date}</li>
-		#end		
-	</ul>
-	#end
-	<div class="navigation">
-	  ${num_of_pages}
-	  <ul class="pager">
-	    #for (num<-1 to min(num_of_pages.toInt,5)) 
-	      <li><a href="/tips?page=${num}">${num}</a> </li>
-	    #end
-	  </ul>     
-	</div>
+    #if(page_nav.page_num>0)
+        #for(tip <- tips)
+        <ul class="tip">
+            <li class="tip_title"><strong>${tip.title}</strong></li>
+            <li class="tip_content">${tip.content}</li>
+            <li class="date">created at ${tip.created_date}</li>
+            #if(tip.modified_date!=null)
+                <li class="date">modified at ${tip.modified_date}</li>
+            #end
+        </ul>
+    #end
+
+    <div class="navigation">
+        <ul class="pager">
+            #for (num<-1 to min(page_nav.page_num,5))
+            #if(num==page_nav.cur_page)
+                <li><a href="/tips?page=${num}" class="cur_page">${num}</a></li>
+            #else
+                <li><a href="/tips?page=${num}">${num}</a></li>
+            #end
+            #end
+
+        </ul>
+    </div>
+#end
+    #if(page_nav.page_num<=0)
+        <h1>No tips</h1>
+    #end
 </div>
 </body>
 </html>
