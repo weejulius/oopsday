@@ -55,6 +55,7 @@ Feature: post a tip
         And I input the content "I am the content of tip 2"
         When I click the submit button
         Then I should see the error message "the title is more than 120"
+        And I should see the content "I am the content of tip 2"
    
    Scenario: list tips
         Given I am on the page "tips"

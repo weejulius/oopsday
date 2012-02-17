@@ -51,7 +51,9 @@ li.date{
 </style>
 <body>
 <% import com.fishstory.oopsday.domain.tip.Tip%>
+<% import scala.math._%>
 <%@ var tips:List[Tip] %>
+<%@ val num_of_pages:Long%>
 <div id="container">
 	#for(tip <- tips)
 	<ul class="tip">
@@ -60,9 +62,17 @@ li.date{
 		<li class="date">created at ${tip.created_date}</li>
 		#if(tip.modified_date!=null)
 		<li class="date">modified at ${tip.modified_date}</li>
-		#end
+		#end		
 	</ul>
 	#end
+	<div class="navigation">
+	  ${num_of_pages}
+	  <ul class="pager">
+	    #for (num<-1 to min(num_of_pages.toInt,5)) 
+	      <li><a href="/tips?page=${num}">${num}</a> </li>
+	    #end
+	  </ul>     
+	</div>
 </div>
 </body>
 </html>

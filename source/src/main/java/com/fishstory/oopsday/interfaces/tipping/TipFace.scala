@@ -50,11 +50,13 @@ class TipFace extends AbstractPlan {
 
             start_transaction
             val tips = _tipRepository.find_all((page - 1) * TipFace.pageSize, TipFace.pageSize)
+            val count_of_tips = _tipRepository.count
             commit_and_close_transaction
+            
+            println(count_of_tips)
 
-            Scalate(req, "tip/tips.ssp", ("tips", tips.asScala.toList))
+            Scalate(req, "tip/tips.ssp", ("tips", tips.asScala.toList), ("num_of_pages", (1 + ((count_of_tips - 1) / TipFace.pageSize))))
         }
-
     }
 
     case req @ Path("/tips/new") => req match {
@@ -113,8 +115,8 @@ class TipFace extends AbstractPlan {
 
     Validations(params,
       ("tip_title", "title", IsNotBlank() :: And() :: MaxLength(120) :: Nil),
-      ("tip_content", "content", IsNotBlank() :: And() :: MaxLength(480) :: Nil)).result match {
-        case FAILURE(messages) => return editable_page(req, None, messages)
+      ("tip_content", "content", IsNotBlank() :: And() :: MaxLength(3000) :: Nil)).result match {
+        case FAILURE(messages) => return editable_page(req, Some(Tip.mock(params("tip_title").head, params("tip_content").head, "")), messages)
         case _ =>
       }
 
@@ -167,7 +169,7 @@ class TipFace extends AbstractPlan {
 }
 
 object TipFace {
-  var pageSize: Int = 15
+  var pageSize: Int = 2
 
   def create: TipFace = new TipFace()
   def set_page_size(page_size: Int) = pageSize = page_size

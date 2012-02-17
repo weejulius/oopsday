@@ -67,7 +67,7 @@
         font-family: Tahoma, sans-serif;
         margin: 20px auto 10px 60px;
         width: 60%;
-        height: 180px;
+        min-height: 180px;
     }
 
     input#tip_submit {
@@ -106,7 +106,7 @@
                 #end   
             </div>
 
-            <textarea name="tip_content" id="tip_content">${tip.content}</textarea>
+            <textarea name="tip_content" class="tip_content" id="tip_content">${tip.content}</textarea>
             #if(validation_tip_message.get("tip_content").isDefined)
               <span>${validation_tip_message("tip_content")}
             #end   

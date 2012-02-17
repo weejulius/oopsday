@@ -20,7 +20,7 @@ class Steps_Tip extends Transactions {
   private var _webDriver: WebDriver = new HtmlUnitDriver()
   private var _server: Server = Http(8080).plan(new TipFace)
   private val _log: Logger = LoggerFactory.getLogger(classOf[Steps_Tip])
-  private val _tipRepository: TipRepository = new TipRepositoryJPAImpl();
+  private val _tipRepository: TipRepository = new TipRepositoryJPAImpl()
 
   @Before
   def startServer = {

@@ -7,6 +7,10 @@ Solution: check the author of tip when updating
 if the input is Õ, it will cause the jetty throws exception
 
 
-3. Transaction issue with HSQL
+3. Transaction issue with HSQL (fixed)
 
 as the transaction is not rolled back due to some exceptions, and then the next transaction will be hanging if it will manipulate the same table as the broken exception
+
+4. the conversion of css definition like id class and so on
+
+5. auto resize textarea

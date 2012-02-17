@@ -17,7 +17,7 @@ class Tip() {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "tip_id")
   var id: Long = 0;
-  @Column(name = "content")
+  @Column(name = "content", length = 3000)
   private var _content: String = null
   @Column(name = "author")
   private var _author: String = null
@@ -32,7 +32,7 @@ class Tip() {
     if (!_content.equals(a_content)) {
       _content = a_content
       _modified_date = DateTime.now().toDate()
-    }    
+    }
   }
 
   def created_date = _created_date
@@ -46,7 +46,7 @@ class Tip() {
 
 object Tip {
 
-  private var _maxNumberOfChar = 400;
+  private var _maxNumberOfChar = 3000;
   def set_maxNumberOfCharForContent(a_maxNumberOfChar: Int) = { _maxNumberOfChar = a_maxNumberOfChar }
 
   def maxNumberOfChar = _maxNumberOfChar
@@ -65,12 +65,22 @@ object Tip {
 
     return tip;
   }
-  
-  def NullObject:Tip={
+
+  def mock(a_title: String, a_content: String, a_author: String): Tip = {
+    var tip = new Tip()
+
+    tip._content = a_content
+    tip._author = a_author
+    tip.title = a_title
+
+    return tip;
+  }
+
+  def NullObject: Tip = {
     new Tip
   }
-  
-  def isNullObject(tip:Tip):Boolean={
-     tip==null||tip.id<=0
+
+  def isNullObject(tip: Tip): Boolean = {
+    tip == null || tip.id <= 0
   }
 }

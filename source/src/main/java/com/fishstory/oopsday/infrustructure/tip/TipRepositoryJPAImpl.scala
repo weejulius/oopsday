@@ -13,7 +13,7 @@ class TipRepositoryJPAImpl extends TipRepository with Transactions {
   }
 
   def find_by_id_is(id: Long): Option[Tip] = {
-    val tip = entityManager.find(classOf[Tip], id);
+    val tip = entityManager.find(classOf[Tip], id)
     if (tip == null) {
       None
     } else {
@@ -21,11 +21,18 @@ class TipRepositoryJPAImpl extends TipRepository with Transactions {
     }
   }
 
+  def count(): Long = {
+    return entityManager.createQuery("""
+              SELECT count(tip)
+                FROM com.fishstory.oopsday.domain.tip.Tip tip           
+      """,classOf[java.lang.Long]).getResultList().get(0).toLong
+  }
+
   def find_all(start: Int, size: Int): java.util.List[Tip] = {
     return entityManager.createQuery("""
               SELECT tip
                 FROM com.fishstory.oopsday.domain.tip.Tip tip           
-      """, classOf[Tip]).setFirstResult(start).setMaxResults(size).getResultList();
+      """, classOf[Tip]).setFirstResult(start).setMaxResults(size).getResultList()
   }
 
   def find_by_title_is(title: String): Option[Tip] = {
@@ -33,13 +40,13 @@ class TipRepositoryJPAImpl extends TipRepository with Transactions {
               SELECT tip
                 FROM com.fishstory.oopsday.domain.tip.Tip tip
                WHERE tip.title=?1
-      """, classOf[Tip]).setParameter(1, title).getResultList();
+      """, classOf[Tip]).setParameter(1, title).getResultList()
     if (result.isEmpty()) {
       None
     } else if (result.size() == 1) {
-      Some(result.get(0));
+      Some(result.get(0))
     } else {
-      throw new IllegalArgumentException("more than 1 tip are retrieved for the title " + title);
+      throw new IllegalArgumentException("more than 1 tip are retrieved for the title " + title)
     }
   }
 
