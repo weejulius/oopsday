@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>Tips</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <style type="text/css">
     * {
@@ -14,23 +15,24 @@
         width: 786px;
         margin: 0 auto;
         background: gray;
-        block: none;
     }
 
     #container {
         width: 670px;
         margin-left: auto;
         margin-right: auto;
-        margin-top: 50px;
-        padding: 20px 20px 20px 20px;
         background: white;
+    }
+
+    .main{
+        padding: 0px 20px 20px 20px;
     }
 
     .tip {
         font-size: medium;
     }
 
-    ul {
+    ul.tip {
         list-style-type: none;
         margin: 20px auto 20px 0;
         width: 80%;
@@ -38,7 +40,7 @@
         padding: 10px 10px 10px 10px;
     }
 
-    li {
+    .tip li {
         margin: 6px auto 6px auto;
     }
 
@@ -89,6 +91,33 @@
         font-size: medium;
     }
 
+    .header{
+        height:50px;
+        background: #3F8FD2;
+        position: relative;
+        margin:0;
+        padding:0;
+        display: block;
+        border:0 none;
+
+    }
+
+    .header li{
+         float: left;
+        margin-right:20px;
+        font-size:x-small;
+    }
+
+    .header ul{
+        position: absolute;
+        list-style-type: none;
+        background:#CD0074;
+        height:25px;
+        line-height: 25px;
+        margin:25px 0 0;
+
+    }
+
 </style>
 <body>
 <% import com.fishstory.oopsday.domain.tip.Tip%>
@@ -98,34 +127,46 @@
 <%@ var tips:List[Tip] %>
 <%@ val page_nav:PageNavigation%>
 <div id="container">
-    #if(page_nav.page_num>0)
-        #for(tip <- tips)
-        <ul class="tip">
-            <li class="tip_title"><strong>${tip.title}</strong></li>
-            <li class="tip_content">${tip.content}</li>
-            <li class="date">created at ${tip.created_date}</li>
-            #if(tip.modified_date!=null)
-                <li class="date">modified at ${tip.modified_date}</li>
-            #end
-        </ul>
-    #end
-
-    <div class="navigation">
-        <ul class="pager">
-            #for (num<-1 to min(page_nav.page_num,5))
-            #if(num==page_nav.cur_page)
-                <li><a href="/tips?page=${num}" class="cur_page">${num}</a></li>
-            #else
-                <li><a href="/tips?page=${num}">${num}</a></li>
-            #end
-        #end
-
+    <div class="header">
+        <ul>
+            <li><a href="">首页</a></li>
+            <li><a href="">首页</a></li>
+            <li><a href="">首页</a></li>
+            <li><a href="">首页</a></li>
+            <li><a href="">首页</a></li>
+            <li><a href="">首页</a></li>
         </ul>
     </div>
-#end
-    #if(page_nav.page_num<=0)
-        <h1>No tips</h1>
+    <div class="main">
+        #if(page_nav.page_num>0)
+            #for(tip <- tips)
+            <ul class="tip">
+                <li class="tip_title"><strong>${tip.title}</strong></li>
+                <li class="tip_content">${tip.content}</li>
+                <li class="date">created at ${tip.created_date}</li>
+                #if(tip.modified_date!=null)
+                    <li class="date">modified at ${tip.modified_date}</li>
+                #end
+            </ul>
+        #end
+
+        <div class="navigation">
+            <ul class="pager">
+                #for (num<-1 to min(page_nav.page_num,5))
+                #if(num==page_nav.cur_page)
+                    <li><a href="/tips?page=${num}" class="cur_page">${num}</a></li>
+                #else
+                    <li><a href="/tips?page=${num}">${num}</a></li>
+                #end
+            #end
+
+            </ul>
+        </div>
     #end
+        #if(page_nav.page_num<=0)
+            <h1>No tips</h1>
+        #end
+    </div>
 </div>
 </body>
 </html>
