@@ -1,98 +1,98 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
+	"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <% import com.fishstory.oopsday.domain.tip.Tip%>
 <% import com.fishstory.oopsday.interfaces.shared.template.Strings._ %>
 <%@ var _tip:Tip %>
 <%escapeMarkup = false%>
 <head>
-    <title>Tip : ${_tip.title}</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link href="/resources/css/base.css" media="all" rel="stylesheet" type="text/css" />
-    <style type="text/css">
-    dl.tip dt.hidden {
-        display: none;
-    }
+	<title>Tip : ${_tip.title}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link href="/resources/css/base.css" media="all" rel="stylesheet" type="text/css" />
+	<style type="text/css">
+	dl.tip dt.hidden {
+		display: none;
+	}
 
-    dl.tip dt {
-        float: left;
-    }
+	dl.tip dt {
+		float: left;
+	}
 
-    dl.tip {
-        
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 50px;
-        padding: 20px 20px 20px 20px;
-        background: #E0E0E0;
-    }
+	dl.tip {
 
-    dl.tip dd {
-        margin: 2px 3px 2px 0px;
-    }
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: 50px;
+		padding: 20px 20px 20px 20px;
+		background: #E0E0E0;
+	}
 
-    dl.tip dt {
-        margin-right: 5px;
-    }
+	dl.tip dd {
+		margin: 2px 3px 2px 0px;
+	}
 
-    dl.tip dd.tip_title {
-        font-size: large;
-        font-weight: bold;
-        text-transform: capitalize;
-    }
+	dl.tip dt {
+		margin-right: 5px;
+	}
 
-    dl.tip dd.tip_content {
-        font-size: medium;
-        margin-top: 10px;
-        margin-bottom: 20px;
-        word-wrap: break-word;
-        padding: 5px 5px 5px 0px;
-    }
-</style>
+	dl.tip dd.tip_title {
+		font-size: large;
+		font-weight: bold;
+		text-transform: capitalize;
+	}
+
+	dl.tip dd.tip_content {
+		font-size: medium;
+		margin-top: 10px;
+		margin-bottom: 20px;
+		word-wrap: break-word;
+		padding: 5px 5px 5px 0px;
+	}
+	</style>
 </head>
 
 <body>
-<div id="container">
-    <div class="header">
-        <ul>
-            <li><a href="">首页</a></li>
-            <li><a href="">首页</a></li>
-            <li><a href="">首页</a></li>
-            <li><a href="">首页</a></li>
-            <li><a href="">首页</a></li>
-            <li><a href="">首页</a></li>
-        </ul>
-    </div>
-    <div class="main">
-    <dl class="tip">
-        <dt class="hidden">title</dt>
-        <dd class="tip_title">
-            ${_tip.title}
-        </dd>
-        <dt class="hidden">content</dt>
-        <dd class="tip_content">
-            ${to_html(_tip.content)}
-        </dd>
-        #if(not_empty(_tip.author))
-            <dt>created by</dt>
-            <dd class="tip_author">
-                ${_tip.author}
-            </dd>
-        #end
+	<div id="container">
+		<div class="header">
+			<ul>
+				<li><a href="">首页</a></li>
+				<li><a href="">首页</a></li>
+				<li><a href="">首页</a></li>
+				<li><a href="">首页</a></li>
+				<li><a href="">首页</a></li>
+				<li><a href="">首页</a></li>
+			</ul>
+		</div>
+		<div class="main">
+			<dl class="tip">
+				<dt class="hidden">title</dt>
+				<dd class="tip_title">
+					${_tip.title}
+				</dd>
+				<dt class="hidden">content</dt>
+				<dd class="tip_content">
+					${to_html(_tip.content)}
+				</dd>
+				#if(not_empty(_tip.author))
+					<dt>created by</dt>
+					<dd class="tip_author">
+						${_tip.author}
+					</dd>
+				#end
 
-        <dt>created at</dt>
-        <dd>
-            ${_tip.created_date}
-        </dd>
-        #if(_tip.modified_date!=null)
-            <dt>modified at</dt>
-            <dd>
-                ${_tip.modified_date}
-            </dd>
-        #end
-    </dl>
-</div>
-<div class="main_footer"/>
-</div>
+				<dt>created at</dt>
+				<dd>
+					${_tip.created_date}
+				</dd>
+				#if(_tip.modified_date!=null)
+					<dt>modified at</dt>
+					<dd>
+						${_tip.modified_date}
+					</dd>
+				#end
+			</dl>
+		</div>
+		<div class="main_footer"/>
+	</div>
 </body>
 </html>

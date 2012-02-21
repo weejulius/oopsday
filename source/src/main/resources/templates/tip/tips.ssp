@@ -1,57 +1,57 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
+	"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <title>Tips</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link href="/resources/css/base.css" media="all" rel="stylesheet" type="text/css" />
-    <style type="text/css">
-    .tip {
-        font-size: medium;
-    }
+	<title>Tips</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link href="/resources/css/base.css" media="all" rel="stylesheet" type="text/css" />
+	<style type="text/css">
+	.tip {
+		font-size: medium;
+	}
 
-    ul.tip {
-        list-style-type: none;
-        margin: 20px auto 20px 0;
-        width: 80%;
-        background: #E0E0E0;
-        padding: 10px 10px 10px 10px;
-    }
+	ul.tip {
+		list-style-type: none;
+		margin: 20px auto 20px 0;
+		width: 80%;
+		background: #E0E0E0;
+		padding: 10px 10px 10px 10px;
+	}
 
-    .tip li {
-        margin: 6px auto 6px auto;
-    }
+	.tip li {
+		margin: 6px auto 6px auto;
+	}
 
-    li.date {
-        font-size: small;
-    }
+	li.date {
+		font-size: small;
+	}
 
-    .tip_title {
-        font-size: large;
-        margin-bottom: 20px;
-    }
+	.tip_title {
+		font-size: large;
+		margin-bottom: 20px;
+	}
 
-    .pager li {
-        float: left;
-        margin-right: 8px;
-        margin-top: 3px;
-        display: block;
-        font-weight: bold;
-        height: 15px;
-    }
-    
-    ul.pager {
-        height: 20px;
-        padding-top: 2px;
-        padding-bottom: 2px;
-        padding-left: 8px;
-    }
+	.pager li {
+		float: left;
+		margin-right: 8px;
+		margin-top: 3px;
+		display: block;
+		font-weight: bold;
+		height: 15px;
+	}
 
-    .cur_page {
-        font-weight: bolder;
-        font-size: medium;
-    }
-</style>
+	ul.pager {
+		height: 20px;
+		padding-top: 2px;
+		padding-bottom: 2px;
+		padding-left: 8px;
+	}
+
+	.cur_page {
+		font-weight: bolder;
+		font-size: medium;
+	}
+	</style>
 </head>
 
 <body>
@@ -62,46 +62,45 @@
 <%@ var tips:List[Tip] %>
 <%@ val page_nav:PageNavigation%>
 <div id="container">
-    <div class="header">
-        <ul>
-            <li><a href="">首页</a></li>
-            <li><a href="">首页</a></li>
-            <li><a href="">首页</a></li>
-            <li><a href="">首页</a></li>
-            <li><a href="">首页</a></li>
-            <li><a href="">首页</a></li>
-        </ul>
-    </div>
-    <div class="main">
-        #if(page_nav.page_num>0)
-            #for(tip <- tips)
-            <ul class="tip">
-                <li class="tip_title"><strong>${tip.title}</strong></li>
-                <li class="tip_content">${tip.content}</li>
-                <li class="date">created at ${tip.created_date}</li>
-                #if(tip.modified_date!=null)
-                    <li class="date">modified at ${tip.modified_date}</li>
-                #end
-            </ul>
-        #end
+	<div class="header">
+		<ul>
+			<li><a href="">首页</a></li>
+			<li><a href="">首页</a></li>
+			<li><a href="">首页</a></li>
+			<li><a href="">首页</a></li>
+			<li><a href="">首页</a></li>
+			<li><a href="">首页</a></li>
+		</ul>
+	</div>
+	<div class="main">
+		#if(page_nav.page_num>0)
+			#for(tip <- tips)
+			<ul class="tip">
+				<li class="tip_title"><strong>${tip.title}</strong></li>
+				<li class="tip_content">${tip.content}</li>
+				<li class="date">created at ${tip.created_date}</li>
+				#if(tip.modified_date!=null)
+					<li class="date">modified at ${tip.modified_date}</li>
+				#end
+			</ul>
+			#end
 
-        <div class="navigation">
-            <ul class="pager">
-                #for (num<-1 to min(page_nav.page_num,5))
-                #if(num==page_nav.cur_page)
-                    <li><a href="/tips?page=${num}" class="cur_page">${num}</a></li>
-                #else
-                    <li><a href="/tips?page=${num}">${num}</a></li>
-                #end
-            #end
-
-            </ul>
-        </div>
-    #end
-        #if(page_nav.page_num<=0)
-            <h1>No tips</h1>
-        #end
-    </div>
+			<div class="navigation">
+				<ul class="pager">
+					#for (num<-1 to min(page_nav.page_num,5))
+						#if(num==page_nav.cur_page)
+						<li><a href="/tips?page=${num}" class="cur_page">${num}</a></li>
+						#else
+						<li><a href="/tips?page=${num}">${num}</a></li>
+						#end
+					#end
+				</ul>
+			</div>
+		#end
+		#if(page_nav.page_num<=0)
+			<h1>No tips</h1>
+		#end
+	</div>
 </div>
 </body>
 </html>
