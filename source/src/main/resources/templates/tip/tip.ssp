@@ -5,19 +5,11 @@
 <% import com.fishstory.oopsday.interfaces.shared.template.Strings._ %>
 <%@ var _tip:Tip %>
 <%escapeMarkup = false%>
-<title>Tip : ${_tip.title}</title>
-<style type="text/css">
-    * {
-        font-size: 100.01%;
-    }
-
-    body {
-        font: 62.5% sans-serif;
-        width: 786px;
-        margin: 0 auto;
-        background: gray;
-    }
-
+<head>
+    <title>Tip : ${_tip.title}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="/resources/css/base.css" media="all" rel="stylesheet" type="text/css" />
+    <style type="text/css">
     dl.tip dt.hidden {
         display: none;
     }
@@ -27,12 +19,12 @@
     }
 
     dl.tip {
-        width: 670px;
+        
         margin-left: auto;
         margin-right: auto;
         margin-top: 50px;
         padding: 20px 20px 20px 20px;
-        background: white;
+        background: #E0E0E0;
     }
 
     dl.tip dd {
@@ -56,11 +48,22 @@
         word-wrap: break-word;
         padding: 5px 5px 5px 0px;
     }
-
 </style>
+</head>
+
 <body>
-<div class="main_header"/>
-<div class="main_center">
+<div id="container">
+    <div class="header">
+        <ul>
+            <li><a href="">首页</a></li>
+            <li><a href="">首页</a></li>
+            <li><a href="">首页</a></li>
+            <li><a href="">首页</a></li>
+            <li><a href="">首页</a></li>
+            <li><a href="">首页</a></li>
+        </ul>
+    </div>
+    <div class="main">
     <dl class="tip">
         <dt class="hidden">title</dt>
         <dd class="tip_title">
@@ -90,5 +93,6 @@
     </dl>
 </div>
 <div class="main_footer"/>
+</div>
 </body>
 </html>
