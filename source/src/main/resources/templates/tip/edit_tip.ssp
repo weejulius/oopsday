@@ -20,38 +20,45 @@
         background-color: #808080;
 
     }
+ 
+    input#tip_title{
+      border:1px solid #D0D0D0;
+      height:30px;
+      width:61%;
+      line-height:30px;
+      font-weight:700;
+      font-size:medium;
+      text-shadow: 0 1px 1px #D0D0D0;
+    }
 
     .textbox {
-        font-size: small;
+        font-size: medium;
         border: 0;
         text-align: left;
 
     }
 
-    input {
-        display: inline-block;
-        width: 60%;
-    }
-
-
     textarea#tip_content {
-        border: 2px solid #cccccc;
+        border: 1px solid #D0D0D0;
         padding: 5px 5px 5px 5px;
         font-family: Tahoma, sans-serif;
-        margin: 20px auto 10px 0;
+        margin: 30px auto 10px 0;
         width: 60%;
         min-height: 180px;
     }
     
     .main{
-      margin-top:20px;
+      margin-top:40px;
     }
 
     input#tip_submit {
 
         clear: left;
-        width: 15%;
+        width: 90px;
         margin: 5px auto 5px 0;
+        border:1px solid #D0D0D0;
+        height:35px;
+        border-radius:4px;
     }
 
     .textbox div {
@@ -72,7 +79,7 @@
 <div id="container">
 <div class="header">
       <ul>
-        <li><a href="">首页</a></li>
+        <li><a href="/tips">首页</a></li>
         <li><a href="">首页</a></li>
         <li><a href="">首页</a></li>
         <li><a href="">首页</a></li>
@@ -101,7 +108,7 @@
             #end   
             <div>
                 <input type="submit" id="tip_submit" 
-                value="${not_empty_then_return_orelse(_title," modify tip","share tip")}"/>
+                value="${not_empty_then_return_orelse(_title," Modify tip","Share tip")}"/>
             </div>
         </fieldset>
     </form>

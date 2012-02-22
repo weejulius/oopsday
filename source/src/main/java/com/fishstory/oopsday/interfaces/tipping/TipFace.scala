@@ -37,7 +37,7 @@ class TipFace extends AbstractPlan {
           case FAILURE(message) => Scalate(req, "bad_user_request.ssp")
           case SUCCESS(messages) =>
             var page: Int = 1
-            val pageSize=TipFace.pageSize
+            val pageSize = TipFace.pageSize
 
             if (!params("page").isEmpty && Strings.is_numeric(params("page").head)) {
               page = params("page").head.toInt
@@ -49,7 +49,7 @@ class TipFace extends AbstractPlan {
             commit_and_close_transaction
 
             Scalate(req, "tip/tips.ssp",
-              ("tips", tips.asScala.toList), ("page_nav",PageNavigation(page,count_of_tips,pageSize)))
+              ("tips", tips.asScala.toList), ("page_nav", PageNavigation(page, count_of_tips, pageSize)))
         }
     }
 
@@ -60,15 +60,20 @@ class TipFace extends AbstractPlan {
     }
 
     case req @ GET(Path(Seg("tips" :: id :: Nil))) => {
+      StringValidations((id, "tip id", IsNumeric() :: Nil)).result match {
 
-      start_transaction
-      var _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
-      commit_and_close_transaction
+        case FAILURE(messages) => Scalate(req, "bad_user_request.ssp")
+        case _ => {
+          start_transaction
+          var _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
+          commit_and_close_transaction
 
-      if (_tip.isDefined) {
-        Found ~> index_page(req, _tip.get)
-      } else {
-        NotFound ~> not_found_page(req)
+          if (_tip.isDefined) {
+            Found ~> index_page(req, _tip.get)
+          } else {
+            NotFound ~> not_found_page(req)
+          }
+        }
       }
     }
 
