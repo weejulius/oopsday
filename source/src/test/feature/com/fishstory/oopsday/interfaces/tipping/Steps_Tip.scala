@@ -25,7 +25,7 @@ class Steps_Tip extends Transactions {
   @Before
   def startServer = {
     _server.context("/resources") { _.resources(new java.net.URL(getClass().getResource("/css"), ".")) }
-    _server.run
+    _server.start
   }
 
   @Given("^the tip \"([^\"]*)\" is existing$")
@@ -57,6 +57,12 @@ class Steps_Tip extends Transactions {
   def i_input_the_id(a_id: String) = {
     _webDriver.findElement(By.id("tip_id")).clear()
     _webDriver.findElement(By.id("tip_id")).sendKeys(a_id)
+  }
+  
+  @Given("^I input the tag \"([^\"]*)\"$")
+  def i_input_the_tag(a_tag: String) = {
+    _webDriver.findElement(By.id("tip_tag")).clear()
+    _webDriver.findElement(By.id("tip_tag")).sendKeys(a_tag)
   }
 
   @Given("^I input the title more than \"([^\"]*)\" characters$")
@@ -98,6 +104,12 @@ class Steps_Tip extends Transactions {
   def i_should_see_the_title(a_title: String) {
 
     The list (getTextsFromElementsByClass("tip_title")) should_contain_the_element a_title
+  }
+  
+  @Then("^I should see the tag \"([^\"]*)\"$")
+  def i_should_see_the_tag(a_tag: String) {
+
+    The list (getTextsFromElementsByClass("tip_tag")) should_contain_the_element a_tag
   }
 
   @Then("^I should see the Not Found page$")

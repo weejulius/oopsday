@@ -23,10 +23,14 @@ import com.fishstory.oopsday.interfaces.shared.validation.IsEmpty
 import com.fishstory.oopsday.interfaces.shared.validation.Or
 import com.fishstory.oopsday.interfaces.shared.validation.ParamIsNumeric
 import com.fishstory.oopsday.interfaces.shared._
+import com.fishstory.oopsday.domain.tag.Tag
+import com.fishstory.oopsday.domain.tag.TagRepository
+import com.fishstory.oopsday.infrustructure.tag.TagRepositoryJPAImpl
 
 class TipFace extends AbstractPlan {
 
-  private val _tipRepository: TipRepository = new TipRepositoryJPAImpl();
+  private val _tipRepository: TipRepository = new TipRepositoryJPAImpl
+  private val _tagRepository: TagRepository = new TagRepositoryJPAImpl
 
   override def delegates = {
 
@@ -123,10 +127,18 @@ class TipFace extends AbstractPlan {
     val _tip_content: String = params("tip_content").head
 
     var _tip: Option[Tip] = None
+    
+    var _tag:Set[Tag] =Set.empty
+    
+    if(!params("tip_tag").isEmpty){
+      for(val a_tag:String<-params("tip_tag").head.split("")){
+        _tag+=_tagRepository.find_by_name_or_save_new(a_tag)
+      }
+    }
 
     start_transaction
     if (is_to_create_tip(_tip_id)) {
-      _tip = Some(Tip.create(_tip_title, _tip_content, ""))
+      _tip = Some(Tip.createWithTag(_tip_title, _tip_content, "",_tag))
 
     } else {
       _tip = _tipRepository.find_by_id_is(_tip_id.toLong);

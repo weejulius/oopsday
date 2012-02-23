@@ -72,6 +72,12 @@
 		</div>
 		<div class="main">
 			<dl class="tip">
+			     <dt class="hidden">tag</dt>
+        <dd class="tip_tag">
+          #for( tag<-_tip.tag)
+              ${tag.name} 
+          #end
+        </dd>
 				<dt class="hidden">title</dt>
 				<dd class="tip_title">
 					${_tip.title}

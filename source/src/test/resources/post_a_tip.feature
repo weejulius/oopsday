@@ -36,10 +36,12 @@ Feature: post a tip
 
         Given I am on the page "tips/new"
         And I input the title "Tip 2"
+        And I input the tag "Tag1"
         And I input the content "I am the content of tip 2"
         When I click the submit button
         Then I should see the title "Tip 2"
         And I should see the content "I am the content of tip 2"
+        And I should see the tag "Tag1"
         And the URL should be "tips/2"
         
         Given I am on the page "tips/new"

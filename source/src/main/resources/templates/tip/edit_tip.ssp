@@ -20,15 +20,33 @@
         background-color: #808080;
 
     }
- 
-    input#tip_title{
+    
+    input#tip_tag{
       border:1px solid #D0D0D0;
       height:30px;
-      width:61%;
+      width:60%;
       line-height:30px;
       font-weight:700;
       font-size:medium;
       text-shadow: 0 1px 1px #D0D0D0;
+      padding-left:45px;
+      position:relative;
+      top:-33px;
+      z-index:0;
+    }
+ 
+    input#tip_title{
+      border:1px solid #D0D0D0;
+      height:30px;
+      width:60%;
+      line-height:30px;
+      font-weight:700;
+      font-size:medium;
+      text-shadow: 0 1px 1px #D0D0D0;
+      padding-left:45px;
+      position:relative;
+      top:-63px;
+      z-index:0;
     }
 
     .textbox {
@@ -38,13 +56,15 @@
 
     }
 
-    textarea#tip_content {
+    textarea#tip_content {        
         border: 1px solid #D0D0D0;
         padding: 5px 5px 5px 5px;
         font-family: Tahoma, sans-serif;
-        margin: 30px auto 10px 0;
-        width: 60%;
-        min-height: 180px;
+        width: 64%;
+        min-height: 280px;
+        position:relative;
+        top:-60px;
+        -moz-border-image:none transparent;
     }
     
     .main{
@@ -52,19 +72,73 @@
     }
 
     input#tip_submit {
-
+        background:rgb(209, 72, 54);
+        position:relative;
+        color:white;
+        top:-100px;
+        left:55.5%;
         clear: left;
         width: 90px;
         margin: 5px auto 5px 0;
         border:1px solid #D0D0D0;
-        height:35px;
+        height:30px;
         border-radius:4px;
     }
+    
+    label#label_title{
+      font-size:small;
+      background:rgb(209, 72, 54);
+      border:1px solid transparent;
+      box-shadow:0pt 0pt 0pt 1px rgb(209, 72, 57) inset;
+      border-radius:2px 2px 2px 2px;      
+      width:40px;
+      top:-30px;
+      display:block;
+      height:30px;
+      line-height:30px;
+      text-align:center;
+      color:white;
+      position:relative;
+      z-index:9999;
+    }
+    label#label_tag{
+      font-size:small;
+      background:rgb(209, 72, 54);
+      border:1px solid transparent;
+      box-shadow:0pt 0pt 0pt 1px rgb(209, 72, 57) inset;
+      border-radius:2px 2px 2px 2px;
+      width:40px;
+      display:block;
+      height:30px;
+      line-height:30px;
+      text-align:center;
+      color:white;
+      position:relative;
+      z-index:9999;
+    }
+    
+    label#label_content{
+    display:none;
+    }
+
 
     .textbox div {
-        height: 24px;
+        margin-bottom:15px;
         display: block;
+        clear:both;
         text-align: left;
+    }
+    
+    p.introduction{
+      height:50px;
+      border:1px solid #D0D0D0;
+      background:#F0F0F0;
+      margin-bottom:20px;
+      width:65%;
+      line-height:50px;
+      text-align:center;
+      font-size:medium;
+      color:#B0B0B0;
     }
 </style>
 </head>
@@ -94,21 +168,34 @@
     #else
     <form method="POST" action="/tips/${tip.id}/edit">
     #end
-        <fieldset class="textbox">
-            <div>
+        <p class="introduction">
+          创建一个提示，可以用来记录或分享有意思的事物
+        </p>
+        <fieldset class="textbox">                 
+                 <div >
+                <label for="tip_tag" id="label_tag">标签</label>
+                <input name="tip_tag" id="tip_tag" value="${tip.tag}"/>
+                #if(validation_tip_message.get("tip_title").isDefined)
+                   <span>${validation_tip_message("tip_title")}
+                #end   
+            </div>
+            <div >
+                <label for="tip_title" id="label_title">标题</label>
                 <input name="tip_title" id="tip_title" value="${tip.title}"/>
                 #if(validation_tip_message.get("tip_title").isDefined)
                    <span>${validation_tip_message("tip_title")}
                 #end   
             </div>
-
+            <div>
+            <label for="tip_content" id="label_content">内容</label>
             <textarea name="tip_content" class="tip_content" id="tip_content">${tip.content}</textarea>
             #if(validation_tip_message.get("tip_content").isDefined)
               <span>${validation_tip_message("tip_content")}
-            #end   
+            #end 
+            </div>  
             <div>
                 <input type="submit" id="tip_submit" 
-                value="${not_empty_then_return_orelse(_title," Modify tip","Share tip")}"/>
+                value="${not_empty_then_return_orelse(_title," 修改","创建")}"/>
             </div>
         </fieldset>
     </form>
