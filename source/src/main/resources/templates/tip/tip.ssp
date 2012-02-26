@@ -71,13 +71,18 @@
 			</ul>
 		</div>
 		<div class="main">
-			<dl class="tip">
+		        
+			     <dl class="tip">
 			     <dt class="hidden">tag</dt>
-        <dd class="tip_tag">
-          #for( tag<-_tip.tag)
-              ${tag.name} 
-          #end
-        </dd>
+			     <%
+  				    var tags = ""
+  					for(a_tag<-_tip.tags){
+  					  tags+=" "+a_tag.name
+  				    }	  
+				%>
+		        <dd class="tip_tag">
+		           ${tags.trim()}
+		        </dd>
 				<dt class="hidden">title</dt>
 				<dd class="tip_title">
 					${_tip.title}

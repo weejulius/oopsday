@@ -148,6 +148,7 @@
     <%@ val tip:Tip %>
     <%@ val _title:String=tip.title %>
     <%@ val isNewTip:Boolean=(tip.id<=0)%>
+    <%@ var tags:String=""%>
     <%@ val validation_tip_message:Map[String,String]%>
 <body>
 <div id="container">
@@ -166,18 +167,22 @@
     #if(isNewTip)
     <form method="POST" action="/tips/new">
     #else
-    <form method="POST" action="/tips/${tip.id}/edit">
+    <form method="POST" action="/tips/${tip.id}/edit">     
     #end
+     
         <p class="introduction">
           创建一个提示，可以用来记录或分享有意思的事物
         </p>
         <fieldset class="textbox">                 
                  <div >
                 <label for="tip_tag" id="label_tag">标签</label>
-                <input name="tip_tag" id="tip_tag" value="${tip.tag}"/>
-                #if(validation_tip_message.get("tip_title").isDefined)
-                   <span>${validation_tip_message("tip_title")}
-                #end   
+                <%
+  				    var tags = ""
+  					for(a_tag<-tip.tags){
+  					  tags+=" "+a_tag.name
+  				    }	  
+				%>
+                <input name="tip_tag" id="tip_tag" value="${tags.trim()}"/>
             </div>
             <div >
                 <label for="tip_title" id="label_title">标题</label>

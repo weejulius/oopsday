@@ -10,10 +10,13 @@ import javax.persistence.GenerationType
 case class Tag(
   @BeanProperty
   @Column
-  val name: String) {  
+  val name: String) {
+
+  def this()=this(null)
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name="tag_id")
   val id: Long=0
 
 }

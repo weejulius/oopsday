@@ -1,5 +1,6 @@
 package com.fishstory.oopsday.interfaces.tipping
 
+import java.util.HashSet
 import unfiltered.request._
 import com.fishstory.oopsday.domain.tip.Tip
 import unfiltered.response.{ NotFound, Found }
@@ -26,6 +27,7 @@ import com.fishstory.oopsday.interfaces.shared._
 import com.fishstory.oopsday.domain.tag.Tag
 import com.fishstory.oopsday.domain.tag.TagRepository
 import com.fishstory.oopsday.infrustructure.tag.TagRepositoryJPAImpl
+import java.util.ArrayList
 
 class TipFace extends AbstractPlan {
 
@@ -128,15 +130,16 @@ class TipFace extends AbstractPlan {
 
     var _tip: Option[Tip] = None
     
-    var _tag:Set[Tag] =Set.empty
+    var _tag:List[Tag] =List.empty
+
+    start_transaction
     
     if(!params("tip_tag").isEmpty){
-      for(val a_tag:String<-params("tip_tag").head.split("")){
-        _tag+=_tagRepository.find_by_name_or_save_new(a_tag)
+      for(val a_tag:String<-params("tip_tag").head.trim.split(" ")){
+        _tag=_tag:::List(_tagRepository.find_by_name_or_save_new(a_tag))
       }
     }
 
-    start_transaction
     if (is_to_create_tip(_tip_id)) {
       _tip = Some(Tip.createWithTag(_tip_title, _tip_content, "",_tag))
 
@@ -146,6 +149,12 @@ class TipFace extends AbstractPlan {
         return Scalate(req, "bad_user_request.ssp")
       } else {
         _tip.get.update_content(_tip_content)
+        val tag=new ArrayList[Tag]
+        for(a_tag<-_tag){
+          tag.add(a_tag)
+          println("====="+a_tag)
+        }
+        _tip.get.tags=tag
       }
     }
 
@@ -177,7 +186,7 @@ class TipFace extends AbstractPlan {
 }
 
 object TipFace {
-  var pageSize: Int = 2
+  var pageSize: Int = 6
 
   def create: TipFace = new TipFace()
   def set_page_size(page_size: Int) = pageSize = page_size

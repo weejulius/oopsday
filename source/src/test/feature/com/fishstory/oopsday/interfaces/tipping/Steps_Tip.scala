@@ -17,8 +17,8 @@ import com.fishstory.oopsday.infrustructure.tip.TipRepositoryJPAImpl
 import scala.util.Random
 
 class Steps_Tip extends Transactions {
-  private var _webDriver: WebDriver = new HtmlUnitDriver()
-  private var _server: Server = Http(8080).plan(new TipFace)
+  private val _webDriver: WebDriver = new HtmlUnitDriver()
+  private val _server: Server = Http(8080).plan(new TipFace)
   private val _log: Logger = LoggerFactory.getLogger(classOf[Steps_Tip])
   private val _tipRepository: TipRepository = new TipRepositoryJPAImpl()
 
@@ -84,7 +84,7 @@ class Steps_Tip extends Transactions {
       i_click_the_submit_button()
     }
   }
-
+  
   @Given("^the page size is \"([^\"]*)\"")
   def the_page_size_is(page_size: String) = {
     TipFace.set_page_size(page_size.toInt)
@@ -109,6 +109,7 @@ class Steps_Tip extends Transactions {
   @Then("^I should see the tag \"([^\"]*)\"$")
   def i_should_see_the_tag(a_tag: String) {
 
+    println(_webDriver.getPageSource)
     The list (getTextsFromElementsByClass("tip_tag")) should_contain_the_element a_tag
   }
 

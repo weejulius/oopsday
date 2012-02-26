@@ -21,12 +21,6 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jbehave</groupId>
-			<artifactId>jbehave-core</artifactId>
-			<version>3.5.3</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
@@ -35,18 +29,18 @@
 		<dependency>
 			<groupId>info.cukes</groupId>
 			<artifactId>cucumber-core</artifactId>
-			<version>1.0.0.RC11</version>
+			<version>1.0.0.RC16</version>
 		</dependency>
 		<dependency>
 			<groupId>info.cukes</groupId>
 			<artifactId>cucumber-picocontainer</artifactId>
-			<version>1.0.0.RC11</version>
+			<version>1.0.0.RC16</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>info.cukes</groupId>
 			<artifactId>cucumber-junit</artifactId>
-			<version>1.0.0.RC11</version>
+			<version>1.0.0.RC16</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -122,10 +116,15 @@
 			<artifactId>jackson-module-scala</artifactId>
 			<version>1.9.1</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>2.9.1</version>
+		</dependency>
 	</dependencies>
 	<build>
-		<finalName>opps_day</finalName>
+		<finalName>oops_day</finalName>
+		<sourceDirectory>src/main/scala</sourceDirectory>
 		<testResources>
 			<testResource>
 				<directory>src/test/resources</directory>
@@ -135,41 +134,9 @@
 					<include>META-INF/*.xml</include>
 				</includes>
 			</testResource>
-
 		</testResources>
-
 		<plugins>
-			<plugin>
-				<groupId>org.jbehave</groupId>
-				<artifactId>jbehave-maven-plugin</artifactId>
-				<version>3.5.2</version>
-				<executions>
-					<execution>
-						<id>run-stories-as-embeddables</id>
-						<phase>integration-test</phase>
-						<configuration>
-							<includes>
-								<include>**/*_story.java</include>
-							</includes>
-							<metaFilters>
-								<metaFilter>+author *</metaFilter>
-								<metaFilter>-skip</metaFilter>
-							</metaFilters>
-							<systemProperties>
-								<property>
-									<name>java.awt.headless</name>
-									<value>true</value>
-								</property>
-							</systemProperties>
-							<ignoreFailureInStories>true</ignoreFailureInStories>
-							<ignoreFailureInView>false</ignoreFailureInView>
-						</configuration>
-						<goals>
-							<goal>run-stories-as-embeddables</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>selenium-maven-plugin</artifactId>
@@ -187,6 +154,10 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.scala-tools</groupId>
+				<artifactId>maven-scala-plugin</artifactId>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
@@ -195,7 +166,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.7.2</version>
-			</plugin>
+			</plugin>			
 		</plugins>
 	</build>
 	<repositories>

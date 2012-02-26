@@ -20,6 +20,16 @@ Feature: post a tip
         Then I should see the content "This is a modified tip 1"
         And the URL should be "tips/1"
         
+        Given I am on the page "tips/1/edit"
+        When I input the tag "tag1 tag2"
+        And I click the submit button
+        Then I should see the tag "tag1 tag2"
+        
+        Given I am on the page "tips/1/edit"
+        When I input the tag "tag2 tag3"
+        And I click the submit button
+        Then I should see the tag "tag2 tag3"        
+        
         Given I am on the page "tips/www/edit"
         Then I should see "Bad User Request"
         
