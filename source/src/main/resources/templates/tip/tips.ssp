@@ -77,7 +77,13 @@
 			#for(tip <- tips)
 			<ul class="tip">
 				<li class="tip_title"><strong>${tip.title}</strong></li>
-				<li class="tip_content">${tip.content}</li>
+                #if(tip.content.length>2000)
+                    tip.content=tip.content.subString(0,2000)
+                    <li class="tip_content">${tip.content}...<a href="/tips/${tip.id}" class="full_tip"></a></li>
+                #else
+                    <li class="tip_content">${tip.content}</li>
+                #end
+
 				<li class="date">created at ${tip.created_date}</li>
 				#if(tip.modified_date!=null)
 					<li class="date">modified at ${tip.modified_date}</li>

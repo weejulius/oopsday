@@ -64,7 +64,7 @@
         min-height: 280px;
         position:relative;
         top:-60px;
-        -moz-border-image:none transparent;
+        -moz-border-image:none;
     }
     
     .main{

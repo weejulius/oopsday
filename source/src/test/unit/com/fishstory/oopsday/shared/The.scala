@@ -58,6 +58,12 @@ class The {
     }
   }
 
+  def should_not_be_greater_than_number(a_num: Long) {
+    if (!(_number.isDefined && _number.get <= a_num)) {
+      throw new AssertException("\n\n Actual      |  {" + _number + "} \n Expected    |  {" + a_num + "}\n")
+    }
+  }
+
   def should_end_with(a_string: String) {
     if (!_string.endsWith(a_string)) {
       throw new AssertException("\n\n Actual      |  {" + _string + "} \n Expected    |  {" + a_string + "}\n")

@@ -185,7 +185,7 @@ class TipFace extends AbstractPlan {
 }
 
 object TipFace {
-  var pageSize: Int = 6
+  var pageSize: Int = 10
 
   def create: TipFace = new TipFace()
   def set_page_size(page_size: Int) = pageSize = page_size

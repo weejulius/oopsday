@@ -18,6 +18,7 @@ class Steps_Tip extends Transactions {
   private val _webDriver: WebDriver = new HtmlUnitDriver()
   private val _server: Server = Http(8080).plan(new TipFace)
   private val _tipRepository: TipRepository = new TipRepositoryJPAImpl()
+  private val _origin_page_size=TipFace.pageSize
 
   @Before
   def startServer = {
@@ -72,6 +73,16 @@ class Steps_Tip extends Transactions {
     _webDriver.findElement(By.id("tip_title")).sendKeys(chars)
   }
 
+  @Given("^I input the content more than \"([^\"]*)\" characters$")
+    def i_input_the_content_more_than(a_length: String) = {
+      var chars = ""
+      for (i <- 0 until a_length.toInt) {
+        chars += (Random.nextPrintableChar())
+      }
+      _webDriver.findElement(By.id("tip_content")).clear()
+      _webDriver.findElement(By.id("tip_content")).sendKeys(chars)
+    }
+
   @Given("^I have input \"([^\"]*)\" tips$")
   def i_have_input_tips(num_of_tips: String) = {
     for (i <- 0 until num_of_tips.toInt) {
@@ -90,6 +101,11 @@ class Steps_Tip extends Transactions {
   @When("^I click the submit button$")
   def i_click_the_submit_button() {
     _webDriver.findElement(By.id("tip_submit")).submit()
+  }
+
+  @When("^ I click the link \"([^\"]*)\"$")
+  def i_click_the_link(a_link:String){
+    _webDriver.findElement(By.className("full_tip")).click()
   }
 
   @Then("^I should see the content \"([^\"]*)\"$")
@@ -138,15 +154,22 @@ class Steps_Tip extends Transactions {
     The number _webDriver.findElements(By.className("tip")).size().toLong should_equal_to num_of_tips.toInt
   }
 
+  @Then("^I should see the content length of tip \"([^\"]*)\" is \"([^\"]*)\"$")
+  def i_should_see_the_content_length_of_tip_is(a_title:String,a_length:String){
+      The number getElementByClassAndValue("tip_title",a_title).get.getText.length() should_not_be_greater_than_number a_length.toInt
+  }
+
   @After
   def stopServer = {
     _server.stop()
+    TipFace.set_page_size(_origin_page_size)
   }
 
   private def getElementByClassAndValue(a_class_name: String, a_value: String): Option[WebElement] = {
     var iterator = _webDriver.findElements(By.className(a_class_name)).iterator
     while (iterator.hasNext) {
       var el = iterator.next()
+      println("===================="+el.getText+"==============="+a_value)
       if (a_value != null && a_value.equals(el.getText())) {
         return Some(el)
       }
