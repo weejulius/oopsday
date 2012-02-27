@@ -135,8 +135,8 @@ class TipFace extends AbstractPlan {
     start_transaction
     
     if(!params("tip_tag").isEmpty){
-      for(val a_tag:String<-params("tip_tag").head.trim.split(" ")){
-        _tag=_tag:::List(_tagRepository.find_by_name_or_save_new(a_tag))
+      for(val a_tag:String<-params("tip_tag").head.trim.split(",")){
+        _tag=_tag:::List(_tagRepository.find_by_name_or_save_new(a_tag.trim))
       }
     }
 
@@ -152,7 +152,6 @@ class TipFace extends AbstractPlan {
         val tag=new ArrayList[Tag]
         for(a_tag<-_tag){
           tag.add(a_tag)
-          println("====="+a_tag)
         }
         _tip.get.tags=tag
       }

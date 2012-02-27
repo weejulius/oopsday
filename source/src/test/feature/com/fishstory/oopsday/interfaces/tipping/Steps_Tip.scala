@@ -9,8 +9,6 @@ import unfiltered.jetty.{ Server, Http }
 import com.fishstory.oopsday.domain.tip.Tip
 import org.openqa.selenium.{ By, WebDriver }
 import org.openqa.selenium.WebElement
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import com.fishstory.oopsday.infrustructure.tip.Transactions
 import com.fishstory.oopsday.domain.tip.TipRepository
 import com.fishstory.oopsday.infrustructure.tip.TipRepositoryJPAImpl
@@ -19,13 +17,12 @@ import scala.util.Random
 class Steps_Tip extends Transactions {
   private val _webDriver: WebDriver = new HtmlUnitDriver()
   private val _server: Server = Http(8080).plan(new TipFace)
-  private val _log: Logger = LoggerFactory.getLogger(classOf[Steps_Tip])
   private val _tipRepository: TipRepository = new TipRepositoryJPAImpl()
 
   @Before
   def startServer = {
     _server.context("/resources") { _.resources(new java.net.URL(getClass().getResource("/css"), ".")) }
-    _server.run
+    _server.start
   }
 
   @Given("^the tip \"([^\"]*)\" is existing$")
@@ -108,8 +105,6 @@ class Steps_Tip extends Transactions {
   
   @Then("^I should see the tag \"([^\"]*)\"$")
   def i_should_see_the_tag(a_tag: String) {
-
-    println(_webDriver.getPageSource)
     The list (getTextsFromElementsByClass("tip_tag")) should_contain_the_element a_tag
   }
 

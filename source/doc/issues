@@ -4,7 +4,7 @@ Solution: check the author of tip when updating
 
 2.Not valid UTF8
 
-if the input is Õ, it will cause the jetty throws exception
+if the input is ï¿½, it will cause the jetty throws exception
 
 
 3. Transaction issue with HSQL (fixed)
@@ -14,3 +14,7 @@ as the transaction is not rolled back due to some exceptions, and then the next 
 4. the conversion of css definition like id class and so on
 
 5. auto resize textarea
+
+6. helper to cast List/Set between scala and java
+
+7. reorganize the test stories

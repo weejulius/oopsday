@@ -21,14 +21,14 @@ Feature: post a tip
         And the URL should be "tips/1"
         
         Given I am on the page "tips/1/edit"
-        When I input the tag "tag1 tag2"
+        When I input the tag "tag1,tag2"
         And I click the submit button
-        Then I should see the tag "tag1 tag2"
+        Then I should see the tag "tag1tag2"
         
         Given I am on the page "tips/1/edit"
-        When I input the tag "tag2 tag3"
+        When I input the tag "tag2,tag3"
         And I click the submit button
-        Then I should see the tag "tag2 tag3"        
+        Then I should see the tag "tag2tag3"
         
         Given I am on the page "tips/www/edit"
         Then I should see "Bad User Request"
