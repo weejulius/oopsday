@@ -29,8 +29,13 @@ import com.fishstory.oopsday.domain.tag.TagRepository
 import com.fishstory.oopsday.infrustructure.tag.TagRepositoryJPAImpl
 import java.util.ArrayList
 
+/**
+* Used to handle the requests regarding tip
+* 
+*/
 class TipFace extends AbstractPlan {
 
+  //TODO use DI to inject dependencies
   private val _tipRepository: TipRepository = new TipRepositoryJPAImpl
   private val _tagRepository: TagRepository = new TagRepositoryJPAImpl
 
@@ -38,17 +43,26 @@ class TipFace extends AbstractPlan {
 
     case req @ GET(Path("/tips")) & Params(params) => {
 
+      //TODO need refactor, like the "page size" is meanless
+      //Validation(params).for(
+      //                       _ = "page" =>
+      //                      )
       Validations(params,
         ("page", "page size", IsEmpty() :: Or() :: ParamIsNumeric() :: Nil)).result match {
           case FAILURE(message) => Scalate(req, "bad_user_request.ssp")
           case SUCCESS(messages) =>
             var page: Int = 1
+            //TODO move to configuration area
             val pageSize = TipFace.pageSize
 
             if (!params("page").isEmpty && Strings.is_numeric(params("page").head)) {
               page = params("page").head.toInt
             }
 
+	    //TODO Is it possible to change to
+	    // transaction(
+	    //    anything.......
+	    //)
             start_transaction
             val tips = _tipRepository.find_all((page - 1) * pageSize, pageSize)
             val count_of_tips = _tipRepository.count
