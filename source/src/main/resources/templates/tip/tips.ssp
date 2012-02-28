@@ -79,7 +79,7 @@
 				<li class="tip_title"><strong>${tip.title}</strong></li>
                 #if(tip.content.length>2000)
                     tip.content=tip.content.subString(0,2000)
-                    <li class="tip_content">${tip.content}...<a href="/tips/${tip.id}" class="full_tip"></a></li>
+                    <li class="tip_content">${tip.content} ...<a href="/tips/${tip.id}" class="full_tip">阅读全文</a></li>
                 #else
                     <li class="tip_content">${tip.content}</li>
                 #end

@@ -91,11 +91,10 @@ Feature: post a tip
    Scenario: preview the content if too long
         Given I am on the page "tips/new"
         And I input the title "a too long tip"
-        And I input the content more than "3000" characters
+        And I input the content more than "2800" characters
         When I click the submit button
         Then I should see the title "a too long tip"
         When I am on the page "tips"
         And I should see the content length of tip "a too long tip" is "2000"
         When I click the link "Read All"
-        Then I should see the length of content is "3000"
-
+        Then I should see the content length of tip "a too long tip" is "2800"

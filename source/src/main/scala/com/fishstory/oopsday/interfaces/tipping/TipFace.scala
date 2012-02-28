@@ -61,7 +61,7 @@ class TipFace extends AbstractPlan {
 
     case req @ Path("/tips/new") => req match {
 
-      case GET(_) => editable_page(req, None, Map.empty)
+      case GET(_)                   => editable_page(req, None, Map.empty)
       case POST(_) & Params(params) => create_or_update_tip(req, None, params)
     }
 
@@ -107,7 +107,10 @@ class TipFace extends AbstractPlan {
     }
   }
 
-  private def create_or_update_tip(req: HttpRequest[Any], tip_id: Option[String], params: Map[String, Seq[String]]): ResponseFunction[Any] = {
+  private def create_or_update_tip(
+    req: HttpRequest[Any],
+    tip_id: Option[String],
+    params: Map[String, Seq[String]]): ResponseFunction[Any] = {
 
     var _tip_id: Long = 0
 
@@ -121,7 +124,10 @@ class TipFace extends AbstractPlan {
     Validations(params,
       ("tip_title", "title", IsNotBlank() :: And() :: MaxLength(120) :: Nil),
       ("tip_content", "content", IsNotBlank() :: And() :: MaxLength(3000) :: Nil)).result match {
-        case FAILURE(messages) => return editable_page(req, Some(Tip.mock(params("tip_title").head, params("tip_content").head, "")), messages)
+        case FAILURE(messages) => return editable_page(
+          req,
+          Some(Tip.mock(params("tip_title").head, params("tip_content").head, "")),
+          messages)
         case _ =>
       }
 
@@ -129,19 +135,19 @@ class TipFace extends AbstractPlan {
     val _tip_content: String = params("tip_content").head
 
     var _tip: Option[Tip] = None
-    
-    var _tag:List[Tag] =List.empty
+
+    var _tags: List[Tag] = List.empty
 
     start_transaction
-    
-    if(!params("tip_tag").isEmpty){
-      for(val a_tag:String<-params("tip_tag").head.trim.split(",")){
-        _tag=_tag:::List(_tagRepository.find_by_name_or_save_new(a_tag.trim))
+
+    if (!params("tip_tag").isEmpty) {
+      for (val a_tag: String <- params("tip_tag").head.trim.split(",")) {
+        _tags = _tags ::: List(_tagRepository.find_by_name_or_save_new(a_tag.trim))
       }
     }
 
     if (is_to_create_tip(_tip_id)) {
-      _tip = Some(Tip.createWithTag(_tip_title, _tip_content, "",_tag))
+      _tip = Some(Tip.createWithTag(_tip_title, _tip_content, "", _tags))
 
     } else {
       _tip = _tipRepository.find_by_id_is(_tip_id.toLong);
@@ -149,11 +155,11 @@ class TipFace extends AbstractPlan {
         return Scalate(req, "bad_user_request.ssp")
       } else {
         _tip.get.update_content(_tip_content)
-        val tag=new ArrayList[Tag]
-        for(a_tag<-_tag){
-          tag.add(a_tag)
+        val tags = new ArrayList[Tag]
+        for (a_tag <- _tags) {
+          tags.add(a_tag)
         }
-        _tip.get.tags=tag
+        _tip.get.tags = tags
       }
     }
 

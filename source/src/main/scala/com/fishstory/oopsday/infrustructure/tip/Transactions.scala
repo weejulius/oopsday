@@ -7,16 +7,16 @@ trait Transactions {
   private val LOG = LoggerFactory.getLogger(classOf[Transactions])
 
   def start_transaction = {
-    Transactions._transactions.set(Transactions._emf.createEntityManager())
+    entityManager._entityManager.set(entityManager._emf.createEntityManager())
     get().getTransaction().begin()
   }
 
   def get(): EntityManager = {
-    Transactions._transactions.get()
+    entityManager._entityManager.get()
   }
 
   def commit_and_close_transaction = {
-    
+
     try {
       if (get().getTransaction().isActive() && !get().getTransaction().getRollbackOnly()) {
         get.getTransaction().commit()
@@ -30,13 +30,13 @@ trait Transactions {
       }
     } finally {
       get().close()
-      Transactions._transactions.set(null)
+      entityManager._entityManager.set(null)
     }
   }
 }
 
-object Transactions {
+object entityManager {
   val _emf = Persistence.createEntityManagerFactory("tip")
-  val _transactions: ThreadLocal[EntityManager] = new ThreadLocal[EntityManager]
+  val _entityManager: ThreadLocal[EntityManager] = new ThreadLocal[EntityManager]
 
 }

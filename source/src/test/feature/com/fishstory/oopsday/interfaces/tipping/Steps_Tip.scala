@@ -103,9 +103,9 @@ class Steps_Tip extends Transactions {
     _webDriver.findElement(By.id("tip_submit")).submit()
   }
 
-  @When("^ I click the link \"([^\"]*)\"$")
+  @When("^I click the link \"([^\"]*)\"$")
   def i_click_the_link(a_link:String){
-    _webDriver.findElement(By.className("full_tip")).click()
+    _webDriver.findElements(By.className("full_tip")).get(0).click()
   }
 
   @Then("^I should see the content \"([^\"]*)\"$")
@@ -169,7 +169,6 @@ class Steps_Tip extends Transactions {
     var iterator = _webDriver.findElements(By.className(a_class_name)).iterator
     while (iterator.hasNext) {
       var el = iterator.next()
-      println("===================="+el.getText+"==============="+a_value)
       if (a_value != null && a_value.equals(el.getText())) {
         return Some(el)
       }
