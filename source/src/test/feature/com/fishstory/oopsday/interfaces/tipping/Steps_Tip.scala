@@ -115,7 +115,6 @@ class Steps_Tip extends Transactions {
 
   @Then("^I should see the title \"([^\"]*)\"$")
   def i_should_see_the_title(a_title: String) {
-
     The list (getTextsFromElementsByClass("tip_title")) should_contain_the_element a_title
   }
   
