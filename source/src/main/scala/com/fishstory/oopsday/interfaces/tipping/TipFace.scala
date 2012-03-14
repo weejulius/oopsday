@@ -41,7 +41,6 @@ class TipFace extends AbstractPlan {
   private val _tagRepository: TagRepository = new TagRepositoryJPAImpl
 
   override def delegates = {
-
     case req @ GET(Path("/tips")) & Params(params) => {
 
       //TODO need refactor, like the "page size" is meanless
