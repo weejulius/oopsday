@@ -44,51 +44,34 @@ class Tip extends com.fishstory.oopsday.domain.Entity {
   @OrderColumn
   var tags: java.util.List[Tag] = List.empty.asJava
 
+  def this(a_title: String, a_content: String, a_author: String, a_tags: List[Tag]) = {
+    this()
+
+    if (isValid) {
+      if (a_content.length() > entityValidationDef.tipMaxLengthOfContent) {
+        throw InvalidTipException("the length of content is more than " + entityValidationDef.tipMaxLengthOfContent)
+      }
+    }
+    content = a_content
+    author = a_author
+    title = a_title
+    tags = a_tags.asJava
+  }
+
+  def this(a_title: String, a_content: String, a_author: String) = this(a_title, a_content, a_author, List.empty);
+
   def update_content(a_content: String) {
     if (!content.equals(a_content)) {
       content = a_content
       modified_date = DateTime.now().toDate
     }
   }
-
 }
-object Tip {
-  def create(a_title: String, a_content: String, a_author: String): Tip = {
 
-    if (a_content.length() > entityValidationDef.tipMaxLengthOfContent) {
-      throw InvalidTipException("the length of content is more than " + entityValidationDef.tipMaxLengthOfContent)
-    }
+object emptyTip extends Tip {
+}
 
-    val tip = new Tip()
-
-    tip.content = a_content
-    tip.author = a_author
-    tip.title = a_title
-    tip
-  }
-
-  def createWithTag(a_title: String, a_content: String, a_author: String, a_tags: List[Tag]): Tip = {
-
-    val tip = create(a_title, a_content, a_author)
-    tip.tags = a_tags.asJava
-    tip
-  }
-
-  def mock(a_title: String, a_content: String, a_author: String): Tip = {
-    var tip = new Tip()
-
-    tip.content = a_content
-    tip.author = a_author
-    tip.title = a_title
-    tip
-  }
-
-  def NullObject: Tip = {
-    new Tip
-  }
-
-  def isNullObject(tip: Tip): Boolean = {
-    tip == null || tip.id <= 0
-  }
+case class InvalidTip(a_title: String, a_content: String, a_author: String) extends Tip(a_title, a_content, a_author) {
+  override def isValid: Boolean = false
 }
 

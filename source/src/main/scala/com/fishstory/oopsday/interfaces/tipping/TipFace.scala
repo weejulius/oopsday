@@ -28,14 +28,15 @@ import com.fishstory.oopsday.domain.tag.Tag
 import com.fishstory.oopsday.domain.tag.TagRepository
 import com.fishstory.oopsday.infrustructure.tag.TagRepositoryJPAImpl
 import java.util.ArrayList
+import com.fishstory.oopsday.domain.tip.emptyTip
+import com.fishstory.oopsday.domain.tip.InvalidTip
 
-/**
-* Used to handle the requests regarding tip
-* 
-*/
+/** Used to handle the requests regarding tip
+ *
+ */
 class TipFace extends AbstractPlan {
 
-  //TODO use DI to inject dependencies
+  //Todo use DI to inject dependencies
   private val _tipRepository: TipRepository = new TipRepositoryJPAImpl
   private val _tagRepository: TagRepository = new TagRepositoryJPAImpl
 
@@ -59,10 +60,10 @@ class TipFace extends AbstractPlan {
               page = params("page").head.toInt
             }
 
-	    //TODO Is it possible to change to
-	    // transaction(
-	    //    anything.......
-	    //)
+            //TODO Is it possible to change to
+            // transaction(
+            //    anything.......
+            //)
             start_transaction
             val tips = _tipRepository.find_all((page - 1) * pageSize, pageSize)
             val count_of_tips = _tipRepository.count
@@ -140,7 +141,7 @@ class TipFace extends AbstractPlan {
       ("tip_content", "content", IsNotBlank() :: And() :: MaxLength(3000) :: Nil)).result match {
         case FAILURE(messages) => return editable_page(
           req,
-          Some(Tip.mock(params("tip_title").head, params("tip_content").head, "")),
+          Some(InvalidTip(params("tip_title").head, params("tip_content").head, "")),
           messages)
         case _ =>
       }
@@ -161,7 +162,7 @@ class TipFace extends AbstractPlan {
     }
 
     if (is_to_create_tip(_tip_id)) {
-      _tip = Some(Tip.createWithTag(_tip_title, _tip_content, "", _tags))
+      _tip = Some(new Tip(_tip_title, _tip_content, "", _tags))
 
     } else {
       _tip = _tipRepository.find_by_id_is(_tip_id.toLong);
@@ -196,7 +197,7 @@ class TipFace extends AbstractPlan {
   }
 
   private def editable_page(req: HttpRequest[Any], _tip: Option[Tip], _validation_tip_message: Map[String, String]) = {
-    var tip: Tip = Tip.NullObject
+    var tip: Tip = emptyTip; //Tip.NullObject
     if (_tip.isDefined) {
       tip = _tip.get
     }

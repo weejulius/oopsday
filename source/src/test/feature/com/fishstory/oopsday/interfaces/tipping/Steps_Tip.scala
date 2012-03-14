@@ -28,7 +28,7 @@ class Steps_Tip extends Transactions {
 
   @Given("^the tip \"([^\"]*)\" is existing$")
   def the_tip_is_existing(a_tip_id: String) {
-    val tip = Tip.create("Tip 1", "This is the tip 1", "jyu")
+    val tip = new Tip("Tip 1", "This is the tip 1", "jyu")
     start_transaction
     _tipRepository.save_new_or_update(tip)
     commit_and_close_transaction
