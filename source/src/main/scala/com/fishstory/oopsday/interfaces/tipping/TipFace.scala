@@ -196,7 +196,7 @@ class TipFace extends AbstractPlan {
   }
 
   private def editable_page(req: HttpRequest[Any], _tip: Option[Tip], _validation_tip_message: Map[String, String]) = {
-    var tip: Tip = emptyTip; //Tip.NullObject
+    var tip: Tip = emptyTip;
     if (_tip.isDefined) {
       tip = _tip.get
     }
