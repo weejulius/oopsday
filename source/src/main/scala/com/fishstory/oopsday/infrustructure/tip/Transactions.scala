@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory
 trait Transactions {
   private val LOG = LoggerFactory.getLogger(classOf[Transactions])
 
-  def start_transaction = {
+  def startTransaction = {
     entityManager._entityManager.set(entityManager._emf.createEntityManager())
     get().getTransaction().begin()
   }
@@ -15,7 +15,7 @@ trait Transactions {
     entityManager._entityManager.get()
   }
 
-  def commit_and_close_transaction = {
+  def commitAndCloseTransaction = {
 
     try {
       if (get().getTransaction().isActive() && !get().getTransaction().getRollbackOnly()) {
@@ -31,6 +31,16 @@ trait Transactions {
     } finally {
       get().close()
       entityManager._entityManager.set(null)
+    }
+  }
+  def transaction[A](a: => A): A = {
+    startTransaction
+    try {
+
+      (a _)()
+
+    } finally {
+      commitAndCloseTransaction
     }
   }
 }

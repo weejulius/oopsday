@@ -59,17 +59,12 @@ class TipFace extends AbstractPlan {
               page = params("page").head.toInt
             }
 
-            //TODO Is it possible to change to
-            // transaction(
-            //    anything.......
-            //)
-            start_transaction
-            val tips = _tipRepository.find_all((page - 1) * pageSize, pageSize)
-            val count_of_tips = _tipRepository.count
-            commit_and_close_transaction
-
-            Scalate(req, "tip/tips.ssp",
-              ("tips", tips.asScala.toList), ("page_nav", PageNavigation(page, count_of_tips, pageSize)))
+            transaction {
+              val tips = _tipRepository.find_all((page - 1) * pageSize, pageSize)
+              val count_of_tips = _tipRepository.count
+              Scalate(req, "tip/tips.ssp",
+                ("tips", tips.asScala.toList), ("page_nav", PageNavigation(page, count_of_tips, pageSize)))
+            }
         }
     }
 
@@ -84,9 +79,8 @@ class TipFace extends AbstractPlan {
 
         case FAILURE(messages) => Scalate(req, "bad_user_request.ssp")
         case _ => {
-          start_transaction
-          var _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
-          commit_and_close_transaction
+
+          val _tip: Option[Tip] = transaction { _tipRepository.find_by_id_is(id.toLong) }
 
           if (_tip.isDefined) {
             Found ~> index_page(req, _tip.get)
@@ -107,9 +101,9 @@ class TipFace extends AbstractPlan {
 
           case FAILURE(messages) => Scalate(req, "bad_user_request.ssp")
           case _ =>
-            start_transaction
-            val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
-            commit_and_close_transaction
+            val _tip = transaction {
+              _tipRepository.find_by_id_is(id.toLong)
+            }
 
             if (_tip.isDefined) {
               editable_page(req, _tip, Map.empty)
@@ -152,36 +146,33 @@ class TipFace extends AbstractPlan {
 
     var _tags: List[Tag] = List.empty
 
-    start_transaction
+    transaction {
 
-    if (!params("tip_tag").isEmpty) {
-      for (val a_tag: String <- params("tip_tag").head.trim.split(",")) {
-        _tags = _tags ::: List(_tagRepository.find_by_name_or_save_new(a_tag.trim))
-      }
-    }
-
-    if (is_to_create_tip(_tip_id)) {
-      _tip = Some(new Tip(_tip_title, _tip_content, "", _tags))
-
-    } else {
-      _tip = _tipRepository.find_by_id_is(_tip_id.toLong);
-      if (_tip.isEmpty) {
-        return Scalate(req, "bad_user_request.ssp")
-      } else {
-        _tip.get.update_content(_tip_content)
-        val tags = new ArrayList[Tag]
-        for (a_tag <- _tags) {
-          tags.add(a_tag)
+      if (!params("tip_tag").isEmpty) {
+        for (val a_tag: String <- params("tip_tag").head.trim.split(",")) {
+          _tags = _tags ::: List(_tagRepository.find_by_name_or_save_new(a_tag.trim))
         }
-        _tip.get.tags = tags
       }
-    }
 
-    try {
+      if (is_to_create_tip(_tip_id)) {
+        _tip = Some(new Tip(_tip_title, _tip_content, "", _tags))
+
+      } else {
+        _tip = _tipRepository.find_by_id_is(_tip_id.toLong);
+        if (_tip.isEmpty) {
+          return Scalate(req, "bad_user_request.ssp")
+        } else {
+          _tip.get.update_content(_tip_content)
+          val tags = new ArrayList[Tag]
+          for (a_tag <- _tags) {
+            tags.add(a_tag)
+          }
+          _tip.get.tags = tags
+        }
+      }
+
       _tipRepository.save_new_or_update(_tip.get)
       Redirect("/tips/" + _tip.get.id)
-    } finally {
-      commit_and_close_transaction
     }
   }
 
