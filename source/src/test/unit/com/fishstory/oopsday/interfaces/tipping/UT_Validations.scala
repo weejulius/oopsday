@@ -1,13 +1,15 @@
 package com.fishstory.oopsday.interfaces.tipping
 import com.fishstory.oopsday.interfaces.shared.validation.Validations
+import com.fishstory.oopsday.interfaces.shared.validation.Validation
 import org.junit.Test
 import com.fishstory.oopsday.interfaces.shared.validation.FAILURE
 import com.fishstory.oopsday.interfaces.shared.validation.Validate
 import com.fishstory.oopsday.interfaces.shared.validation.IsNotBlank
 import com.fishstory.oopsday.interfaces.shared.validation.And
 import com.fishstory.oopsday.interfaces.shared.validation.MaxLength
+import org.junit.Assert._
 
-class UT_Validations {
+class UT_Validations extends Validation {
 
   @Test
   def test_is_not_blank {
@@ -16,7 +18,8 @@ class UT_Validations {
     params += ("tip_title" -> List("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
 
     Validations(params,
-      ("tip_title", "title", IsNotBlank() :: And() :: MaxLength(20) :: Nil)).result match {
+      ("tip_title", "title", IsNotBlank() ::
+        And() :: MaxLength(20) :: Nil)).result match {
         case FAILURE(messages) => println(messages)
         case _                 =>
       }
@@ -27,60 +30,17 @@ class UT_Validations {
     var params: Map[String, Seq[String]] = Map.empty
     params += ("tip_title" -> List("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
 
-    params.foreach(
-      _ match {
-        case ("tip_title", value) => println(value.head)
-      }
-    )
+    assertEquals(2,
+      validations {
+        Result[String, String]().
+          check(params.get, "tip_title").by(isNotBlank("the tip is must"), maxLength(20)("the length of tip is more than {}")).
+          check(params.get, "tip_content").by(isNotBlank("the tip is must"), maxLength(20)("the length of tip is more than {}"))
+      }.messages.size)
+
+    assertEquals(0,
+      validations {
+        Result[String, String]().
+          check(params.get, "tip_content").by(isEmpty("the tip content is must"), or, isNumeric1("the length of tip is more than {}"))
+      }.messages.size)
   }
-
-  //    validations(params) {
-  //      validation("tip_title")(isNotBlank, maxLength(20))
-  //    } match {
-  //      case FAILUREResult(messages: Map[String, String]) => println(messages)
-  //      case _ =>
-  //    }
-  //  }
-
-  //  def isNotBlank(a: String, implicit b: Map[String, Seq[String]]): ValidationResult = {
-  //    var result = SUCCESSResult()
-  //    if (b.get(a).isEmpty || b(a).isEmpty || b(a).head.isNotBlank) {
-  //      result = FAILUREResult(a, " is must")
-  //    }
-  //    result
-  //  }
-  // def maxLength[A](length: Int)(a: A): ValidationResult = true
-
-  //  object validations {
-  //    def apply[A, B](
-  //      validatable: A)(
-  //        a: => B): ValidationResult = {
-  //      FAILUREResult(Map.empty)
-  //    }
-  //
-  //  }
-  //
-  //  object validation {
-  //    def apply[A, B](
-  //      validatable: A,
-  //      b: List[A => ValidationResult])(
-  //        implicit c: B): Boolean = {
-  //      var result: List[Boolean] = List.empty
-  //      for (express <- b) {
-  //        result = express(validatable) :: result
-  //      }
-  //      true
-  //    }
-  //  }
-  //
-  //  abstract class ValidationResult {}
-  //
-  //  case class SUCCESSResult extends ValidationResult {
-  //    def get = true
-  //  }
-  //
-  //  case class FAILUREResult(messages: Map[String, String]) extends ValidationResult {
-  //    def get = false
-  //  }
-
 }

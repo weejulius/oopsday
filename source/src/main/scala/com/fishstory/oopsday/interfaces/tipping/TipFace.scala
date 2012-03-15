@@ -41,12 +41,9 @@ class TipFace extends AbstractPlan {
   private val _tagRepository: TagRepository = new TagRepositoryJPAImpl
 
   override def delegates = {
+    
     case req @ GET(Path("/tips")) & Params(params) => {
 
-      //TODO need refactor, like the "page size" is meanless
-      //Validation(params).for(
-      //                       _ = "page" =>
-      //                      )
       Validations(params,
         ("page", "page size", IsEmpty() :: Or() :: ParamIsNumeric() :: Nil)).result match {
           case FAILURE(message) => Scalate(req, "bad_user_request.ssp")
@@ -75,19 +72,22 @@ class TipFace extends AbstractPlan {
     }
 
     case req @ GET(Path(Seg("tips" :: id :: Nil))) => {
-      StringValidations((id, "tip id", IsNumeric() :: Nil)).result match {
 
-        case FAILURE(messages) => Scalate(req, "bad_user_request.ssp")
-        case _ => {
+      val validationResult = validations {
+        Result().check(id).by(isNumeric("the tip id {} is not numeric"))
+      }
 
-          val _tip: Option[Tip] = transaction { _tipRepository.find_by_id_is(id.toLong) }
+      if (!validationResult.messages.isEmpty) {
 
-          if (_tip.isDefined) {
-            Found ~> index_page(req, _tip.get)
-          } else {
-            NotFound ~> not_found_page(req)
-          }
+        val _tip: Option[Tip] = transaction { _tipRepository.find_by_id_is(id.toLong) }
+
+        if (_tip.isDefined) {
+          Found ~> index_page(req, _tip.get)
+        } else {
+          NotFound ~> not_found_page(req)
         }
+      } else {
+        Scalate(req, "bad_user_request.ssp")
       }
     }
 
@@ -97,19 +97,22 @@ class TipFace extends AbstractPlan {
 
       case GET(_) => {
 
-        StringValidations((id, "tip id", IsNumeric() :: Nil)).result match {
+        val result = validations {
+          Result().check(id).by(isNumeric("the tip id {} is not numeric"))
+        }
 
-          case FAILURE(messages) => Scalate(req, "bad_user_request.ssp")
-          case _ =>
-            val _tip = transaction {
-              _tipRepository.find_by_id_is(id.toLong)
-            }
+        if (result.messages.isEmpty) {
+          val _tip = transaction {
+            _tipRepository.find_by_id_is(id.toLong)
+          }
 
-            if (_tip.isDefined) {
-              editable_page(req, _tip, Map.empty)
-            } else {
-              not_found_page(req)
-            }
+          if (_tip.isDefined) {
+            editable_page(req, _tip, Map.empty)
+          } else {
+            not_found_page(req)
+          }
+        } else {
+          Scalate(req, "bad_user_request.ssp")
         }
       }
     }
