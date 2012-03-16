@@ -1,9 +1,8 @@
 package com.fishstory.oopsday.interfaces.tipping
 
-import java.util.HashSet
 import unfiltered.request._
 import com.fishstory.oopsday.domain.tip.Tip
-import unfiltered.response.{ NotFound, Found }
+import unfiltered.response.{NotFound, Found}
 import unfiltered.response.Redirect
 import unfiltered.request.GET
 import unfiltered.request.Seg
@@ -12,17 +11,6 @@ import com.fishstory.oopsday.domain.tip.TipRepository
 import scala.collection.JavaConverters._
 import unfiltered.response.ResponseFunction
 import com.fishstory.oopsday.interfaces.shared.template.Strings
-import com.fishstory.oopsday.interfaces.shared.validation.Validations
-import com.fishstory.oopsday.interfaces.shared.validation.IsNotBlank
-import com.fishstory.oopsday.interfaces.shared.validation.MaxLength
-import com.fishstory.oopsday.interfaces.shared.validation.FAILURE
-import com.fishstory.oopsday.interfaces.shared.validation.And
-import com.fishstory.oopsday.interfaces.shared.validation.StringValidations
-import com.fishstory.oopsday.interfaces.shared.validation.IsNumeric
-import com.fishstory.oopsday.interfaces.shared.validation.SUCCESS
-import com.fishstory.oopsday.interfaces.shared.validation.IsEmpty
-import com.fishstory.oopsday.interfaces.shared.validation.Or
-import com.fishstory.oopsday.interfaces.shared.validation.ParamIsNumeric
 import com.fishstory.oopsday.interfaces.shared._
 import com.fishstory.oopsday.domain.tag.Tag
 import com.fishstory.oopsday.domain.tag.TagRepository
@@ -31,7 +19,7 @@ import java.util.ArrayList
 import com.fishstory.oopsday.domain.tip.emptyTip
 import com.fishstory.oopsday.domain.tip.InvalidTip
 
-/** Used to handle the requests regarding tip
+/**Used to handle the requests regarding tip
  *
  */
 class TipFace extends AbstractPlan {
@@ -41,45 +29,43 @@ class TipFace extends AbstractPlan {
   private val _tagRepository: TagRepository = new TagRepositoryJPAImpl
 
   override def delegates = {
-    
-    case req @ GET(Path("/tips")) & Params(params) => {
 
-      Validations(params,
-        ("page", "page size", IsEmpty() :: Or() :: ParamIsNumeric() :: Nil)).result match {
-          case FAILURE(message) => Scalate(req, "bad_user_request.ssp")
-          case SUCCESS(messages) =>
-            var page: Int = 1
-            //TODO move to configuration area
-            val pageSize = TipFace.pageSize
+    case req@GET(Path("/tips")) & Params(params) => {
 
-            if (!params("page").isEmpty && Strings.is_numeric(params("page").head)) {
-              page = params("page").head.toInt
-            }
+      if (evaluation(_IsEmpty[Option[Seq[String]]]() || _IsNumeric(), params.get("page"))) {
 
-            transaction {
-              val tips = _tipRepository.find_all((page - 1) * pageSize, pageSize)
-              val count_of_tips = _tipRepository.count
-              Scalate(req, "tip/tips.ssp",
-                ("tips", tips.asScala.toList), ("page_nav", PageNavigation(page, count_of_tips, pageSize)))
-            }
+        var page: Int = 1
+        //TODO move to configuration area
+        val pageSize = TipFace.pageSize
+
+        if (!params("page").isEmpty && Strings.is_numeric(params("page").head)) {
+          page = params("page").head.toInt
         }
+
+        transaction {
+          val tips = _tipRepository.find_all((page - 1) * pageSize, pageSize)
+          val count_of_tips = _tipRepository.count()
+          Scalate(req, "tip/tips.ssp",
+            ("tips", tips.asScala.toList), ("page_nav", PageNavigation(page, count_of_tips, pageSize)))
+        }
+      } else {
+        Scalate(req, "bad_user_request.ssp")
+      }
     }
 
-    case req @ Path("/tips/new") => req match {
+    case req@Path("/tips/new") => req match {
 
-      case GET(_)                   => editable_page(req, None, Map.empty)
+      case GET(_) => editable_page(req, None, None)
       case POST(_) & Params(params) => create_or_update_tip(req, None, params)
     }
 
-    case req @ GET(Path(Seg("tips" :: id :: Nil))) => {
+    case req@GET(Path(Seg("tips" :: id :: Nil))) => {
 
-      val validationResult = validations {
-        Result().check(id).by(isNumeric("the tip id {} is not numeric"))
-      }
+      if (evaluation(_IsNumeric[String](), id)) {
 
-      if (!validationResult.messages.isEmpty) {
-
-        val _tip: Option[Tip] = transaction { _tipRepository.find_by_id_is(id.toLong) }
+        val _tip: Option[Tip] = transaction {
+          _tipRepository.find_by_id_is(id.toLong)
+        }
 
         if (_tip.isDefined) {
           Found ~> index_page(req, _tip.get)
@@ -91,23 +77,20 @@ class TipFace extends AbstractPlan {
       }
     }
 
-    case req @ Path(Seg("tips" :: id :: "edit" :: Nil)) => req match {
+    case req@Path(Seg("tips" :: id :: "edit" :: Nil)) => req match {
 
       case POST(_) & Params(params) => create_or_update_tip(req, Some(id), params)
 
       case GET(_) => {
 
-        val result = validations {
-          Result().check(id).by(isNumeric("the tip id {} is not numeric"))
-        }
+        if (evaluation(_IsNumeric[String](), id)) {
 
-        if (result.messages.isEmpty) {
           val _tip = transaction {
             _tipRepository.find_by_id_is(id.toLong)
           }
 
           if (_tip.isDefined) {
-            editable_page(req, _tip, Map.empty)
+            editable_page(req, _tip, None)
           } else {
             not_found_page(req)
           }
@@ -119,9 +102,9 @@ class TipFace extends AbstractPlan {
   }
 
   private def create_or_update_tip(
-    req: HttpRequest[Any],
-    tip_id: Option[String],
-    params: Map[String, Seq[String]]): ResponseFunction[Any] = {
+                                    req: HttpRequest[Any],
+                                    tip_id: Option[String],
+                                    params: Map[String, Seq[String]]): ResponseFunction[Any] = {
 
     var _tip_id: Long = 0
 
@@ -131,16 +114,17 @@ class TipFace extends AbstractPlan {
       }
       _tip_id = tip_id.get.toLong
     }
-
-    Validations(params,
-      ("tip_title", "title", IsNotBlank() :: And() :: MaxLength(120) :: Nil),
-      ("tip_content", "content", IsNotBlank() :: And() :: MaxLength(3000) :: Nil)).result match {
-        case FAILURE(messages) => return editable_page(
-          req,
-          Some(InvalidTip(params("tip_title").head, params("tip_content").head, "")),
-          messages)
-        case _ =>
-      }
+    var isViolated = true
+    val expression = _NotBlank[Option[Seq[String]]]() && _MaxLength(120)
+    isViolated = evaluation(expression, params.get("tip_title"))
+    expression.retry(_NotBlank[Option[Seq[String]]]() && _MaxLength(3500))
+    isViolated = evaluation(expression, params.get("tip_content")) && isViolated
+    if (isViolated) {
+      return editable_page(
+        req,
+        Some(InvalidTip(params("tip_title").head, params("tip_content").head, "")),
+        Some(expression.messages))
+    }
 
     val _tip_title: String = params("tip_title").head
     val _tip_content: String = params("tip_content").head
@@ -189,7 +173,7 @@ class TipFace extends AbstractPlan {
     Scalate(req, "tip/tip.ssp", ("_tip", _tip))
   }
 
-  private def editable_page(req: HttpRequest[Any], _tip: Option[Tip], _validation_tip_message: Map[String, String]) = {
+  private def editable_page(req: HttpRequest[Any], _tip: Option[Tip], _validation_tip_message: Option[message]) = {
     var tip: Tip = emptyTip;
     if (_tip.isDefined) {
       tip = _tip.get
@@ -202,5 +186,6 @@ object TipFace {
   var pageSize: Int = 10
 
   def create: TipFace = new TipFace()
+
   def set_page_size(page_size: Int) = pageSize = page_size
 }
