@@ -1,20 +1,17 @@
 package com.fishstory.oopsday.interfaces.shared.validation
 
-import collection.mutable.ListBuffer
 
 trait Validation {
 
-  type messageFormat = (String) => String
-  type message = Message
 
   def messageTemplate(value: List[String])(_message: String): String = {
     var start: Int = 0
     var times = 0
     var message = _message
-    start = message.indexOf("{}", start)
+    start = message.indexOf("<>", start)
     while (start >= 0) {
-      message = message.replaceFirst("""\{\}""", value(times))
-      start = message.indexOf("{}", start)
+      message = message.replaceFirst("""<>""", value(times))
+      start = message.indexOf("<>", start)
       times = times + 1
     }
     message
@@ -110,37 +107,6 @@ trait Validation {
     def evaluate(a: Option[Seq[String]]): Boolean = evaluate(a.get.head)
   }
 
-  class Message {
-    var messages: List[ListBuffer[Option[messageFormat]]] = List.empty
-
-    def +(a: Option[messageFormat]) {
-      messages.head += a
-    }
-
-    def clear {
-      messages = List.empty
-    }
-
-    def clearRound {
-      messages.head.clear()
-    }
-
-    def size(index: Int): Int = messages(index).size
-
-    def isViolated(x: Int, y: Int): Boolean = messages(x)(y).isDefined
-
-    def print(x: Int, y: Int, message: String): String = {
-      var result = ""
-      if (isViolated(x, y)) result = messages(x)(y).get(message)
-      result
-    }
-
-    def registerNewRound() {
-      var newRound: ListBuffer[Option[messageFormat]] = ListBuffer.empty
-      messages = newRound :: messages
-    }
-
-  }
 
   abstract class Expression[A] {
 
@@ -182,7 +148,7 @@ trait Validation {
 
     def evaluate1(a: Boolean, values: String*): Boolean = {
       val result = a
-      var message: Option[messageFormat] = None
+      var message: Option[(String) => String] = None
       if (!result) message = Some(messageTemplate(values.toList))
       messages + (message)
       result

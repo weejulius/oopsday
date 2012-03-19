@@ -4,10 +4,10 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import com.fishstory.oopsday.shared.The
 import cucumber.annotation.Before
 import cucumber.annotation.After
-import cucumber.annotation.en.{ When, Given, Then }
-import unfiltered.jetty.{ Server, Http }
+import cucumber.annotation.en.{When, Given, Then}
+import unfiltered.jetty.{Server, Http}
 import com.fishstory.oopsday.domain.tip.Tip
-import org.openqa.selenium.{ By, WebDriver }
+import org.openqa.selenium.{By, WebDriver}
 import org.openqa.selenium.WebElement
 import com.fishstory.oopsday.infrustructure.tip.Transactions
 import com.fishstory.oopsday.domain.tip.TipRepository
@@ -18,12 +18,14 @@ class Steps_Tip extends Transactions {
   private val _webDriver: WebDriver = new HtmlUnitDriver()
   private val _server: Server = Http(8080).plan(new TipFace)
   private val _tipRepository: TipRepository = new TipRepositoryJPAImpl()
-  private val _origin_page_size=TipFace.pageSize
+  private val _origin_page_size = TipFace.pageSize
 
   @Before
   def startServer = {
-    _server.context("/resources") { _.resources(new java.net.URL(getClass().getResource("/css"), ".")) }
-    _server.start
+    _server.context("/resources") {
+      _.resources(new java.net.URL(getClass().getResource("/css"), "."))
+    }
+    _server.run
   }
 
   @Given("^the tip \"([^\"]*)\" is existing$")
@@ -56,7 +58,7 @@ class Steps_Tip extends Transactions {
     _webDriver.findElement(By.id("tip_id")).clear()
     _webDriver.findElement(By.id("tip_id")).sendKeys(a_id)
   }
-  
+
   @Given("^I input the tag \"([^\"]*)\"$")
   def i_input_the_tag(a_tag: String) = {
     _webDriver.findElement(By.id("tip_tag")).clear()
@@ -74,14 +76,14 @@ class Steps_Tip extends Transactions {
   }
 
   @Given("^I input the content more than \"([^\"]*)\" characters$")
-    def i_input_the_content_more_than(a_length: String) = {
-      var chars = ""
-      for (i <- 0 until a_length.toInt) {
-        chars += (Random.nextPrintableChar())
-      }
-      _webDriver.findElement(By.id("tip_content")).clear()
-      _webDriver.findElement(By.id("tip_content")).sendKeys(chars)
+  def i_input_the_content_more_than(a_length: String) = {
+    var chars = ""
+    for (i <- 0 until a_length.toInt) {
+      chars += (Random.nextPrintableChar())
     }
+    _webDriver.findElement(By.id("tip_content")).clear()
+    _webDriver.findElement(By.id("tip_content")).sendKeys(chars)
+  }
 
   @Given("^I have input \"([^\"]*)\" tips$")
   def i_have_input_tips(num_of_tips: String) = {
@@ -92,7 +94,7 @@ class Steps_Tip extends Transactions {
       i_click_the_submit_button()
     }
   }
-  
+
   @Given("^the page size is \"([^\"]*)\"")
   def the_page_size_is(page_size: String) = {
     TipFace.set_page_size(page_size.toInt)
@@ -104,7 +106,7 @@ class Steps_Tip extends Transactions {
   }
 
   @When("^I click the link \"([^\"]*)\"$")
-  def i_click_the_link(a_link:String){
+  def i_click_the_link(a_link: String) {
     _webDriver.findElements(By.className("full_tip")).get(0).click()
   }
 
@@ -117,7 +119,7 @@ class Steps_Tip extends Transactions {
   def i_should_see_the_title(a_title: String) {
     The list (getTextsFromElementsByClass("tip_title")) should_contain_the_element a_title
   }
-  
+
   @Then("^I should see the tag \"([^\"]*)\"$")
   def i_should_see_the_tag(a_tag: String) {
     The list (getTextsFromElementsByClass("tip_tag")) should_contain_the_element a_tag
@@ -154,8 +156,8 @@ class Steps_Tip extends Transactions {
   }
 
   @Then("^I should see the content length of tip \"([^\"]*)\" is \"([^\"]*)\"$")
-  def i_should_see_the_content_length_of_tip_is(a_title:String,a_length:String){
-      The number getElementByClassAndValue("tip_title",a_title).get.getText.length() should_not_be_greater_than_number a_length.toInt
+  def i_should_see_the_content_length_of_tip_is(a_title: String, a_length: String) {
+    The number getElementByClassAndValue("tip_title", a_title).get.getText.length() should_not_be_greater_than_number a_length.toInt
   }
 
   @After
