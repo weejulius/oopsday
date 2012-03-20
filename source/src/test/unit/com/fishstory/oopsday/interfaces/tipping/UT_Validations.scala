@@ -1,13 +1,8 @@
 package com.fishstory.oopsday.interfaces.tipping
 
-import com.fishstory.oopsday.interfaces.shared.validation.Validations
-import com.fishstory.oopsday.interfaces.shared.validation.Validation
 import org.junit.Test
-import com.fishstory.oopsday.interfaces.shared.validation.FAILURE
-import com.fishstory.oopsday.interfaces.shared.validation.IsNotBlank
-import com.fishstory.oopsday.interfaces.shared.validation.And
-import com.fishstory.oopsday.interfaces.shared.validation.MaxLength
 import org.junit.Assert._
+import com.fishstory.oopsday.interfaces.shared.validation._
 
 class UT_Validations extends Validation {
 
@@ -18,8 +13,8 @@ class UT_Validations extends Validation {
     params += ("tip_title" -> List("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
 
     Validations(params,
-      ("tip_title", "title", IsNotBlank() ::
-        And() :: MaxLength(20) :: Nil)).result match {
+      ("tip_title", "title", __IsNotBlank() ::
+        And() :: __MaxLength(20) :: Nil)).result match {
       case FAILURE(messages) => println(messages)
       case _ =>
     }
@@ -28,42 +23,42 @@ class UT_Validations extends Validation {
 
   @Test
   def test_style_3 {
-    val expression = _IsEmpty[String]() || _IsNumeric()
-    assertTrue(evaluation(expression, ""))
-    assertTrue(evaluation(expression, "123"))
-    assertFalse(evaluation(expression, "aaaa"))
-    assertEquals(3, expression.head.messages.messages.size)
-    assertEquals(1, expression.head.messages.size(0))
-    assertEquals("aaaa is not numeric", expression.messages.print(0, 0, "<> is not numeric"))
+    val expression = IsEmpty[String]() || IsNumeric()
+    assertTrue(evaluating(expression, ""))
+    assertTrue(evaluating(expression, "123"))
+    assertFalse(evaluating(expression, "aaaa"))
+    assertEquals(3, expression.results.messages.size)
+    assertEquals(1, expression.results.size(0))
+    assertEquals("aaaa is not numeric", expression.results.print(0, 0, "<> is not numeric"))
   }
 
   @Test
   def test_validate_2_params {
-    var expression = _NotBlank[String]() && _MaxLength(10)
+    var expression = NotBlank[String]() && MaxLength(10)
 
-    assertTrue(evaluation(expression, "1234"))
-    assertFalse(evaluation(expression, "12333333333333333333"))
-    expression retry (_NotBlank[String]() && _MaxLength(12))
-    assertFalse(evaluation(expression, ""))
-    assertFalse(evaluation(expression, "1222222222222222222222222"))
+    assertTrue(evaluating(expression, "1234"))
+    assertFalse(evaluating(expression, "12333333333333333333"))
+    expression retry (NotBlank[String]() && MaxLength(12))
+    assertFalse(evaluating(expression, ""))
+    assertFalse(evaluating(expression, "1222222222222222222222222"))
 
-    assertEquals(4, expression.head.messages.messages.size)
-    assertEquals("the title 1222222222222222222222222 is more than 12", expression.head.messages.print(0, 1, "the title <> is more than <>"))
-    assertEquals("the title  is must", expression.head.messages.print(1, 0, "the title <> is must"))
+    assertEquals(4, expression.results.messages.size)
+    assertEquals("the title 1222222222222222222222222 is more than 12", expression.results.print(0, 1, "the title <> is more than <>"))
+    assertEquals("the title  is must", expression.results.print(1, 0, "the title <> is must"))
 
-    var expression1 = _NotBlank[Option[Seq[String]]]() && _MaxLength(12)
+    var expression1 = NotBlank[Option[Seq[String]]]() && MaxLength(12)
     var a: Option[Seq[String]] = Some(List[String]("").toSeq)
-    assertFalse(evaluation[Option[Seq[String]]](expression1, a))
-    assertEquals(1, expression1.head.messages.messages.size)
-    assertEquals("the title  is must", expression1.head.messages.print(0, 0, "the title <> is must"))
-
+    assertFalse(evaluating[Option[Seq[String]]](expression1, a))
+    assertEquals(1, expression1.results.messages.size)
+    assertEquals("the title  is must", expression1.results.print(0, 0, "the title <> is must"))
 
   }
 
   @Test
   def test_message_template {
-    val a = messageTemplate("a" :: "ba" :: Nil)(_)
+    val a = fillValuesOfMessage("a" :: "ba" :: Nil)(_)
     assertEquals("a is not ba", a("<> is not <>"))
+    assertEquals("is not ba", a("is not <1>"))
   }
 
 }

@@ -120,15 +120,17 @@ case class FAILURE(messages: Map[String, String]) extends Result {
 
 abstract class Evaluation {
   def evaluate(name: String): Boolean
+
   def message(name: String): String
 }
 
 abstract class ParamEvaluation extends Evaluation {
   var params: Map[String, Seq[String]] = Map.empty
+
   def setParams(a_params: Map[String, Seq[String]]) = params = a_params
 }
 
-case class IsEmpty extends ParamEvaluation {
+case class __IsEmpty extends ParamEvaluation {
   def evaluate(name: String) = {
     params.get(name).isEmpty || params(name).isEmpty || params(name).head.isEmpty
   }
@@ -146,7 +148,7 @@ case class ParamIsNumeric extends ParamEvaluation {
   }
 }
 
-case class IsNumeric extends Evaluation {
+case class __IsNumeric extends Evaluation {
   def evaluate(name: String) = {
     name != null && name.forall(_.isDigit)
   }
@@ -156,7 +158,7 @@ case class IsNumeric extends Evaluation {
   }
 }
 
-case class IsNotBlank extends ParamEvaluation {
+case class __IsNotBlank extends ParamEvaluation {
   def evaluate(name: String) = {
     params.get(name).isDefined && !params(name).isEmpty && !params(name).head.isEmpty
   }
@@ -166,15 +168,17 @@ case class IsNotBlank extends ParamEvaluation {
 
 case class And extends Evaluation {
   def evaluate(name: String): Boolean = true
+
   def message(name: String): String = ""
 }
 
 case class Or extends Evaluation {
   def evaluate(name: String): Boolean = true
+
   def message(name: String): String = ""
 }
 
-case class MaxLength(a_max_length: Int) extends ParamEvaluation {
+case class __MaxLength(a_max_length: Int) extends ParamEvaluation {
   def evaluate(name: String) = {
     params(name).head.length <= a_max_length
   }

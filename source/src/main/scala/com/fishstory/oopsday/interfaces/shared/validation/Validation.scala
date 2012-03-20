@@ -1,36 +1,44 @@
 package com.fishstory.oopsday.interfaces.shared.validation
 
+import util.matching.Regex
+import util.matching.Regex.Match
 
+/**
+ * Used to construct the validation expressions and evaluate it
+ */
 trait Validation {
 
+  val _pattern: Regex = """<[0-9]?>""".r
 
-  def messageTemplate(value: List[String])(_message: String): String = {
-    var start: Int = 0
-    var times = 0
-    var message = _message
-    start = message.indexOf("<>", start)
-    while (start >= 0 && times < value.size) {
-      message = message.replaceFirst("""<>""", value(times))
-      start = message.indexOf("<>", start)
-      times = times + 1
-    }
-    message
+  /**
+   * Replace the placeholder with values in the message
+   * @param value
+   * @param message
+   */
+  def fillValuesOfMessage(value: List[String])(message: String): String = {
+    var indexOfMatch = -1
+    _pattern.replaceAllIn(message, (m: Match) => {
+      val sequence = m.toString.charAt(1)
+      indexOfMatch = indexOfMatch + 1
+      if (sequence.isDigit) value(sequence.toString.toInt).toString
+      else value(indexOfMatch)
+    })
   }
 
-  object evaluation {
+
+  object evaluating {
 
     private def evaluate[A](_expression: Expression[A], value: A): Boolean = {
       var expression: Expression[A] = _expression.head
-      expression.messages.registerNewRound()
+      expression.results.registerNewRound()
       var result = false
       while (expression != null) {
         result = expression.evaluate(value)
-        expression.result = result
         if ((result && !expression.and) || (!result && expression.and)) {
           return result
         }
         if (!result && !expression.and) {
-          expression.messages.clearRound
+          expression.results.clearRound
         }
         expression = expression.next
       }
@@ -47,7 +55,7 @@ trait Validation {
   }
 
 
-  case class _IsEmpty[A]() extends Expression[A] {
+  case class IsEmpty[A]() extends Expression[A] {
 
     def evaluate(a: A): Boolean = {
       a match {
@@ -62,7 +70,7 @@ trait Validation {
     def evaluate(a: Option[Seq[String]]): Boolean = evaluate2(a.isEmpty || a.get.isEmpty, a.toString) || evaluate(a.get.head)
   }
 
-  case class _MaxLength[A](length: Int) extends Expression[A] {
+  case class MaxLength[A](length: Int) extends Expression[A] {
 
     def evaluate(a: A): Boolean = {
       a match {
@@ -72,13 +80,13 @@ trait Validation {
       }
     }
 
-    def evaluate(a: String): Boolean = evaluate1(a.length <= length, length.toString)
+    def evaluate(a: String): Boolean = evaluate1(a.length <= length, a, length.toString)
 
     def evaluate(a: Option[Seq[String]]): Boolean = evaluate2(!a.isEmpty && !a.get.isEmpty, a.toString) && evaluate(a.get.head)
 
   }
 
-  case class _NotBlank[A]() extends Expression[A] {
+  case class NotBlank[A]() extends Expression[A] {
     def evaluate(a: A): Boolean = {
       a match {
         case string: String => evaluate(string)
@@ -92,7 +100,7 @@ trait Validation {
     def evaluate(a: Option[Seq[String]]): Boolean = evaluate2(a.isDefined && !a.get.isEmpty, a.toString) && evaluate(a.get.head)
   }
 
-  case class _IsNumeric[A]() extends Expression[A] {
+  case class IsNumeric[A]() extends Expression[A] {
 
     def evaluate(a: A): Boolean = {
       a match {
@@ -107,55 +115,75 @@ trait Validation {
     def evaluate(a: Option[Seq[String]]): Boolean = evaluate2(a.isDefined && !a.get.isEmpty, a.toString) && evaluate(a.get.head)
   }
 
-
+  /**
+   * Used to construct the expressions and chain the expressions to be validated,
+   * and the results is put in the head nextExpression
+   */
   abstract class Expression[A] {
 
     var and = true
     var next: Expression[A] = null
     var head: Expression[A] = this
-    var _message: Message = null
-    var result = false
+    private var validationResult: ValidationResult = null
 
-    def messages: Message = {
-      if (head == this && _message == null) {
-        _message = new Message()
+    def results: ValidationResult = {
+      if (head == this && validationResult == null) {
+        validationResult = new ValidationResult()
       }
-      head._message
+      head.validationResult
     }
 
-    def ||(expression: Expression[A]): Expression[A] = {
+    /**
+     * Validation is passed either of the both expressions is passed
+     * @param nextExpression
+     * @return
+     */
+    def ||(nextExpression: Expression[A]): Expression[A] = {
       and = false
-      next = expression
-      expression.head = this.head
-      expression
+      next = nextExpression
+      nextExpression.head = this.head
+      nextExpression
     }
 
-    def &&(expression: Expression[A]): Expression[A] = {
-      next = expression
-      expression.head = this.head
-      expression
+    /**
+     * validation is passed both the expressions are passed
+     * @param nextExpression
+     * @return
+     */
+    def &&(nextExpression: Expression[A]): Expression[A] = {
+      next = nextExpression
+      nextExpression.head = this.head
+      nextExpression
     }
 
+    /**
+     * true if it has the next expression
+     */
     def hasNext = head == this || next != null
 
-    def evaluate(a: A): Boolean
+    /**
+     * Used to express the logic of validation
+     * True if the value passes the evaluation of the expression
+     * @param value
+     */
+    def evaluate(value: A): Boolean
 
     def retry(b: Expression[A]): Expression[A] = {
-      b.head._message = head._message
+      b.head.validationResult = head.validationResult
       head = b.head
       b.head
     }
 
-    def evaluate2(a: Boolean, values: String*): Boolean = {
-      if (!a) messages + (Some(messageTemplate(values.toList)))
+    protected def evaluate2(a: Boolean, values: String*): Boolean = {
+      if (!a) results + (Some(fillValuesOfMessage(values.toList)))
       a
     }
 
-    def evaluate1(a: Boolean, values: String*): Boolean = {
+    protected def evaluate1(a: Boolean, values: String*): Boolean = {
       val result = a
       var message: Option[(String) => String] = None
-      if (!result) message = Some(messageTemplate(values.toList))
-      messages + (message)
+      if (!result) message = Some(fillValuesOfMessage(values.toList))
+      results + (message)
       result
     }
   }

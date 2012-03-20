@@ -144,13 +144,13 @@
 </head>
 
     <% import com.fishstory.oopsday.domain.tip.Tip%>
-    <% import com.fishstory.oopsday.interfaces.shared.validation.Message%>
+    <% import com.fishstory.oopsday.interfaces.shared.validation.ValidationResult%>
     <% import com.fishstory.oopsday.interfaces.shared.template.Strings._ %>
     <%@ val tip:Tip %>
     <%@ val _title:String=tip.title %>
     <%@ val isNewTip:Boolean=(tip.id<=0)%>
     <%@ var tags:String=""%>
-    <%@ val validation_tip_message:Option[Message]%>
+    <%@ val validation_tip_message:Option[ValidationResult]%>
 <body>
 <div id="container">
 <div class="header">
@@ -192,7 +192,7 @@
                    <span>${validation_tip_message.get.print(1,0,"the title is must")} </span>
                 #end
                 #if(validation_tip_message.isDefined && validation_tip_message.get.isViolated(1,1))
-                   <span>${validation_tip_message.get.print(1,1,"the title is more than <>")} </span>
+                   <span>${validation_tip_message.get.print(1,1,"the title is more than <1>")} </span>
                 #end
             </div>
             <div>
@@ -202,7 +202,7 @@
                    <span>${validation_tip_message.get.print(0,0,"the content is must")}</span>
                 #end
                 #if(validation_tip_message.isDefined && validation_tip_message.get.isViolated(0,1))
-                   <span>${validation_tip_message.get.print(0,1,"the content is more than <>")}</span>
+                   <span>${validation_tip_message.get.print(0,1,"the content is more than <1>")}</span>
                 #end
             </div>  
             <div>

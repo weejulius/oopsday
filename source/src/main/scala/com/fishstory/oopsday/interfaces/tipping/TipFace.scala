@@ -17,20 +17,19 @@ import unfiltered.response.{NotFound, Found, Redirect, ResponseFunction}
 import scala.collection.JavaConverters._
 
 /**Used to handle the requests regarding tip
- *
  */
 class TipFace extends AbstractPlan {
 
   //Todo use DI to inject dependencies
   private val _tipRepository: TipRepository = new TipRepositoryJPAImpl
   private val _tagRepository: TagRepository = new TagRepositoryJPAImpl
-  type ErrorMessage = com.fishstory.oopsday.interfaces.shared.validation.Message
+  type ErrorMessage = com.fishstory.oopsday.interfaces.shared.validation.ValidationResult
 
   override def delegates = {
 
     case req@GET(Path("/tips")) & Params(params) => {
 
-      if (evaluation(_IsEmpty[Option[Seq[String]]]() || _IsNumeric(), params.get("page"))) {
+      if (evaluating(IsEmpty[Option[Seq[String]]]() || IsNumeric(), params.get("page"))) {
 
         var page: Int = 1
         //TODO move to configuration area
@@ -59,7 +58,7 @@ class TipFace extends AbstractPlan {
 
     case req@GET(Path(Seg("tips" :: id :: Nil))) => {
 
-      if (evaluation(_IsNumeric[String](), id)) {
+      if (evaluating(IsNumeric[String](), id)) {
         startTransaction
         val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
         commitAndCloseTransaction
@@ -79,7 +78,7 @@ class TipFace extends AbstractPlan {
 
       case GET(_) => {
 
-        if (evaluation(_IsNumeric[String](), id)) {
+        if (evaluating(IsNumeric[String](), id)) {
           startTransaction
           val _tip = _tipRepository.find_by_id_is(id.toLong)
           commitAndCloseTransaction
@@ -110,15 +109,15 @@ class TipFace extends AbstractPlan {
       _tip_id = tip_id.get.toLong
     }
     var isViolated = true
-    val expression = _NotBlank[Option[Seq[String]]]() && _MaxLength(120)
-    isViolated = evaluation(expression, params.get("tip_title"))
-    expression.retry(_NotBlank[Option[Seq[String]]]() && _MaxLength(3500))
-    isViolated = evaluation(expression, params.get("tip_content")) && isViolated
+    val expression = NotBlank[Option[Seq[String]]]() && MaxLength(120)
+    isViolated = evaluating(expression, params.get("tip_title"))
+    expression.retry(NotBlank[Option[Seq[String]]]() && MaxLength(3500))
+    isViolated = evaluating(expression, params.get("tip_content")) && isViolated
     if (!isViolated) {
       return editable_page(
         req,
         Some(InvalidTip(params("tip_title").head, params("tip_content").head, "")),
-        Some(expression.messages))
+        Some(expression.results))
     }
 
     val _tip_title: String = params("tip_title").head

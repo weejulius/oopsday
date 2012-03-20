@@ -2,10 +2,13 @@ package com.fishstory.oopsday.interfaces.shared.validation
 
 import collection.mutable.ListBuffer
 
-class Message {
+/**
+ * Used to place validation result shown to users
+ */
+class ValidationResult {
 
   type messageFormat = (String) => String
-  type message = Message
+  type message = ValidationResult
   var messages: List[ListBuffer[Option[messageFormat]]] = List.empty
 
   def +(a: Option[messageFormat]) {
