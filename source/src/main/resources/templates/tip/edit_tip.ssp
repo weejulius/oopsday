@@ -150,7 +150,7 @@
     <%@ val _title:String=tip.title %>
     <%@ val isNewTip:Boolean=(tip.id<=0)%>
     <%@ var tags:String=""%>
-    <%@ val validation_tip_message:Option[message]%>
+    <%@ val validation_tip_message:Option[Message]%>
 <body>
 <div id="container">
 <div class="header">
@@ -189,20 +189,20 @@
                 <label for="tip_title" id="label_title">标题</label>
                 <input name="tip_title" id="tip_title" value="${tip.title}"/>
                 #if(validation_tip_message.isDefined&&validation_tip_message.get.isViolated(1,0))
-                   <span>${validation_tip_message.get.print(1,0,"<> is must")} </span>
+                   <span>${validation_tip_message.get.print(1,0,"the title is must")} </span>
                 #end
                 #if(validation_tip_message.isDefined && validation_tip_message.get.isViolated(1,1))
-                   <span>${validation_tip_message.get.print(1,1,"<> is more than <>")} </span>
+                   <span>${validation_tip_message.get.print(1,1,"the title is more than <>")} </span>
                 #end
             </div>
             <div>
             <label for="tip_content" id="label_content">内容</label>
             <textarea name="tip_content" class="tip_content" id="tip_content">${tip.content}</textarea>
                 #if(validation_tip_message.isDefined&&validation_tip_message.get.isViolated(0,0))
-                   <span>${validation_tip_message.get.print(0,0,"<> is must")}</span>
+                   <span>${validation_tip_message.get.print(0,0,"the content is must")}</span>
                 #end
                 #if(validation_tip_message.isDefined && validation_tip_message.get.isViolated(0,1))
-                   <span>${validation_tip_message.get.print(0,1,"<> is more than <>")}</span>
+                   <span>${validation_tip_message.get.print(0,1,"the content is more than <>")}</span>
                 #end
             </div>  
             <div>

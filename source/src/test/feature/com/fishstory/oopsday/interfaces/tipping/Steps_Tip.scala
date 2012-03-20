@@ -25,7 +25,7 @@ class Steps_Tip extends Transactions {
     _server.context("/resources") {
       _.resources(new java.net.URL(getClass().getResource("/css"), "."))
     }
-    _server.run
+    _server.start
   }
 
   @Given("^the tip \"([^\"]*)\" is existing$")

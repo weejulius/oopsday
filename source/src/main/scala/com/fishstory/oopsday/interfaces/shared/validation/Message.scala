@@ -22,7 +22,7 @@ class Message {
 
   def size(index: Int): Int = messages(index).size
 
-  def isViolated(x: Int, y: Int): Boolean = messages(x)(y).isDefined
+  def isViolated(x: Int, y: Int): Boolean = x < messages.size && y < messages(0).size && messages(x)(y).isDefined
 
   def print(x: Int, y: Int, message: String): String = {
     var result = ""

@@ -9,7 +9,7 @@ trait Validation {
     var times = 0
     var message = _message
     start = message.indexOf("<>", start)
-    while (start >= 0) {
+    while (start >= 0 && times < value.size) {
       message = message.replaceFirst("""<>""", value(times))
       start = message.indexOf("<>", start)
       times = times + 1
@@ -59,7 +59,7 @@ trait Validation {
 
     def evaluate(a: String): Boolean = evaluate1(a == null || a.isEmpty, a)
 
-    def evaluate(a: Option[Seq[String]]): Boolean = evaluate1(a.isEmpty || a.get.isEmpty, a.toString) || evaluate(a.get.head)
+    def evaluate(a: Option[Seq[String]]): Boolean = evaluate2(a.isEmpty || a.get.isEmpty, a.toString) || evaluate(a.get.head)
   }
 
   case class _MaxLength[A](length: Int) extends Expression[A] {
@@ -72,9 +72,9 @@ trait Validation {
       }
     }
 
-    def evaluate(a: String): Boolean = evaluate1(a.length <= length, a, length.toString)
+    def evaluate(a: String): Boolean = evaluate1(a.length <= length, length.toString)
 
-    def evaluate(a: Option[Seq[String]]): Boolean = evaluate1(a.isEmpty || a.get.isEmpty, a.toString) || evaluate(a.get.head)
+    def evaluate(a: Option[Seq[String]]): Boolean = evaluate2(!a.isEmpty && !a.get.isEmpty, a.toString) && evaluate(a.get.head)
 
   }
 
@@ -89,7 +89,7 @@ trait Validation {
 
     def evaluate(a: String): Boolean = evaluate1(a != null && !a.isEmpty, a)
 
-    def evaluate(a: Option[Seq[String]]): Boolean = evaluate1(a.isDefined && !a.get.isEmpty, a.toString) || evaluate(a.get.head)
+    def evaluate(a: Option[Seq[String]]): Boolean = evaluate2(a.isDefined && !a.get.isEmpty, a.toString) && evaluate(a.get.head)
   }
 
   case class _IsNumeric[A]() extends Expression[A] {
@@ -104,7 +104,7 @@ trait Validation {
 
     def evaluate(a: String): Boolean = evaluate1(a.forall(_.isDigit), a)
 
-    def evaluate(a: Option[Seq[String]]): Boolean = evaluate(a.get.head)
+    def evaluate(a: Option[Seq[String]]): Boolean = evaluate2(a.isDefined && !a.get.isEmpty, a.toString) && evaluate(a.get.head)
   }
 
 
@@ -144,6 +144,11 @@ trait Validation {
       b.head._message = head._message
       head = b.head
       b.head
+    }
+
+    def evaluate2(a: Boolean, values: String*): Boolean = {
+      if (!a) messages + (Some(messageTemplate(values.toList)))
+      a
     }
 
     def evaluate1(a: Boolean, values: String*): Boolean = {

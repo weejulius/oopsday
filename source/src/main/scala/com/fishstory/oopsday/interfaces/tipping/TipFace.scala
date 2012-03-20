@@ -39,9 +39,10 @@ class TipFace extends AbstractPlan {
         if (!params("page").isEmpty && Strings.is_numeric(params("page").head)) {
           page = params("page").head.toInt
         }
-
+        startTransaction
         val tips = _tipRepository.find_all((page - 1) * pageSize, pageSize)
         val count_of_tips = _tipRepository.count()
+        commitAndCloseTransaction
         Scalate(req, "tip/tips.ssp",
           ("tips", tips.asScala.toList),
           ("page_nav", PageNavigation(page, count_of_tips, pageSize)))
@@ -59,11 +60,9 @@ class TipFace extends AbstractPlan {
     case req@GET(Path(Seg("tips" :: id :: Nil))) => {
 
       if (evaluation(_IsNumeric[String](), id)) {
-
-        val _tip: Option[Tip] = transaction {
-          _tipRepository.find_by_id_is(id.toLong)
-        }
-
+        startTransaction
+        val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
+        commitAndCloseTransaction
         if (_tip.isDefined) {
           Found ~> index_page(req, _tip.get)
         } else {
@@ -81,10 +80,9 @@ class TipFace extends AbstractPlan {
       case GET(_) => {
 
         if (evaluation(_IsNumeric[String](), id)) {
-
-          val _tip = transaction {
-            _tipRepository.find_by_id_is(id.toLong)
-          }
+          startTransaction
+          val _tip = _tipRepository.find_by_id_is(id.toLong)
+          commitAndCloseTransaction
 
           if (_tip.isDefined) {
             editable_page(req, _tip, None)
@@ -116,7 +114,7 @@ class TipFace extends AbstractPlan {
     isViolated = evaluation(expression, params.get("tip_title"))
     expression.retry(_NotBlank[Option[Seq[String]]]() && _MaxLength(3500))
     isViolated = evaluation(expression, params.get("tip_content")) && isViolated
-    if (isViolated) {
+    if (!isViolated) {
       return editable_page(
         req,
         Some(InvalidTip(params("tip_title").head, params("tip_content").head, "")),
@@ -129,7 +127,7 @@ class TipFace extends AbstractPlan {
     var _tip: Option[Tip] = None
 
     var _tags: List[Tag] = List.empty
-
+    startTransaction
     if (!params("tip_tag").isEmpty) {
       for (a_tag: String <- params("tip_tag").head.trim.split(",")) {
         _tags = _tags ::: List(_tagRepository.find_by_name_or_save_new(a_tag.trim))
@@ -154,6 +152,7 @@ class TipFace extends AbstractPlan {
     }
 
     _tipRepository.save_new_or_update(_tip.get)
+    commitAndCloseTransaction
     Redirect("/tips/" + _tip.get.id)
   }
 
