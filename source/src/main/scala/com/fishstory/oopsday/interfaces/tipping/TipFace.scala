@@ -29,7 +29,7 @@ class TipFace extends AbstractPlan {
 
     case req@GET(Path("/tips")) & Params(params) => {
 
-      if (evaluating(IsEmpty[Option[Seq[String]]]() || IsNumeric(), params.get("page"))) {
+      if (Evaluates(params.get("page")) using IsEmpty() or IsNumeric() isPassed) {
 
         var page: Int = 1
         //TODO move to configuration area
@@ -40,11 +40,11 @@ class TipFace extends AbstractPlan {
         }
         startTransaction
         val tips = _tipRepository.find_all((page - 1) * pageSize, pageSize)
-        val count_of_tips = _tipRepository.count()
+        val countOfTips = _tipRepository.count()
         commitAndCloseTransaction
         Scalate(req, "tip/tips.ssp",
           ("tips", tips.asScala.toList),
-          ("page_nav", PageNavigation(page, count_of_tips, pageSize)))
+          ("page_nav", PageNavigation(page, countOfTips, pageSize)))
 
       } else {
         Scalate(req, "bad_user_request.ssp")
@@ -58,7 +58,8 @@ class TipFace extends AbstractPlan {
 
     case req@GET(Path(Seg("tips" :: id :: Nil))) => {
 
-      if (evaluating(IsNumeric[String](), id)) {
+      if (Evaluates(id) using IsNumeric() isPassed) {
+
         startTransaction
         val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
         commitAndCloseTransaction
@@ -78,7 +79,7 @@ class TipFace extends AbstractPlan {
 
       case GET(_) => {
 
-        if (evaluating(IsNumeric[String](), id)) {
+        if (Evaluates(id) using IsNumeric() isPassed) {
           startTransaction
           val _tip = _tipRepository.find_by_id_is(id.toLong)
           commitAndCloseTransaction

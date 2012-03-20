@@ -33,6 +33,15 @@ class UT_Validations extends Validation {
   }
 
   @Test
+  def test1 {
+    val a: Option[Seq[String]] = Some(List[String]("aaaaaaaa").toSeq)
+    val b: Option[Seq[String]] = Some(List[String]("abbbbbb").toSeq)
+    val evaluate = Evaluates(a) using NotBlank() and MaxLength(10) another (b) using NotBlank() and MaxLength(12)
+
+    assertFalse(evaluate.isPassed)
+  }
+
+  @Test
   def test_validate_2_params {
     var expression = NotBlank[String]() && MaxLength(10)
 
@@ -53,6 +62,13 @@ class UT_Validations extends Validation {
     assertEquals("the title  is must", expression1.results.print(0, 0, "the title <> is must"))
 
   }
+
+  @Test
+  def test_style_4 {
+    var a: Option[Seq[String]] = Some(List[String]("").toSeq)
+    assertFalse(Evaluates(a) using IsEmpty() and IsNumeric() isPassed)
+  }
+
 
   @Test
   def test_message_template {
