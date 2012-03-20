@@ -186,6 +186,46 @@ trait Validation {
     }
   }
 
+  case class ensure[A](var value: A) {
+
+    private var expressions: Map[Expression[A], A] = Map.empty
+    private var currentExpression: Expression[A] = null
+    private var result: ValidationResult = new ValidationResult()
+
+    def that(_expression: Expression[A]) = {
+      result + _expression.evaluate(value)
+      currentExpression = _expression
+      expressions += (currentExpression -> value)
+      this
+    }
+
+    def and(newExpression: Expression[A]) = {
+      currentExpression && newExpression
+      this
+    }
+
+    def or(newExpression: Expression[A]) = {
+      currentExpression || newExpression
+      this
+    }
+
+    def ensure(b: A) = {
+      value = b
+      this
+    }
+
+    def isSatisfied = {
+      var isEverFailed = false
+      for (expression <- expressions) {
+        if (!evaluating(expression._1, expression._2)) {
+          isEverFailed = true
+        }
+      }
+      !isEverFailed
+    }
+  }
+
+
   case class Evaluates[A](var a: A) {
 
     private var expressions: Map[A, Expression[A]] = Map.empty

@@ -41,6 +41,16 @@ class UT_Validations extends Validation {
     assertFalse(evaluate.isPassed)
   }
 
+
+  @Test
+  def test2 {
+    val a: Option[Seq[String]] = Some(List[String]("aaaaaaaa").toSeq)
+    val b: Option[Seq[String]] = Some(List[String]("abbbbbbbbbbbbbbbbbbbbbbbbb").toSeq)
+    assertTrue(ensure(a) that NotBlank() and MaxLength(10) isSatisfied)
+    assertFalse(ensure(b) that NotBlank() and MaxLength(10) isSatisfied)
+    assertFalse(ensure(b) that notBlank() and maxLength(10) isSatisfied)
+  }
+
   @Test
   def test_validate_2_params {
     var expression = NotBlank[String]() && MaxLength(10)
