@@ -25,7 +25,6 @@ trait Validation {
     })
   }
 
-
   object evaluating {
 
     private def evaluate[A](_expression: Expression[A], value: A): Boolean = {
@@ -53,7 +52,6 @@ trait Validation {
       isEverViolated
     }
   }
-
 
   case class IsEmpty[A]() extends Expression[A] {
 
@@ -110,7 +108,7 @@ trait Validation {
       }
     }
 
-    def evaluate(a: String): Boolean = evaluate1(a.forall(_.isDigit), a)
+    def evaluate(a: String): Boolean = evaluate1(a.length > 0 && a.forall(_.isDigit), a)
 
     def evaluate(a: Option[Seq[String]]): Boolean = evaluate2(a.isDefined && !a.get.isEmpty, a.toString) && evaluate(a.get.head)
   }
@@ -187,5 +185,43 @@ trait Validation {
       result
     }
   }
+
+  case class Evaluates[A](var a: A) {
+
+    private var expressions: Map[A, Expression[A]] = Map.empty
+    private var currentExpression: Expression[A] = null
+
+    def using(_expression: Expression[A]) = {
+      currentExpression = _expression
+      expressions += (a -> currentExpression)
+      this
+    }
+
+    def and(newExpression: Expression[A]) = {
+      currentExpression && newExpression
+      this
+    }
+
+    def or(newExpression: Expression[A]) = {
+      currentExpression || newExpression
+      this
+    }
+
+    def another(b: A) = {
+      a = b
+      this
+    }
+
+    def isPassed = {
+      var isEverFailed = false
+      for (expression <- expressions) {
+        if (!evaluating(expression._2, expression._1)) {
+          isEverFailed = true
+        }
+      }
+      !isEverFailed
+    }
+  }
+
 
 }
