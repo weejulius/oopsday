@@ -6,6 +6,8 @@ package com.fishstory.oopsday.interfaces.shared.validation
  */
 trait Validation {
 
+  implicit def validate2Boolean[A](v: validate[A]): Boolean = v.isSatisfied
+
   case object isEmpty extends CommonExpression {
 
     def evaluate(a: String, result: ValidationResult): Boolean = evaluate1(a == null || a.isEmpty, result, a)
@@ -87,6 +89,7 @@ trait Validation {
     private var validationResult: ValidationResult = new ValidationResult()
     private var isCurrentExpressionSatisfied = false
     private var hasFailedRound = false
+
 
     def using(_expression: Expression) = {
       currentExpression = _expression

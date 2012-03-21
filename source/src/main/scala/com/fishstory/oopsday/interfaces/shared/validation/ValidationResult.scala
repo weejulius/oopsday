@@ -57,7 +57,7 @@ class ValidationResult {
    */
   def isSatisfied(x: Int, y: Int): Boolean = {
     val roundNum = messages.size - x - 1
-    roundNum >= 0 && x < messages.size && y >= 0 && y < messages(x).size && messages(roundNum)(y).isEmpty || y >= messages(x).size
+    roundNum >= 0 && x < messages.size && y >= 0 && y < messages(x).size && messages(roundNum)(y).isEmpty
   }
 
   /**

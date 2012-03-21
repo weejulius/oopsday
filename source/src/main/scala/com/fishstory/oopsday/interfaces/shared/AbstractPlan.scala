@@ -12,5 +12,5 @@ abstract class AbstractPlan extends Plan with Transactions with Validation {
     result
   }
 
-  def delegates: unfiltered.filter.Plan.Intent
+  def delegates: Plan.Intent
 }

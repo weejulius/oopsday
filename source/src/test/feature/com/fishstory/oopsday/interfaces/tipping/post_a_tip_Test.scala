@@ -6,6 +6,4 @@ import cucumber.junit.Cucumber.Options
 
 @RunWith(classOf[Cucumber])
 @Options(features = Array("post_a_tip.feature"))
-class post_a_tip_Test {
-
-}
+class post_a_tip_Test

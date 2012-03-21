@@ -5,7 +5,6 @@ import com.fishstory.oopsday.domain.tip.Tip
 import unfiltered.request.GET
 import com.fishstory.oopsday.infrustructure.tip.TipRepositoryJPAImpl
 import com.fishstory.oopsday.domain.tip.TipRepository
-import com.fishstory.oopsday.interfaces.shared.template.Strings
 import com.fishstory.oopsday.interfaces.shared._
 import com.fishstory.oopsday.domain.tag.Tag
 import com.fishstory.oopsday.domain.tag.TagRepository
@@ -29,28 +28,25 @@ class TipFace extends AbstractPlan {
 
     case req@GET(Path("/tips")) & Params(params) => {
 
-      if (validate(params.get("page")) using isEmpty or isNumeric isSatisfied) {
+      val validation = validate(params.get("page")) using isEmpty or isNumeric
+      if (!validation) Scalate(req, "bad_user_request.ssp")
 
-        var page: Int = 1
-        //TODO move to configuration area
-        val pageSize = TipFace.pageSize
+      var page: Int = 1
+      val pageSize = faceConfig.pageSize
 
-        if (!params("page").isEmpty && Strings.is_numeric(params("page").head)) {
-          page = params("page").head.toInt
-        }
+      if (validation.result().isSatisfied(0, 1)) {
+        page = params("page").head.toInt
+      }
 
-        transaction {
-          val tips = _tipRepository.find_all((page - 1) * pageSize, pageSize)
-          val countOfTips = _tipRepository.count()
-          Scalate(req, "tip/tips.ssp",
-            ("tips", tips.asScala.toList),
-            ("page_nav", PageNavigation(page, countOfTips, pageSize)))
-        }
-
-      } else {
-        Scalate(req, "bad_user_request.ssp")
+      transaction {
+        val tips = _tipRepository.find_all((page - 1) * pageSize, pageSize)
+        val countOfTips = _tipRepository.count()
+        Scalate(req, "tip/tips.ssp",
+          ("tips", tips.asScala.toList),
+          ("page_nav", PageNavigation(page, countOfTips, pageSize)))
       }
     }
+
     case req@Path("/tips/new") => req match {
 
       case GET(_) => editable_page(req, None, None)
@@ -59,17 +55,14 @@ class TipFace extends AbstractPlan {
 
     case req@GET(Path(Seg("tips" :: id :: Nil))) => {
 
-      if (validate(id) using isNumeric isSatisfied) {
+      if (!(validate(id) using isNumeric)) Scalate(req, "bad_user_request.ssp")
 
-        val _tip: Option[Tip] = transaction(_tipRepository.find_by_id_is(id.toLong))
+      val _tip: Option[Tip] = transaction(_tipRepository.find_by_id_is(id.toLong))
 
-        if (_tip.isDefined) {
-          Found ~> index_page(req, _tip.get)
-        } else {
-          NotFound ~> not_found_page(req)
-        }
+      if (_tip.isDefined) {
+        Found ~> index_page(req, _tip.get)
       } else {
-        Scalate(req, "bad_user_request.ssp")
+        NotFound ~> not_found_page(req)
       }
     }
 
@@ -79,17 +72,14 @@ class TipFace extends AbstractPlan {
 
       case GET(_) => {
 
-        if (validate(id) using isNumeric isSatisfied) {
+        if (!(validate(id) using isNumeric)) Scalate(req, "bad_user_request.ssp")
 
-          val _tip = transaction(_tipRepository.find_by_id_is(id.toLong))
+        val _tip = transaction(_tipRepository.find_by_id_is(id.toLong))
 
-          if (_tip.isDefined) {
-            editable_page(req, _tip, None)
-          } else {
-            not_found_page(req)
-          }
+        if (_tip.isDefined) {
+          editable_page(req, _tip, None)
         } else {
-          Scalate(req, "bad_user_request.ssp")
+          not_found_page(req)
         }
       }
     }
@@ -103,21 +93,17 @@ class TipFace extends AbstractPlan {
     var _tip_id: Long = 0
 
     if (tip_id.isDefined && !tip_id.get.isEmpty()) {
-      if (!Strings.is_numeric(tip_id.get)) {
-        return Scalate(req, "bad_user_request.ssp")
-      }
+      if (validate(tip_id.get) using isNumeric) return Scalate(req, "bad_user_request.ssp")
       _tip_id = tip_id.get.toLong
     }
 
-    val validationResult = validate(params.get("tip_title")).using(notBlank).and(MaxLength(120))
-      .andValidate(params.get("tip_content")) using notBlank and MaxLength(3500) result()
+    val validation = validate(params.get("tip_title")).using(notBlank).and(MaxLength(120))
+      .andValidate(params.get("tip_content")) using notBlank and MaxLength(3500)
 
-    if (!validationResult.isSatisfied) {
-      return editable_page(
-        req,
-        Some(InvalidTip(params("tip_title").head, params("tip_content").head, "")),
-        Some(validationResult))
-    }
+    if (!validation) return editable_page(
+      req,
+      Some(InvalidTip(params("tip_title").head, params("tip_content").head, "")),
+      Some(validation.result))
 
     val _tip_title: String = params("tip_title").head
     val _tip_content: String = params("tip_content").head
@@ -137,17 +123,17 @@ class TipFace extends AbstractPlan {
       _tip = Some(new Tip(_tip_title, _tip_content, "", _tags))
 
     } else {
+
       _tip = _tipRepository.find_by_id_is(_tip_id.toLong);
-      if (_tip.isEmpty) {
-        return Scalate(req, "bad_user_request.ssp")
-      } else {
-        _tip.get.update_content(_tip_content)
-        val tags = new ArrayList[Tag]
-        for (a_tag <- _tags) {
-          tags.add(a_tag)
-        }
-        _tip.get.tags = tags
+      if (_tip.isEmpty) return Scalate(req, "bad_user_request.ssp")
+
+      _tip.get.update_content(_tip_content)
+      val tags = new ArrayList[Tag]
+      for (a_tag <- _tags) {
+        tags.add(a_tag)
       }
+      _tip.get.tags = tags
+
     }
 
     _tipRepository.save_new_or_update(_tip.get)
@@ -172,12 +158,4 @@ class TipFace extends AbstractPlan {
     }
     Scalate(req, "tip/edit_tip.ssp", ("tip", tip), ("validation_tip_message", _validation_tip_message))
   }
-}
-
-object TipFace {
-  var pageSize: Int = 10
-
-  def create: TipFace = new TipFace()
-
-  def set_page_size(page_size: Int) = pageSize = page_size
 }

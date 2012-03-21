@@ -13,12 +13,13 @@ import com.fishstory.oopsday.infrustructure.tip.Transactions
 import com.fishstory.oopsday.domain.tip.TipRepository
 import com.fishstory.oopsday.infrustructure.tip.TipRepositoryJPAImpl
 import scala.util.Random
+import com.fishstory.oopsday.interfaces.shared.faceConfig
 
 class Steps_Tip extends Transactions {
   private val _webDriver: WebDriver = new HtmlUnitDriver()
   private val _server: Server = Http(8080).plan(new TipFace)
   private val _tipRepository: TipRepository = new TipRepositoryJPAImpl()
-  private val _origin_page_size = TipFace.pageSize
+  private val _origin_page_size = faceConfig.pageSize
 
   @Before
   def startServer = {
@@ -31,9 +32,7 @@ class Steps_Tip extends Transactions {
   @Given("^the tip \"([^\"]*)\" is existing$")
   def the_tip_is_existing(a_tip_id: String) {
     val tip = new Tip("Tip 1", "This is the tip 1", "jyu")
-    startTransaction
-    _tipRepository.save_new_or_update(tip)
-    commitAndCloseTransaction
+    transaction(_tipRepository.save_new_or_update(tip))
   }
 
   @Given("^I am on the page \"([^\"]*)\"$")
@@ -97,7 +96,7 @@ class Steps_Tip extends Transactions {
 
   @Given("^the page size is \"([^\"]*)\"")
   def the_page_size_is(page_size: String) = {
-    TipFace.set_page_size(page_size.toInt)
+    faceConfig.pageSize = page_size.toInt
   }
 
   @When("^I click the submit button$")
@@ -163,7 +162,7 @@ class Steps_Tip extends Transactions {
   @After
   def stopServer = {
     _server.stop()
-    TipFace.set_page_size(_origin_page_size)
+    faceConfig.pageSize = _origin_page_size
   }
 
   private def getElementByClassAndValue(a_class_name: String, a_value: String): Option[WebElement] = {
