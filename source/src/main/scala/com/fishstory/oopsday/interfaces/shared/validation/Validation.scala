@@ -1,266 +1,126 @@
 package com.fishstory.oopsday.interfaces.shared.validation
 
-import util.matching.Regex
-import util.matching.Regex.Match
 
 /**
  * Used to construct the validation expressions and evaluate it
  */
 trait Validation {
 
-  val _pattern: Regex = """<[0-9]?>""".r
+  case object isEmpty extends CommonExpression {
 
-  /**
-   * Replace the placeholder with values in the message
-   * @param value
-   * @param message
-   */
-  def fillValuesOfMessage(value: List[String])(message: String): String = {
-    var indexOfMatch = -1
-    _pattern.replaceAllIn(message, (m: Match) => {
-      val sequence = m.toString.charAt(1)
-      indexOfMatch = indexOfMatch + 1
-      if (sequence.isDigit) value(sequence.toString.toInt).toString
-      else value(indexOfMatch)
-    })
+    def evaluate(a: String, result: ValidationResult): Boolean = evaluate1(a == null || a.isEmpty, result, a)
+
+    def evaluate(a: Option[Seq[String]], result: ValidationResult): Boolean =
+      evaluate2(a.isEmpty || a.get.isEmpty, result, a.toString) || evaluate(a.get.head, result)
   }
 
-  object evaluating {
+  case class MaxLength(length: Int) extends CommonExpression {
 
-    private def evaluate[A](_expression: Expression[A], value: A): Boolean = {
-      var expression: Expression[A] = _expression.head
-      expression.results.registerNewRound()
-      var result = false
-      while (expression != null) {
-        result = expression.evaluate(value)
-        if ((result && !expression.and) || (!result && expression.and)) {
-          return result
-        }
-        if (!result && !expression.and) {
-          expression.results.clearRound
-        }
-        expression = expression.next
-      }
-      result
-    }
+    def evaluate(a: String, result: ValidationResult): Boolean =
+      evaluate1(a.length <= length, result, a, length.toString)
 
-    def apply[A](_expression: Expression[A], values: A*): Boolean = {
-      var isEverViolated = false
-      for (value <- values) {
-        if (evaluate(_expression, value)) isEverViolated = true
-      }
-      isEverViolated
-    }
-  }
-
-  case class IsEmpty[A]() extends Expression[A] {
-
-    def evaluate(a: A): Boolean = {
-      a match {
-        case string: String => evaluate(string)
-        case option: Option[Seq[String]] => evaluate(option)
-        case _ => throw new IllegalArgumentException("unsupported")
-      }
-    }
-
-    def evaluate(a: String): Boolean = evaluate1(a == null || a.isEmpty, a)
-
-    def evaluate(a: Option[Seq[String]]): Boolean = evaluate2(a.isEmpty || a.get.isEmpty, a.toString) || evaluate(a.get.head)
-  }
-
-  case class MaxLength[A](length: Int) extends Expression[A] {
-
-    def evaluate(a: A): Boolean = {
-      a match {
-        case string: String => evaluate(string)
-        case option: Option[Seq[String]] => evaluate(option)
-        case _ => throw new IllegalArgumentException("unsupported")
-      }
-    }
-
-    def evaluate(a: String): Boolean = evaluate1(a.length <= length, a, length.toString)
-
-    def evaluate(a: Option[Seq[String]]): Boolean = evaluate2(!a.isEmpty && !a.get.isEmpty, a.toString) && evaluate(a.get.head)
+    def evaluate(a: Option[Seq[String]], result: ValidationResult): Boolean =
+      evaluate2(!a.isEmpty && !a.get.isEmpty, result, a.toString) && evaluate(a.get.head, result)
 
   }
 
-  case class NotBlank[A]() extends Expression[A] {
-    def evaluate(a: A): Boolean = {
-      a match {
-        case string: String => evaluate(string)
-        case option: Option[Seq[String]] => evaluate(option)
-        case _ => throw new IllegalArgumentException("unsupported")
-      }
-    }
+  case object notBlank extends CommonExpression {
 
-    def evaluate(a: String): Boolean = evaluate1(a != null && !a.isEmpty, a)
+    def evaluate(a: String, result: ValidationResult): Boolean = evaluate1(a != null && !a.isEmpty, result, a)
 
-    def evaluate(a: Option[Seq[String]]): Boolean = evaluate2(a.isDefined && !a.get.isEmpty, a.toString) && evaluate(a.get.head)
+    def evaluate(a: Option[Seq[String]], result: ValidationResult): Boolean =
+      evaluate2(a.isDefined && !a.get.isEmpty, result, a.toString) && evaluate(a.get.head, result)
   }
 
-  case class IsNumeric[A]() extends Expression[A] {
+  case object isNumeric extends CommonExpression {
 
-    def evaluate(a: A): Boolean = {
-      a match {
-        case string: String => evaluate(string)
-        case option: Option[Seq[String]] => evaluate(option)
-        case _ => throw new IllegalArgumentException("unsupported")
-      }
-    }
+    def evaluate(a: String, result: ValidationResult): Boolean =
+      evaluate1(a.length > 0 && a.forall(_.isDigit), result, a)
 
-    def evaluate(a: String): Boolean = evaluate1(a.length > 0 && a.forall(_.isDigit), a)
-
-    def evaluate(a: Option[Seq[String]]): Boolean = evaluate2(a.isDefined && !a.get.isEmpty, a.toString) && evaluate(a.get.head)
+    def evaluate(a: Option[Seq[String]], result: ValidationResult): Boolean =
+      evaluate2(a.isDefined && !a.get.isEmpty, result, a.toString) && evaluate(a.get.head, result)
   }
 
-  /**
-   * Used to construct the expressions and chain the expressions to be validated,
-   * and the results is put in the head nextExpression
-   */
-  abstract class Expression[A] {
-
-    var and = true
-    var next: Expression[A] = null
-    var head: Expression[A] = this
-    private var validationResult: ValidationResult = null
-
-    def results: ValidationResult = {
-      if (head == this && validationResult == null) {
-        validationResult = new ValidationResult()
-      }
-      head.validationResult
-    }
-
+  abstract class Expression {
     /**
-     * Validation is passed either of the both expressions is passed
-     * @param nextExpression
-     * @return
-     */
-    def ||(nextExpression: Expression[A]): Expression[A] = {
-      and = false
-      next = nextExpression
-      nextExpression.head = this.head
-      nextExpression
-    }
-
-    /**
-     * validation is passed both the expressions are passed
-     * @param nextExpression
-     * @return
-     */
-    def &&(nextExpression: Expression[A]): Expression[A] = {
-      next = nextExpression
-      nextExpression.head = this.head
-      nextExpression
-    }
-
-    /**
-     * true if it has the next expression
-     */
-    def hasNext = head == this || next != null
-
-    /**
-     * Used to express the logic of validation
+     * Used to encapsulate the logic of validation
      * True if the value passes the evaluation of the expression
      * @param value
      */
-    def evaluate(value: A): Boolean
+    def evaluate[A](value: A, result: ValidationResult): Boolean
+  }
 
-    def retry(b: Expression[A]): Expression[A] = {
-      b.head.validationResult = head.validationResult
-      head = b.head
-      b.head
-    }
+  /**
+   * the basic of the common used expressions
+   */
+  abstract class CommonExpression extends Expression {
 
-    protected def evaluate2(a: Boolean, values: String*): Boolean = {
-      if (!a) results + (Some(fillValuesOfMessage(values.toList)))
+
+    protected def evaluate2(a: Boolean, result: ValidationResult, values: String*): Boolean = {
+      if (!a) result + (values)
       a
     }
 
-    protected def evaluate1(a: Boolean, values: String*): Boolean = {
-      val result = a
-      var message: Option[(String) => String] = None
-      if (!result) message = Some(fillValuesOfMessage(values.toList))
-      results + (message)
-      result
+    protected def evaluate1(isSatisfied: Boolean, result: ValidationResult, values: String*): Boolean = {
+      if (!isSatisfied) result + (values)
+      else result.addEmpty
+      isSatisfied
+    }
+
+    def evaluate(a: String, result: ValidationResult): Boolean
+
+    def evaluate(a: Option[Seq[String]], result: ValidationResult): Boolean
+
+
+    def evaluate[A](a: A, result: ValidationResult): Boolean = {
+      a match {
+        case string: String => evaluate(string, result)
+        case option: Option[Seq[String]] => evaluate(option, result)
+        case _ => throw new IllegalArgumentException("unsupported")
+      }
     }
   }
 
-  case class ensure[A](var value: A) {
+  case class validate[A](var value: A) {
 
-    private var expressions: Map[Expression[A], A] = Map.empty
-    private var currentExpression: Expression[A] = null
-    private var result: ValidationResult = new ValidationResult()
+    private var currentExpression: Expression = null
+    private var validationResult: ValidationResult = new ValidationResult()
+    private var isCurrentExpressionSatisfied = false
+    private var hasFailedRound = false
 
-    def that(_expression: Expression[A]) = {
-      result + _expression.evaluate(value)
+    def using(_expression: Expression) = {
       currentExpression = _expression
-      expressions += (currentExpression -> value)
+      isCurrentExpressionSatisfied = currentExpression.evaluate(value, validationResult)
       this
     }
 
-    def and(newExpression: Expression[A]) = {
-      currentExpression && newExpression
+    def and(newExpression: Expression) = {
+      if (isCurrentExpressionSatisfied) {
+        using(newExpression)
+      }
       this
     }
 
-    def or(newExpression: Expression[A]) = {
-      currentExpression || newExpression
+    def or(newExpression: Expression) = {
+      if (!isCurrentExpressionSatisfied) {
+        validationResult.clearRound
+        using(newExpression)
+      }
       this
     }
 
-    def ensure(b: A) = {
+    def andValidate(b: A) = {
+      if (!isCurrentExpressionSatisfied) hasFailedRound = true
       value = b
+      validationResult.startNewRound()
       this
     }
 
     def isSatisfied = {
-      var isEverFailed = false
-      for (expression <- expressions) {
-        if (!evaluating(expression._1, expression._2)) {
-          isEverFailed = true
-        }
-      }
-      !isEverFailed
-    }
-  }
-
-
-  case class Evaluates[A](var a: A) {
-
-    private var expressions: Map[A, Expression[A]] = Map.empty
-    private var currentExpression: Expression[A] = null
-
-    def using(_expression: Expression[A]) = {
-      currentExpression = _expression
-      expressions += (a -> currentExpression)
-      this
+      !hasFailedRound && isCurrentExpressionSatisfied
     }
 
-    def and(newExpression: Expression[A]) = {
-      currentExpression && newExpression
-      this
-    }
-
-    def or(newExpression: Expression[A]) = {
-      currentExpression || newExpression
-      this
-    }
-
-    def another(b: A) = {
-      a = b
-      this
-    }
-
-    def isPassed = {
-      var isEverFailed = false
-      for (expression <- expressions) {
-        if (!evaluating(expression._2, expression._1)) {
-          isEverFailed = true
-        }
-      }
-      !isEverFailed
-    }
+    def result(): ValidationResult = validationResult
   }
 
 

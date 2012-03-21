@@ -1,5 +1,6 @@
 package com.fishstory.oopsday.interfaces.shared.validation
 
+@deprecated("", "")
 case class Validations(a_params: Map[String, Seq[String]], a_validates: (String, String, List[Evaluation])*) {
   private var params: Map[String, Seq[String]] = Map.empty
   private var messages: Map[String, String] = Map.empty
@@ -130,7 +131,7 @@ abstract class ParamEvaluation extends Evaluation {
   def setParams(a_params: Map[String, Seq[String]]) = params = a_params
 }
 
-case class __IsEmpty extends ParamEvaluation {
+case class __IsEmpty() extends ParamEvaluation {
   def evaluate(name: String) = {
     params.get(name).isEmpty || params(name).isEmpty || params(name).head.isEmpty
   }
@@ -138,7 +139,7 @@ case class __IsEmpty extends ParamEvaluation {
   def message(name: String): String = "the " + name + " is not empty"
 }
 
-case class ParamIsNumeric extends ParamEvaluation {
+case class ParamIsNumeric() extends ParamEvaluation {
   def evaluate(name: String) = {
     params(name).head.forall(_.isDigit)
   }
@@ -148,7 +149,7 @@ case class ParamIsNumeric extends ParamEvaluation {
   }
 }
 
-case class __IsNumeric extends Evaluation {
+case class __IsNumeric() extends Evaluation {
   def evaluate(name: String) = {
     name != null && name.forall(_.isDigit)
   }
@@ -158,7 +159,7 @@ case class __IsNumeric extends Evaluation {
   }
 }
 
-case class __IsNotBlank extends ParamEvaluation {
+case class __IsNotBlank() extends ParamEvaluation {
   def evaluate(name: String) = {
     params.get(name).isDefined && !params(name).isEmpty && !params(name).head.isEmpty
   }
@@ -166,13 +167,13 @@ case class __IsNotBlank extends ParamEvaluation {
   def message(name: String): String = "the " + name + " is must"
 }
 
-case class And extends Evaluation {
+case class And() extends Evaluation {
   def evaluate(name: String): Boolean = true
 
   def message(name: String): String = ""
 }
 
-case class Or extends Evaluation {
+case class Or() extends Evaluation {
   def evaluate(name: String): Boolean = true
 
   def message(name: String): String = ""

@@ -1,10 +1,11 @@
 package com.fishstory.oopsday.interfaces.tipping
+
 import org.junit.runner.RunWith
 import cucumber.junit.Cucumber
-import cucumber.junit.Feature
+import cucumber.junit.Cucumber.Options
 
 @RunWith(classOf[Cucumber])
-@Feature(value = "post_a_tip.feature")
+@Options(features = Array("post_a_tip.feature"))
 class post_a_tip_Test {
 
 }
