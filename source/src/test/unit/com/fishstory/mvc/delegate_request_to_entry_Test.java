@@ -1,7 +1,6 @@
 package com.fishstory.mvc;
 
 import cucumber.junit.Cucumber;
-import cucumber.junit.Feature;
 import org.junit.runner.RunWith;
 
 /**
@@ -10,6 +9,5 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(Cucumber.class)
-@Feature(value = "delegate_request_to_entry.feature")
 public class delegate_request_to_entry_Test {
 }

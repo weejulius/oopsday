@@ -29,7 +29,7 @@ class TipFace extends AbstractPlan {
 
     case req@GET(Path("/tips")) & Params(params) => {
 
-      if (Evaluates(params.get("page")) using IsEmpty() or IsNumeric() isPassed) {
+      if (validate(params.get("page")) using IsEmpty() or IsNumeric() isSatisfied) {
 
         var page: Int = 1
         //TODO move to configuration area
@@ -58,7 +58,7 @@ class TipFace extends AbstractPlan {
 
     case req@GET(Path(Seg("tips" :: id :: Nil))) => {
 
-      if (Evaluates(id) using IsNumeric() isPassed) {
+      if (validate(id) using IsNumeric() isSatisfied) {
 
         startTransaction
         val _tip: Option[Tip] = _tipRepository.find_by_id_is(id.toLong)
@@ -79,7 +79,7 @@ class TipFace extends AbstractPlan {
 
       case GET(_) => {
 
-        if (Evaluates(id) using IsNumeric() isPassed) {
+        if (validate(id) using IsNumeric() isSatisfied) {
           startTransaction
           val _tip = _tipRepository.find_by_id_is(id.toLong)
           commitAndCloseTransaction
@@ -109,16 +109,15 @@ class TipFace extends AbstractPlan {
       }
       _tip_id = tip_id.get.toLong
     }
-    var isViolated = true
-    val expression = NotBlank[Option[Seq[String]]]() && MaxLength(120)
-    isViolated = evaluating(expression, params.get("tip_title"))
-    expression.retry(NotBlank[Option[Seq[String]]]() && MaxLength(3500))
-    isViolated = evaluating(expression, params.get("tip_content")) && isViolated
-    if (!isViolated) {
+
+    val validationResult = validate(params.get("tip_title")).using(NotBlank()).and(MaxLength(120))
+      .andValidate(params.get("tip_content")) using NotBlank() and MaxLength(3500) result()
+
+    if (!validationResult.isSatisfied) {
       return editable_page(
         req,
         Some(InvalidTip(params("tip_title").head, params("tip_content").head, "")),
-        Some(expression.results))
+        Some(validationResult))
     }
 
     val _tip_title: String = params("tip_title").head
