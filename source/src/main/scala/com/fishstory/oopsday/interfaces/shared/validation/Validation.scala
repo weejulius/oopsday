@@ -23,7 +23,7 @@ trait Validation {
   case class MaxLength(length: Int) extends CommonExpression {
 
     def evaluateString(a: String, result: ValidationResult): Boolean =
-      evaluate1(a.length <= length, result, a, length.toString)
+      evaluate1(a != null && a.length <= length, result, a, length.toString)
   }
 
   case object notBlank extends CommonExpression {
@@ -34,7 +34,7 @@ trait Validation {
   case object isNumeric extends CommonExpression {
 
     def evaluateString(a: String, result: ValidationResult): Boolean =
-      evaluate1(a.length > 0 && a.forall(_.isDigit), result, a)
+      evaluate1(a != null && a.length > 0 && a.forall(_.isDigit), result, a)
   }
 
   abstract class Expression {
@@ -74,6 +74,7 @@ trait Validation {
         case x: Option[_] => evaluateOption(x, result)
         case y: Seq[_] => evaluateSeq(y, result)
         case z: String => evaluateString(z, result)
+        case null => evaluateString(null, result)
         case _ => throw new IllegalArgumentException("unsupported")
       }
     }

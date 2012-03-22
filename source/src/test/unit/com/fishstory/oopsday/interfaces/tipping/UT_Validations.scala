@@ -28,6 +28,16 @@ class UT_Validations extends Validation {
     assertTrue(validate(Some("")) using isEmpty)
   }
 
+  @Test
+  def testIsEmpty {
+    assertTrue(validate(None) using isEmpty)
+    assertTrue(validate(Some("")) using isEmpty)
+    assertTrue(validate(Some(List(""))) using isEmpty)
+    assertTrue(validate("") using isEmpty)
+    assertTrue(validate(null) using isEmpty)
+    assertTrue(validate(Some(Nil)) using isEmpty)
+  }
+
 
   @Test
   def test2 {
