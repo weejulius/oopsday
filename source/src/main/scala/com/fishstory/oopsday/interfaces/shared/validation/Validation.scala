@@ -2,7 +2,7 @@ package com.fishstory.oopsday.interfaces.shared.validation
 
 
 /**
- * Used to construct the validation expressions and evaluate it
+ * Used to construct the validation expressions and evaluateOption it
  */
 trait Validation {
 
@@ -10,37 +10,31 @@ trait Validation {
 
   case object isEmpty extends CommonExpression {
 
-    def evaluate(a: String, result: ValidationResult): Boolean = evaluate1(a == null || a.isEmpty, result, a)
+    def evaluateString(a: String, result: ValidationResult): Boolean = evaluate1(a == null || a.isEmpty, result, a)
 
-    def evaluate(a: Option[Seq[String]], result: ValidationResult): Boolean =
-      evaluate2(a.isEmpty || a.get.isEmpty, result, a.toString) || evaluate(a.get.head, result)
+    override def evaluateOption[A](a: Option[A], result: ValidationResult): Boolean =
+      evaluate2(a.isEmpty, result, a.toString) || evaluate(a.get, result)
+
+    override def evaluateSeq[A](a: Seq[A], result: ValidationResult): Boolean =
+      evaluate2(a.isEmpty, result, a.toString) || evaluate(a.head, result)
+
   }
 
   case class MaxLength(length: Int) extends CommonExpression {
 
-    def evaluate(a: String, result: ValidationResult): Boolean =
+    def evaluateString(a: String, result: ValidationResult): Boolean =
       evaluate1(a.length <= length, result, a, length.toString)
-
-    def evaluate(a: Option[Seq[String]], result: ValidationResult): Boolean =
-      evaluate2(!a.isEmpty && !a.get.isEmpty, result, a.toString) && evaluate(a.get.head, result)
-
   }
 
   case object notBlank extends CommonExpression {
 
-    def evaluate(a: String, result: ValidationResult): Boolean = evaluate1(a != null && !a.isEmpty, result, a)
-
-    def evaluate(a: Option[Seq[String]], result: ValidationResult): Boolean =
-      evaluate2(a.isDefined && !a.get.isEmpty, result, a.toString) && evaluate(a.get.head, result)
+    def evaluateString(a: String, result: ValidationResult): Boolean = evaluate1(a != null && !a.isEmpty, result, a)
   }
 
   case object isNumeric extends CommonExpression {
 
-    def evaluate(a: String, result: ValidationResult): Boolean =
+    def evaluateString(a: String, result: ValidationResult): Boolean =
       evaluate1(a.length > 0 && a.forall(_.isDigit), result, a)
-
-    def evaluate(a: Option[Seq[String]], result: ValidationResult): Boolean =
-      evaluate2(a.isDefined && !a.get.isEmpty, result, a.toString) && evaluate(a.get.head, result)
   }
 
   abstract class Expression {
@@ -69,15 +63,17 @@ trait Validation {
       isSatisfied
     }
 
-    def evaluate(a: String, result: ValidationResult): Boolean
+    def evaluateString(a: String, result: ValidationResult): Boolean
 
-    def evaluate(a: Option[Seq[String]], result: ValidationResult): Boolean
+    def evaluateOption[A](a: Option[A], result: ValidationResult): Boolean = evaluate2(a.isDefined, result, a.toString) && evaluate(a.get, result)
 
+    def evaluateSeq[A](a: Seq[A], result: ValidationResult): Boolean = evaluate2(!a.isEmpty, result, a.toString) && evaluate(a.head, result)
 
     def evaluate[A](a: A, result: ValidationResult): Boolean = {
       a match {
-        case string: String => evaluate(string, result)
-        case option: Option[Seq[String]] => evaluate(option, result)
+        case x: Option[_] => evaluateOption(x, result)
+        case y: Seq[_] => evaluateSeq(y, result)
+        case z: String => evaluateString(z, result)
         case _ => throw new IllegalArgumentException("unsupported")
       }
     }
@@ -125,6 +121,5 @@ trait Validation {
 
     def result(): ValidationResult = validationResult
   }
-
 
 }

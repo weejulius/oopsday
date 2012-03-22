@@ -23,6 +23,11 @@ class UT_Validations extends Validation {
     assertEquals(1, a.head.length)
   }
 
+  @Test
+  def testOptionString {
+    assertTrue(validate(Some("")) using isEmpty)
+  }
+
 
   @Test
   def test2 {
