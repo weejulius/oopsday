@@ -32,10 +32,15 @@ class UT_Validations extends Validation {
   def testIsEmpty {
     assertTrue(validate(None) using isEmpty)
     assertTrue(validate(Some("")) using isEmpty)
+    assertTrue(validate(Some("")) using isEmpty result() isSatisfied)
     assertTrue(validate(Some(List(""))) using isEmpty)
     assertTrue(validate("") using isEmpty)
     assertTrue(validate(null) using isEmpty)
     assertTrue(validate(Some(Nil)) using isEmpty)
+    assertFalse(validate(Some("a")) using isEmpty)
+    assertEquals("a is not empty", validate(Some("a")) using isEmpty result() print(0, 0, "&_ is not empty"))
+
+    assertTrue(isEmpty.evaluate(Some("")))
   }
 
 

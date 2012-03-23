@@ -31,7 +31,7 @@ class TipFace extends AbstractPlan {
         var page: Int = 1
         val pageSize = faceConfig.pageSize
 
-        if (validation.result().isSatisfied(0, 1)) {
+        if (validation.result().isSatisfiedAt(0, 1)) {
           page = params("page").head.toInt
         }
 
@@ -98,7 +98,7 @@ class TipFace extends AbstractPlan {
 
     if (!validation) return Scalate(req, "bad_user_request.ssp")
 
-    if (validation.result().isSatisfied(0, 1)) _tip_id = tip_id.get.toInt
+    if (validation.result().isSatisfiedAt(0, 1)) _tip_id = tip_id.get.toInt
 
     val validation1 = validate(params.get("tip_title")) using (notBlank) and MaxLength(120)
     validation1 andValidate (params.get("tip_content")) using notBlank and MaxLength(3500)

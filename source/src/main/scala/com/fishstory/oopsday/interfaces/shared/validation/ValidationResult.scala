@@ -20,7 +20,7 @@ class ValidationResult {
    * after validating a expression in the current round validation
    * @param values
    */
-  def +(values: Seq[String]) {
+  def +(values: List[String]) {
     messages.head += Some(values)
   }
 
@@ -55,7 +55,7 @@ class ValidationResult {
    * @param x  the index of rounds to validate
    * @param y  the index of expressions
    */
-  def isSatisfied(x: Int, y: Int): Boolean = {
+  def isSatisfiedAt(x: Int, y: Int): Boolean = {
     val roundNum = messages.size - x - 1
     roundNum >= 0 && x < messages.size && y >= 0 && y < messages(x).size && messages(roundNum)(y).isEmpty
   }

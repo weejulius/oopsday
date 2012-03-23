@@ -10,31 +10,30 @@ trait Validation {
 
   case object isEmpty extends CommonExpression {
 
-    def evaluateString(a: String, result: ValidationResult): Boolean = evaluate1(a == null || a.isEmpty, result, a)
+    def evaluateString(a: String): Boolean = a == null || a.isEmpty
 
-    override def evaluateOption[A](a: Option[A], result: ValidationResult): Boolean =
-      evaluate2(a.isEmpty, result, a.toString) || evaluate(a.get, result)
+    override def evaluateOption[A](a: Option[A]): Boolean =
+      a.isEmpty || evaluate(a.get)
 
-    override def evaluateSeq[A](a: Seq[A], result: ValidationResult): Boolean =
-      evaluate2(a.isEmpty, result, a.toString) || evaluate(a.head, result)
+    override def evaluateSeq[A](a: Seq[A]): Boolean = a.isEmpty || evaluate(a.head)
 
   }
 
   case class MaxLength(length: Int) extends CommonExpression {
 
-    def evaluateString(a: String, result: ValidationResult): Boolean =
-      evaluate1(a != null && a.length <= length, result, a, length.toString)
+    def evaluateString(a: String): Boolean = a != null && a.length <= length
+
+    override def additionalMessageValues: List[String] = List(length.toString)
   }
 
   case object notBlank extends CommonExpression {
 
-    def evaluateString(a: String, result: ValidationResult): Boolean = evaluate1(a != null && !a.isEmpty, result, a)
+    def evaluateString(a: String): Boolean = a != null && !a.isEmpty
   }
 
   case object isNumeric extends CommonExpression {
 
-    def evaluateString(a: String, result: ValidationResult): Boolean =
-      evaluate1(a != null && a.length > 0 && a.forall(_.isDigit), result, a)
+    def evaluateString(a: String): Boolean = a != null && a.length > 0 && a.forall(_.isDigit)
   }
 
   abstract class Expression {
@@ -51,32 +50,37 @@ trait Validation {
    */
   abstract class CommonExpression extends Expression {
 
+    protected def additionalMessageValues: List[String] = Nil
 
-    protected def evaluate2(a: Boolean, result: ValidationResult, values: String*): Boolean = {
-      if (!a) result + (values)
-      a
-    }
+    protected def evaluateString(a: String): Boolean
 
-    protected def evaluate1(isSatisfied: Boolean, result: ValidationResult, values: String*): Boolean = {
-      if (!isSatisfied) result + (values)
-      else result.addEmpty
-      isSatisfied
-    }
+    protected def evaluateOption[A](a: Option[A]): Boolean = a.isDefined && evaluate(a.get)
 
-    def evaluateString(a: String, result: ValidationResult): Boolean
+    protected def evaluateSeq[A](a: Seq[A]): Boolean = !a.isEmpty && evaluate(a.head)
 
-    def evaluateOption[A](a: Option[A], result: ValidationResult): Boolean = evaluate2(a.isDefined, result, a.toString) && evaluate(a.get, result)
-
-    def evaluateSeq[A](a: Seq[A], result: ValidationResult): Boolean = evaluate2(!a.isEmpty, result, a.toString) && evaluate(a.head, result)
-
-    def evaluate[A](a: A, result: ValidationResult): Boolean = {
+    private def evaluateWithMessageValue[A](a: A): List[String] = {
+      var messageValues: List[String] = List.empty[String]
       a match {
-        case x: Option[_] => evaluateOption(x, result)
-        case y: Seq[_] => evaluateSeq(y, result)
-        case z: String => evaluateString(z, result)
-        case null => evaluateString(null, result)
+        case x: Option[_] => if (!evaluateOption(x)) messageValues = (x.get.toString :: additionalMessageValues)
+        case y: Seq[_] => if (!evaluateSeq(y)) messageValues = (y.toString() :: additionalMessageValues)
+        case z: String => if (!evaluateString(z)) messageValues = (z :: additionalMessageValues)
+        case null => if (!evaluateString(null)) messageValues = ("null" :: additionalMessageValues)
         case _ => throw new IllegalArgumentException("unsupported")
       }
+      messageValues
+    }
+
+    protected def evaluate[A](a: A): Boolean = evaluateWithMessageValue(a).isEmpty
+
+    def evaluate[A](value: A, result: ValidationResult = null): Boolean = {
+      val messageValue: List[String] = evaluateWithMessageValue(value)
+      val isSatisfied = messageValue.isEmpty
+      if (result != null) {
+        if (isSatisfied) result addEmpty
+        else result + messageValue
+      }
+
+      isSatisfied
     }
   }
 
