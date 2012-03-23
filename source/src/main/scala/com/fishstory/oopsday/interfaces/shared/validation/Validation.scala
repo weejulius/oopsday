@@ -8,7 +8,7 @@ trait Validation {
 
   implicit def validate2Boolean[A](v: validate[A]): Boolean = v.isSatisfied
 
-  case object isEmpty extends CommonExpression {
+  case object isEmpty extends CommonEvaluation {
 
     def evaluateString(a: String): Boolean = a == null || a.isEmpty
 
@@ -19,24 +19,24 @@ trait Validation {
 
   }
 
-  case class MaxLength(length: Int) extends CommonExpression {
+  case class MaxLength(length: Int) extends CommonEvaluation {
 
     def evaluateString(a: String): Boolean = a != null && a.length <= length
 
     override def additionalMessageValues: List[String] = List(length.toString)
   }
 
-  case object notBlank extends CommonExpression {
+  case object notBlank extends CommonEvaluation {
 
     def evaluateString(a: String): Boolean = a != null && !a.isEmpty
   }
 
-  case object isNumeric extends CommonExpression {
+  case object isNumeric extends CommonEvaluation {
 
     def evaluateString(a: String): Boolean = a != null && a.length > 0 && a.forall(_.isDigit)
   }
 
-  abstract class Expression {
+  abstract class Evaluation {
     /**
      * Used to encapsulate the logic of validation
      * True if the value passes the evaluation of the expression
@@ -48,7 +48,7 @@ trait Validation {
   /**
    * the basic of the common used expressions
    */
-  abstract class CommonExpression extends Expression {
+  abstract class CommonEvaluation extends Evaluation {
 
     protected def additionalMessageValues: List[String] = Nil
 
@@ -61,14 +61,16 @@ trait Validation {
     private def evaluateWithMessageValue[A](a: A): List[String] = {
       var messageValues: List[String] = List.empty[String]
       a match {
-        case x: Option[_] => if (!evaluateOption(x)) messageValues = (x.get.toString :: additionalMessageValues)
-        case y: Seq[_] => if (!evaluateSeq(y)) messageValues = (y.toString() :: additionalMessageValues)
-        case z: String => if (!evaluateString(z)) messageValues = (z :: additionalMessageValues)
-        case null => if (!evaluateString(null)) messageValues = ("null" :: additionalMessageValues)
+        case x: Option[_] => if (!evaluateOption(x)) messageValues = pushMessageValue(x.get.toString)
+        case y: Seq[_] => if (!evaluateSeq(y)) messageValues = pushMessageValue(y.toString())
+        case z: String => if (!evaluateString(z)) messageValues = pushMessageValue(z.toString)
+        case null => if (!evaluateString(null)) messageValues = pushMessageValue("null")
         case _ => throw new IllegalArgumentException("unsupported")
       }
       messageValues
     }
+
+    private def pushMessageValue(value: String): List[String] = (value :: additionalMessageValues)
 
     protected def evaluate[A](a: A): Boolean = evaluateWithMessageValue(a).isEmpty
 
@@ -76,7 +78,7 @@ trait Validation {
       val messageValue: List[String] = evaluateWithMessageValue(value)
       val isSatisfied = messageValue.isEmpty
       if (result != null) {
-        if (isSatisfied) result addEmpty
+        if (isSatisfied) result noMessageValue
         else result + messageValue
       }
 
@@ -86,42 +88,42 @@ trait Validation {
 
   case class validate[A](var value: A) {
 
-    private var currentExpression: Expression = null
+    private var currentEvaluation: Evaluation = null
     private var validationResult: ValidationResult = new ValidationResult()
-    private var isCurrentExpressionSatisfied = false
+    private var isCurrentEvaluationSatisfied = false
     private var hasFailedRound = false
 
 
-    def using(_expression: Expression) = {
-      currentExpression = _expression
-      isCurrentExpressionSatisfied = currentExpression.evaluate(value, validationResult)
+    def using(_expression: Evaluation) = {
+      currentEvaluation = _expression
+      isCurrentEvaluationSatisfied = currentEvaluation.evaluate(value, validationResult)
       this
     }
 
-    def and(newExpression: Expression) = {
-      if (isCurrentExpressionSatisfied) {
+    def and(newExpression: Evaluation) = {
+      if (isCurrentEvaluationSatisfied) {
         using(newExpression)
       }
       this
     }
 
-    def or(newExpression: Expression) = {
-      if (!isCurrentExpressionSatisfied) {
-        validationResult.clearRound
+    def or(newExpression: Evaluation) = {
+      if (!isCurrentEvaluationSatisfied) {
+        validationResult.clearMessageValuesOfCurrentRound
         using(newExpression)
       }
       this
     }
 
     def andValidate(b: A) = {
-      if (!isCurrentExpressionSatisfied) hasFailedRound = true
+      if (!isCurrentEvaluationSatisfied) hasFailedRound = true
       value = b
       validationResult.startNewRound()
       this
     }
 
     def isSatisfied = {
-      !hasFailedRound && isCurrentExpressionSatisfied
+      !hasFailedRound && isCurrentEvaluationSatisfied
     }
 
     def result(): ValidationResult = validationResult

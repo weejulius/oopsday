@@ -11,30 +11,30 @@ import util.matching.Regex
  */
 class ValidationResult {
 
-  var messages: List[ListBuffer[Option[Seq[String]]]] = List.empty
+  var messageValues: List[ListBuffer[Option[Seq[String]]]] = List.empty
 
-  startNewRound
+  startNewRound()
 
   /**
-   * add the values which is used to show message to users
-   * after validating a expression in the current round validation
+   * add the message values which is used to show message to users
+   * if failed to validated a expression in the current round
    * @param values
    */
   def +(values: List[String]) {
-    messages.head += Some(values)
+    messageValues.head += Some(values)
   }
 
-  def addEmpty {
-    messages.head += None
+  def noMessageValue() {
+    messageValues.head += None
   }
 
   /**
-   * clear up the failures in the current validation
+   * clear up the existing message values in the current validation
    */
-  def clearRound {
-    val size = messages.head.size
+  def clearMessageValuesOfCurrentRound() {
+    val size = messageValues.head.size
     for (a: Int <- 0 until size - 1) {
-      messages.head.updated(a, None)
+      messageValues.head.updated(a, None)
     }
   }
 
@@ -42,12 +42,12 @@ class ValidationResult {
    * True if there is not failure in the xth validation
    * @param x
    */
-  def isSatisfied(x: Int): Boolean = {
-    x >= 0 && x < messages.size && messages(x).forall(_.isEmpty)
+  def isSatisfiedAt(x: Int): Boolean = {
+    x >= 0 && x < messageValues.size && messageValues(x).forall(_.isEmpty)
   }
 
   def isSatisfied: Boolean = {
-    messages.forall(_.forall(_.isEmpty))
+    messageValues.forall(_.forall(_.isEmpty))
   }
 
   /**
@@ -56,8 +56,8 @@ class ValidationResult {
    * @param y  the index of expressions
    */
   def isSatisfiedAt(x: Int, y: Int): Boolean = {
-    val roundNum = messages.size - x - 1
-    roundNum >= 0 && x < messages.size && y >= 0 && y < messages(x).size && messages(roundNum)(y).isEmpty
+    val roundNum = messageValues.size - x - 1
+    roundNum >= 0 && x < messageValues.size && y >= 0 && y < messageValues(x).size && messageValues(roundNum)(y).isEmpty
   }
 
   /**
@@ -68,34 +68,32 @@ class ValidationResult {
    * @return
    */
   def print(x: Int, y: Int, messageTemplate: String): String = {
-    val roundNum = messages.size - x - 1
-    if (x >= 0 && x < messages.size && y >= 0 && y < messages(x).size && !messages(roundNum)(y).isEmpty) {
-      fillValuesOfMessage(messages(roundNum)(y).get.toList)(messageTemplate)
+    val roundNum = messageValues.size - x - 1
+    if (x >= 0 && x < messageValues.size && y >= 0 && y < messageValues(x).size && !messageValues(roundNum)(y).isEmpty) {
+      fillValuesOfMessage(messageValues(roundNum)(y).get.toList)(messageTemplate)
     }
     else ""
   }
 
   def startNewRound() {
-    messages = ListBuffer.empty[Option[Seq[String]]] :: messages
+    messageValues = ListBuffer.empty[Option[Seq[String]]] :: messageValues
   }
 
   val _pattern: Regex = """&_([0-9]?)""".r
 
   /**
-   * Replace the placeholder with values in the message
-   * @param value
-   * @param message
+   * Replace the placeholder with values in the message template
+   * @param messageValue
+   * @param messageTemplate
    */
-  def fillValuesOfMessage(value: List[String])(message: String): String = {
+  def fillValuesOfMessage(messageValue: List[String])(messageTemplate: String): String = {
     var indexOfMatch = -1
-    _pattern.replaceAllIn(message, (m: Match) => {
+    _pattern.replaceAllIn(messageTemplate, (m: Match) => {
       val sequence = m.group(1)
       indexOfMatch = indexOfMatch + 1
-      if (!sequence.isEmpty) value(sequence.toInt).toString
-      else value(indexOfMatch)
+      if (!sequence.isEmpty) messageValue(sequence.toInt).toString
+      else messageValue(indexOfMatch)
     })
   }
-
-
 }
 

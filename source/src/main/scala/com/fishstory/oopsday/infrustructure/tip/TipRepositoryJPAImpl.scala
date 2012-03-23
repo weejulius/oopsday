@@ -5,12 +5,12 @@ import com.fishstory.oopsday.domain.tip.Tip
 import javax.persistence.EntityManager
 import org.slf4j.LoggerFactory
 
+import com.fishstory.oopsday.infrustructure._
+
 class TipRepositoryJPAImpl extends TipRepository with Transactions {
   private val LOG = LoggerFactory.getLogger(classOf[TipRepositoryJPAImpl])
 
-  private def entityManager: EntityManager = {
-    get()
-  }
+  private def entityManager: EntityManager = get()
 
   def find_by_id_is(id: Long): Option[Tip] = {
     val tip = entityManager.find(classOf[Tip], id)
@@ -25,7 +25,7 @@ class TipRepositoryJPAImpl extends TipRepository with Transactions {
     return entityManager.createQuery("""
               SELECT count(tip)
                 FROM com.fishstory.oopsday.domain.tip.Tip tip           
-      """,classOf[java.lang.Long]).getResultList().get(0).toLong
+      """, classOf[java.lang.Long]).getResultList().get(0).toLong
   }
 
   def find_all(start: Int, size: Int): java.util.List[Tip] = {

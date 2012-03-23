@@ -6,7 +6,7 @@ package com.fishstory.oopsday.interfaces.shared
  *
  */
 
-case class PageNavigation(cur_page: Int, count_of_tips: Long, pageSize: Int) {
+case class PageNavigation(cur_page: Int, count_of_tips: Long, pageSize: Int = faceConfig.pageSize) {
   val page_num: Int = calculate_page_num
 
   private def calculate_page_num: Int = {

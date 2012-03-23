@@ -1,7 +1,8 @@
-package com.fishstory.oopsday.infrustructure.tip
-import javax.persistence.Persistence
-import javax.persistence.EntityManager
+package com.fishstory.oopsday.infrustructure
+
 import org.slf4j.LoggerFactory
+import tip.entityManager
+import javax.persistence.EntityManager
 
 trait Transactions {
   private val LOG = LoggerFactory.getLogger(classOf[Transactions])
@@ -33,6 +34,7 @@ trait Transactions {
       entityManager._entityManager.set(null)
     }
   }
+
   def transaction[A](a: => A): A = {
     startTransaction
     try {
@@ -43,10 +45,4 @@ trait Transactions {
       commitAndCloseTransaction
     }
   }
-}
-
-object entityManager {
-  val _emf = Persistence.createEntityManagerFactory("tip")
-  val _entityManager: ThreadLocal[EntityManager] = new ThreadLocal[EntityManager]
-
 }

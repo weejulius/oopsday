@@ -8,7 +8,7 @@ import collection.mutable.ListBuffer
 class UT_Validations extends Validation {
 
   @Test
-  def test_isEmpty {
+  def test_isEmpty() {
     var a: List[ListBuffer[Seq[String]]] = List[ListBuffer[Seq[String]]](ListBuffer[Seq[String]]())
     assertTrue(a.forall(_.isEmpty))
 
@@ -24,12 +24,12 @@ class UT_Validations extends Validation {
   }
 
   @Test
-  def testOptionString {
+  def testOptionString() {
     assertTrue(validate(Some("")) using isEmpty)
   }
 
   @Test
-  def testIsEmpty {
+  def testIsEmpty() {
     assertTrue(validate(None) using isEmpty)
     assertTrue(validate(Some("")) using isEmpty)
     assertTrue(validate(Some("")) using isEmpty result() isSatisfied)
@@ -45,7 +45,7 @@ class UT_Validations extends Validation {
 
 
   @Test
-  def test2 {
+  def test2() {
     val a: Option[Seq[String]] = Some(List[String]("aaaaaaaa").toSeq)
     val b: Option[Seq[String]] = Some(List[String]("abbbbbbbbbbbbbbbbbbbbbbbbb").toSeq)
     assertTrue(validate(a) using notBlank and MaxLength(10))
@@ -54,7 +54,7 @@ class UT_Validations extends Validation {
 
 
   @Test
-  def test_message_template {
+  def test_message_template() {
     val a = new ValidationResult().fillValuesOfMessage("a" :: "ba" :: Nil)(_)
     assertEquals("a is not ba", a("&_ is not &_"))
     assertEquals("is not ba", a("is not &_1"))

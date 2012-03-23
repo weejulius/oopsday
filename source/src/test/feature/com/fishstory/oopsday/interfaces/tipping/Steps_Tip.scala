@@ -9,7 +9,7 @@ import unfiltered.jetty.{Server, Http}
 import com.fishstory.oopsday.domain.tip.Tip
 import org.openqa.selenium.{By, WebDriver}
 import org.openqa.selenium.WebElement
-import com.fishstory.oopsday.infrustructure.tip.Transactions
+import com.fishstory.oopsday.infrustructure.Transactions
 import com.fishstory.oopsday.domain.tip.TipRepository
 import com.fishstory.oopsday.infrustructure.tip.TipRepositoryJPAImpl
 import scala.util.Random
