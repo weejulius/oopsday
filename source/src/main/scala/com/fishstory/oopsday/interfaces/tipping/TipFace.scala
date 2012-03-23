@@ -9,7 +9,6 @@ import com.fishstory.oopsday.domain.tip.{emptyTip, InvalidTip, Tip, TipRepositor
 import unfiltered.response.{Redirect, ResponseFunction, NotFound, Found}
 import java.util.ArrayList
 import com.fishstory.oopsday.domain.tag.{Tag, TagRepository}
-import com.fishstory.oopsday.infrustructure.Page
 
 /**Used to handle the requests regarding tip
  */
@@ -28,18 +27,16 @@ class TipFace extends AbstractPlan {
       if (!validation) Scalate(req, "bad_user_request.ssp")
       else {
 
-        var page: Int = 1
+        var pageNumber: Int = 1
 
         if (validation.result().isSatisfiedAt(0, 1)) {
-          page = params("page").head.toInt
+          pageNumber = params("page").head.toInt
         }
 
         transaction {
-          val tips = _tipRepository.find_all(1, 1)
-          val countOfTips = _tipRepository.count()
           Scalate(req, "tip/tips.ssp",
-            ("tips", tips),
-            ("page_nav", PageNavigation(page, countOfTips)))
+            ("tips", page[Tip](pageNumber)),
+            ("page_nav", PageNavigation(pageNumber, count())))
         }
       }
     }

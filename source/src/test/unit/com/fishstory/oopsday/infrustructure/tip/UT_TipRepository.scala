@@ -13,7 +13,7 @@ import com.fishstory.oopsday.infrustructure.Repository
  * To change this template use File | Settings | File Templates.
  */
 
-class UT_TipRepository extends Repository[Tip] {
+class UT_TipRepository extends Repository {
 
   var repository: TipRepository = null
 
@@ -26,7 +26,8 @@ class UT_TipRepository extends Repository[Tip] {
   def testFind {
     transaction {
       repository.save_new_or_update(new Tip("a", "b", "c"))
-      assertEquals("b", column("title", "a").get content)
+      assertEquals("b", column[Tip]("title", "a").get content)
+      assertEquals("b", id[Tip](1).get content)
     }
   }
 

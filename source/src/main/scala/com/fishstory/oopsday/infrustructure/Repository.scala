@@ -12,11 +12,7 @@ import scala.collection.JavaConverters._
  * To change this template use File | Settings | File Templates.
  */
 
-trait Repository[A] extends Transactions {
-
-
-  abstract class DBOperation[B] {
-  }
+trait Repository extends Transactions {
 
   protected def nullToNone[A](a: A) = if (a == null) None else Some(a)
 
@@ -34,15 +30,15 @@ trait Repository[A] extends Transactions {
     }
   }
 
-  case object id extends DBOperation[Option[A]] {
-    def apply(id: Long)(implicit m: scala.reflect.Manifest[A]): Option[A] = {
+  case object id {
+    def apply[A](id: Long)(implicit m: scala.reflect.Manifest[A]): Option[A] = {
       nullToNone(entityManager.find(m.erasure, id)).asInstanceOf[Option[A]]
     }
   }
 
-  case object column extends DBOperation[Option[A]] {
+  case object column {
 
-    def apply(column: String, value: String)(implicit m: scala.reflect.Manifest[A]): Option[A] = {
+    def apply[A](column: String, value: String)(implicit m: scala.reflect.Manifest[A]): Option[A] = {
       singleResult(entityManager.createQuery("""
               SELECT x
                 FROM """ + m.erasure.getName + """ x
@@ -52,8 +48,8 @@ trait Repository[A] extends Transactions {
     }
   }
 
-  case object page extends DBOperation[List[A]] {
-    def apply(pageNumber: Int, size: Int = faceConfig.pageSize)(implicit m: scala.reflect.Manifest[A]): List[A] = {
+  case object page {
+    def apply[A](pageNumber: Int, size: Int = faceConfig.pageSize)(implicit m: scala.reflect.Manifest[A]): List[A] = {
       entityManager.createQuery("""
               SELECT x
                 FROM """ + m.erasure.getName + """ x
@@ -61,8 +57,8 @@ trait Repository[A] extends Transactions {
     }.asInstanceOf[List[A]]
   }
 
-  case object count extends DBOperation[Long] {
-    def apply(implicit m: scala.reflect.Manifest[A]): Long = {
+  case object count {
+    def apply[A]()(implicit m: scala.reflect.Manifest[A]): Long = {
       entityManager.createQuery("""
               SELECT count(x)
                 FROM """ + m.erasure.getName + """ x
