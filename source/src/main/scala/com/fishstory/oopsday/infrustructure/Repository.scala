@@ -3,6 +3,9 @@ package com.fishstory.oopsday.infrustructure
 import javax.persistence.EntityManager
 import com.fishstory.oopsday.interfaces.shared.faceConfig
 import scala.collection.JavaConverters._
+import com.fishstory.oopsday.domain.tip.Tip
+import com.fishstory.oopsday.domain.DomainEntity
+import com.fishstory.oopsday.domain.tag.Tag
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,9 +15,11 @@ import scala.collection.JavaConverters._
  * To change this template use File | Settings | File Templates.
  */
 
-trait Repository extends Transactions {
+trait Repository[A <: DomainEntity] extends Transactions {
 
   protected def nullToNone[A](a: A) = if (a == null) None else Some(a)
+
+  abstract class Filter
 
   protected def entityManager: EntityManager = get()
 
@@ -30,15 +35,33 @@ trait Repository extends Transactions {
     }
   }
 
-  case object id {
-    def apply[A](id: Long)(implicit m: scala.reflect.Manifest[A]): Option[A] = {
+  case object id extends Filter {
+    def apply(id: Long)(implicit m: scala.reflect.Manifest[A]): Option[A] = {
       nullToNone(entityManager.find(m.erasure, id)).asInstanceOf[Option[A]]
     }
   }
 
-  case object column {
+  case object saveNewOrUpdate {
+    def apply(entity: A)(implicit m: scala.reflect.Manifest[A]): A = {
+      var savedEntity: Option[A] = None
 
-    def apply[A](column: String, value: String)(implicit m: scala.reflect.Manifest[A]): Option[A] = {
+      if (entity.id > 0) {
+        savedEntity = id(entity.id)
+      }
+
+      if (savedEntity.isEmpty) {
+        entityManager.persist(entity)
+        savedEntity = Some(entity)
+      } else {
+        savedEntity = Some(entityManager.merge(entity))
+      }
+      savedEntity.get
+    }
+  }
+
+  case object column extends Filter {
+
+    def apply(column: String, value: String)(implicit m: scala.reflect.Manifest[A]): Option[A] = {
       singleResult(entityManager.createQuery("""
               SELECT x
                 FROM """ + m.erasure.getName + """ x
@@ -48,8 +71,8 @@ trait Repository extends Transactions {
     }
   }
 
-  case object page {
-    def apply[A](pageNumber: Int, size: Int = faceConfig.pageSize)(implicit m: scala.reflect.Manifest[A]): List[A] = {
+  case object page extends Filter {
+    def apply(pageNumber: Int, size: Int = faceConfig.pageSize)(implicit m: scala.reflect.Manifest[A]): List[A] = {
       entityManager.createQuery("""
               SELECT x
                 FROM """ + m.erasure.getName + """ x
@@ -58,7 +81,7 @@ trait Repository extends Transactions {
   }
 
   case object count {
-    def apply[A]()(implicit m: scala.reflect.Manifest[A]): Long = {
+    def apply()(implicit m: scala.reflect.Manifest[A]): Long = {
       entityManager.createQuery("""
               SELECT count(x)
                 FROM """ + m.erasure.getName + """ x
@@ -66,4 +89,10 @@ trait Repository extends Transactions {
     }
   }
 
+}
+
+
+object tipRepository extends Repository[Tip]
+
+object tagRepository extends Repository[Tag] {
 }

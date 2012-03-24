@@ -5,13 +5,12 @@ import java.util.Date
 import com.fishstory.oopsday.domain.tag.Tag
 import scala.collection.JavaConverters._
 import javax.persistence._
-import scala.reflect.BeanProperty
 import com.fishstory.oopsday.domain.entityValidationDef
 
-/** A tip is a short words used to recall
+/**A tip is a short words used to recall
  */
 @javax.persistence.Entity
-class Tip extends com.fishstory.oopsday.domain.Entity {
+class Tip extends com.fishstory.oopsday.domain.DomainEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

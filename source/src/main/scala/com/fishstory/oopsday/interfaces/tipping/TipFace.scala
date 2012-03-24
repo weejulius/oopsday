@@ -9,6 +9,7 @@ import com.fishstory.oopsday.domain.tip.{emptyTip, InvalidTip, Tip, TipRepositor
 import unfiltered.response.{Redirect, ResponseFunction, NotFound, Found}
 import java.util.ArrayList
 import com.fishstory.oopsday.domain.tag.{Tag, TagRepository}
+import com.fishstory.oopsday.infrustructure.tipRepository
 
 /**Used to handle the requests regarding tip
  */
@@ -35,8 +36,8 @@ class TipFace extends AbstractPlan {
 
         transaction {
           Scalate(req, "tip/tips.ssp",
-            ("tips", page[Tip](pageNumber)),
-            ("page_nav", PageNavigation(pageNumber, count())))
+            ("tips", tipRepository.page(pageNumber)),
+            ("page_nav", PageNavigation(pageNumber, tipRepository.count())))
         }
       }
     }
@@ -52,7 +53,7 @@ class TipFace extends AbstractPlan {
       if (!(validate(id) using isNumeric)) Scalate(req, "bad_user_request.ssp")
       else {
 
-        val _tip: Option[Tip] = transaction(_tipRepository.find_by_id_is(id.toLong))
+        val _tip: Option[Tip] = transaction(tipRepository.id(id.toLong))
 
         if (_tip.isDefined) {
           Found ~> index_page(req, _tip.get)
@@ -71,7 +72,7 @@ class TipFace extends AbstractPlan {
         if (!(validate(id) using isNumeric)) Scalate(req, "bad_user_request.ssp")
         else {
 
-          val _tip = transaction(_tipRepository.find_by_id_is(id.toLong))
+          val _tip = transaction(tipRepository.id(id.toLong))
 
           if (_tip.isDefined) {
             editable_page(req, _tip, None)

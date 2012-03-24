@@ -1,22 +1,18 @@
 package com.fishstory.oopsday.domain.tag
-import javax.persistence.Entity
-import scala.reflect.BeanProperty
-import javax.persistence.Id
-import javax.persistence.Column
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
+
+import reflect.BeanProperty
+import com.fishstory.oopsday.domain.DomainEntity
+import javax.persistence._
 
 @Entity
 case class Tag(
-  @BeanProperty
-  @Column
-  val name: String) {
-
-  def this()=this(null)
+                @BeanProperty
+                @Column
+                val name: String) extends DomainEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name="tag_id")
-  val id: Long=0
+  @Column(name = "tag_id")
+  val id: Long = 0
 
 }
