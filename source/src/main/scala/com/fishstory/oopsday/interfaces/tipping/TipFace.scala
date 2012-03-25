@@ -9,15 +9,12 @@ import com.fishstory.oopsday.domain.tip.{emptyTip, InvalidTip, Tip, TipRepositor
 import unfiltered.response.{Redirect, ResponseFunction, NotFound, Found}
 import java.util.ArrayList
 import com.fishstory.oopsday.domain.tag.{Tag, TagRepository}
-import com.fishstory.oopsday.infrustructure.tipRepository
+import com.fishstory.oopsday.infrustructure.{tagRepository, tipRepository}
 
 /**Used to handle the requests regarding tip
  */
 class TipFace extends AbstractPlan {
 
-  //Todo use DI to inject dependencies
-  private val _tipRepository: TipRepository = new TipRepositoryJPAImpl
-  private val _tagRepository: TagRepository = new TagRepositoryJPAImpl
   type ErrorMessage = com.fishstory.oopsday.interfaces.shared.validation.ValidationResult
 
   override def delegates = {
@@ -115,7 +112,7 @@ class TipFace extends AbstractPlan {
 
     if (!params("tip_tag").isEmpty) {
       for (a_tag: String <- params("tip_tag").head.trim.split(",")) {
-        _tags = _tags ::: List(_tagRepository.find_by_name_or_save_new(a_tag.trim))
+        _tags = _tags::: List(tagRepository.save(Tag(a_tag.trim)) when  tagRepository.column("title",a_tag.trim).isEmpty)
       }
     }
 
@@ -124,7 +121,7 @@ class TipFace extends AbstractPlan {
 
     } else {
 
-      _tip = _tipRepository.find_by_id_is(_tip_id.toLong)
+      _tip = tipRepository.id(_tip_id.toLong)
 
       if (_tip.isEmpty) return Scalate(req, "bad_user_request.ssp")
 
@@ -137,7 +134,7 @@ class TipFace extends AbstractPlan {
 
     }
 
-    _tipRepository.save_new_or_update(_tip.get)
+    tipRepository.saveNewOrUpdate(_tip.get)
     commitAndCloseTransaction
     Redirect("/tips/" + _tip.get.id)
   }

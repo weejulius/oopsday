@@ -89,7 +89,17 @@ trait Repository[A <: DomainEntity] extends Transactions {
     }
   }
 
+  def save(a:A)(implicit m: scala.reflect.Manifest[A]):Operation[A]=new Operation[A](a,a=>saveNewOrUpdate(a))
+
 }
+
+class Operation[A](a:A, b:(A =>A)){
+  def when(clause:Boolean):A={
+    if(clause) b(a)
+    else a
+  }
+}
+
 
 
 object tipRepository extends Repository[Tip]

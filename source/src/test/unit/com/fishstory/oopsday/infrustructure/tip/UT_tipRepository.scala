@@ -4,6 +4,7 @@ import com.fishstory.oopsday.domain.tip.Tip
 import org.junit.Test
 import org.junit.Assert._
 import com.fishstory.oopsday.infrustructure.{Transactions, tipRepository}
+import reflect.Method
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,8 +25,40 @@ class UT_tipRepository extends Transactions {
       assertEquals("b", tipRepository.id(1).get content)
       assertEquals(1, tipRepository.count())
 
-      tipRepository.save(new Tip("abc", "b", "c")) inCaseOf column("title"), "b").isEmpty
+      tipRepository.save(new Tip("abc", "bc", "c")) when tipRepository.column("title", "abc").isEmpty
+      tipRepository.save(new Tip("abcd", "d", "c")) when tipRepository.column("title", "abc").isEmpty
+      assertEquals("bc", tipRepository.column("title", "abc").get content)
+      assertTrue(tipRepository.column("title", "abcd").isEmpty)
+
+      //tipRepository.saveIfNotFound(new Tip("abcd","d","c"))
+
+      //find the[Tip]().title equals("a")
+      //find the[Tip]() is (new Tip("a","b","c"))
+
     }
   }
+
+    @Test
+    def testPrint{
+     // print[Tip]()
+      print1(new Tip().title)
+     // table[Tip].select column("title") is("b")
+
+    }
+
+    class a{
+      def title=(a:String)
+
+    }
+
+
+
+    def print1(a: =>Any)=println(a.toString())
+    def print[A]()(implicit  a:Manifest[A]){
+      for(one:java.lang.reflect.Method   <- a.erasure.getMethods){
+        one.setAccessible(true)
+        println(one.toString())
+      }
+    }
 
 }
